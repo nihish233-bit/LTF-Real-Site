@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Projelerimiz</title>
+  <!-- Dış CSS bağlantısı -->
+  <link rel="stylesheet" href="projelerimiz.css">
+</head>
+<body>
+  <header>
+    <div class="logo-area">
+      <div class="photo-placeholder" title="Buraya küçük fotoğraf ekleyin">
+        <!-- Buraya kendi resmini koy -->
+        <img id="user-photo" src="522796671_633320249801242_3069423785049686180_n.jpg" alt="fotoğraf"/>
+      </div>
+      <div>
+        <div class="site-title">Projelerimiz</div>
+        <div class="subtitle">Sitemizin Projeler Sayfası</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="grid">
+
+      <!-- Ana içerik -->
+      <section>
+        <div id="home-page" class="page active">
+          <div class="main-card">
+            <h1>Projelerimiz</h1>
+            <p class="lead">Aşağıdaki projelere tıklayarak ilgili sayfaya gidin.</p>
+
+            <div class="projects-list" id="projectsList">
+              <div class="project" data-id="p1">
+                <h3>Lost Spirit Whisper</h3>
+                <p>Yakında..</p>
+              </div>
+
+              <div class="project" data-id="p2">
+                <h3>Proje 2: Mobil Oyun</h3>
+                <p>Kısa açıklama: Bağımlılık yapıcı oynanış ve görseller.</p>
+              </div>
+
+              <div class="project" data-id="p3">
+                <h3>Proje 3: UX Tasarım</h3>
+                <p>Kısa açıklama: Kullanıcı odaklı tasarım çalışması.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detay sayfası -->
+        <div id="detail-page" class="page">
+          <div class="detail">
+            <button class="back" id="backBtn">← Geri</button>
+            <h2 id="detailTitle"></h2>
+            <p id="detailDesc"></p>
+            <div class="detail-box">
+              <strong>Proje açıklaması:</strong>
+              <p id="detailContent"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sağ kenar -->
+      <aside>
+        <div class="sidebar">
+          <h4>Hızlı Bağlantılar</h4>
+          <ul>
+            <li><span class="link" id="index.html">Anasayfa</span></li>
+            <li><span class="link" data-target="p1">LSW</span></li>
+            <li><span class="link" data-target="p2">Yakında...</span></li>
+            <li><span class="link" data-target="p3">Yakında...</span></li>
+          </ul>
+          <hr>
+          <div class="info">Kurucular: <b class="yellow">Nihish</b> & <b class="black-bg">Chivas</b></div>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- Dış JS bağlantısı -->
+  <script src="projelerimiz.js"></script>
+</body>
+</html>
