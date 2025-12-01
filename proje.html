@@ -86,3 +86,78 @@
   <script src="projelerimiz.js"></script>
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Hamburger Menü Test</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .menu-icon {
+        font-size: 30px;
+        cursor: pointer;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 1000;
+    }
+
+    .side-menu {
+        width: 220px;
+        height: 100%;
+        background: #222;
+        color: #fff;
+        position: fixed;
+        top: 0;
+        left: -220px;
+        padding-top: 60px;
+        transition: left 0.3s;
+    }
+
+    .side-menu a {
+        display: block;
+        color: #fff;
+        padding: 15px;
+        text-decoration: none;
+        font-size: 18px;
+    }
+
+    .side-menu a:hover {
+        background: #444;
+    }
+
+    .side-menu.open {
+        left: 0;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="menu-icon" id="menuBtn">☰</div>
+
+<nav id="sideMenu" class="side-menu">
+    <a href="index.html">Ana Sayfa</a>
+    <a href="leaderboard.html">Liderlik Tablosu</a>
+    <a href="proje.html">Projelerimiz</a>
+    <a href="social.html">Sosyal Medya</a>
+    <a href="team.html">Takımımız</a>
+</nav>
+
+<script>
+    const btn = document.getElementById("menuBtn");
+    const menu = document.getElementById("sideMenu");
+
+    btn.addEventListener("click", () => {
+        menu.classList.toggle("open");
+    });
+</script>
+
+</body>
+</html>
