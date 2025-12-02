@@ -44,6 +44,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: 30px;
 }
 
 .photo-placeholder img {
@@ -69,7 +70,7 @@ header {
 /* Sayfa düzeni */
 .container {
   max-width: 1100px;
-  margin: 28px auto;
+  margin: 40px auto;
   padding: 0 16px;
 }
 
