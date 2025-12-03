@@ -10,7 +10,7 @@
 
 <section class="hero">
     <div class="hero-content">
-        <h1>Biz <span>Loyal Team Force</span></h1>
+        <h1><span>Loyal Team Force</span></h1>
         <p>Profesyonellik ve lüksün birleştiği ekip</p>
         <a href="team.html" class="btn">Ekibimizi Gör</a>
     </div>
@@ -61,15 +61,40 @@
         font-family: Arial, sans-serif;
     }
 
-    .menu-icon {
-        font-size: 30px;
-        cursor: pointer;
+    /* --- ANİMASYONLU HAMBURGER --- */
+    .hamburger {
+        width: 35px;
+        height: 28px;
         position: fixed;
         top: 15px;
         left: 15px;
         z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        cursor: pointer;
     }
 
+    .hamburger span {
+        display: block;
+        height: 4px;
+        background: #fff;
+        border-radius: 4px;
+        transition: 0.35s ease;
+    }
+
+    /* X HALİ */
+    .hamburger.open .bar1 {
+        transform: translateY(12px) rotate(45deg);
+    }
+    .hamburger.open .bar2 {
+        opacity: 0;
+    }
+    .hamburger.open .bar3 {
+        transform: translateY(-12px) rotate(-45deg);
+    }
+
+    /* Menü */
     .side-menu {
         width: 220px;
         height: 100%;
@@ -102,7 +127,12 @@
 
 <body>
 
-<div class="menu-icon" id="menuBtn">☰</div>
+<!-- ANİMASYONLU HAMBURGER BUTONU -->
+<div id="menuBtn" class="hamburger">
+    <span class="bar1"></span>
+    <span class="bar2"></span>
+    <span class="bar3"></span>
+</div>
 
 <nav id="sideMenu" class="side-menu">
     <a href="index.html">Ana Sayfa</a>
@@ -118,8 +148,16 @@
 
     btn.addEventListener("click", () => {
         menu.classList.toggle("open");
+        btn.classList.toggle("open");
     });
 </script>
+
+<div class="menu-icon" id="menuBtn"></div>
+  <span class="bar bar1"></span>
+  <span class="bar bar2"></span>
+  <span class="bar bar3"></span>
+</div>
+
 
 </body>
 </html>

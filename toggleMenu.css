@@ -1,11 +1,42 @@
+/* -------------------------------
+   ANİMASYONLU HAMBURGER
+---------------------------------*/
 .menu-icon {
-    font-size: 28px;
-    cursor: pointer;
+    width: 35px;
+    height: 26px;
     position: fixed;
     top: 15px;
     left: 15px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
 }
 
+/* 3 çizgi */
+.menu-icon .bar {
+    height: 4px;
+    width: 100%;
+    background-color: white;
+    border-radius: 4px;
+    transition: 0.35s ease;
+}
+
+/* X animasyonu */
+.menu-icon.open .bar1 {
+    transform: translateY(10px) rotate(45deg);
+}
+.menu-icon.open .bar2 {
+    opacity: 0;
+}
+.menu-icon.open .bar3 {
+    transform: translateY(-10px) rotate(-45deg);
+}
+
+/* -------------------------------
+   SIDE MENU
+---------------------------------*/
 .side-menu {
     width: 200px;
     height: 100%;
@@ -15,7 +46,7 @@
     top: 0;
     left: -200px;
     padding-top: 60px;
-    transition: 0.3s;
+    transition: left 0.3s ease;
 }
 
 .side-menu a {

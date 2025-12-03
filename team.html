@@ -62,7 +62,7 @@
             <p>Üye</p>
         </div>
                 <div class="team-member">
-            <img src="raipfp.jpg" alt="Üye 1">
+            <img src="zloipfpp.jpg" alt="Üye 1">
             <h3>Raii</h3>
             <p>Üye</p>
         </div>
@@ -132,7 +132,7 @@
             <p>Üye</p>
         </div>
                 <div class="team-member">
-            <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Üye 1">
+            <img src="zloipfp.jpg" alt="Üye 1">
             <h3>Zloi</h3>
             <p>Üye</p>
         </div>
@@ -179,15 +179,40 @@
         font-family: Arial, sans-serif;
     }
 
-    .menu-icon {
-        font-size: 30px;
-        cursor: pointer;
+    /* --- ANİMASYONLU HAMBURGER --- */
+    .hamburger {
+        width: 35px;
+        height: 28px;
         position: fixed;
         top: 15px;
         left: 15px;
         z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        cursor: pointer;
     }
 
+    .hamburger span {
+        display: block;
+        height: 4px;
+        background: #fff;
+        border-radius: 4px;
+        transition: 0.35s ease;
+    }
+
+    /* X HALİ */
+    .hamburger.open .bar1 {
+        transform: translateY(12px) rotate(45deg);
+    }
+    .hamburger.open .bar2 {
+        opacity: 0;
+    }
+    .hamburger.open .bar3 {
+        transform: translateY(-12px) rotate(-45deg);
+    }
+
+    /* Menü */
     .side-menu {
         width: 220px;
         height: 100%;
@@ -220,7 +245,12 @@
 
 <body>
 
-<div class="menu-icon" id="menuBtn">☰</div>
+<!-- ANİMASYONLU HAMBURGER BUTONU -->
+<div id="menuBtn" class="hamburger">
+    <span class="bar1"></span>
+    <span class="bar2"></span>
+    <span class="bar3"></span>
+</div>
 
 <nav id="sideMenu" class="side-menu">
     <a href="index.html">Ana Sayfa</a>
@@ -236,8 +266,16 @@
 
     btn.addEventListener("click", () => {
         menu.classList.toggle("open");
+        btn.classList.toggle("open");
     });
 </script>
+
+<div class="menu-icon" id="menuBtn"></div>
+  <span class="bar bar1"></span>
+  <span class="bar bar2"></span>
+  <span class="bar bar3"></span>
+</div>
+
 
 </body>
 </html>

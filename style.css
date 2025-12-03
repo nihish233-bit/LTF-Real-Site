@@ -20,12 +20,12 @@ header nav ul li a:hover, header nav ul li a.active { color: #ffc107; }
 .hero .btn:hover { background-color: #ffc107; transform: scale(1.05); }
 
 /* About */
-.about { padding: 100px 50px; text-align: center; background-color: #111; }
+.about { padding: 100px 50px; text-align: center; background-color: #252B36; }
 .about h2 { font-size: 40px; margin-bottom: 20px; color: gold; }
 .about p { max-width: 800px; margin: auto; font-size: 18px; color: #ccc; }
 
 /* Features */
-.features { padding: 100px 50px; background-color: #111; text-align: center; }
+.features { padding: 100px 50px; background-color: #252B36; text-align: center; }
 .features h2 { font-size: 40px; margin-bottom: 50px; color: gold; }
 .features-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; }
 .feature-card { background-color: #222; padding: 20px; border-radius: 10px; width: 250px; transition: transform 0.3s, box-shadow 0.3s; }
@@ -34,7 +34,7 @@ header nav ul li a:hover, header nav ul li a.active { color: #ffc107; }
 .feature-card p { color: #ccc; }
 
 /* Team Section */
-.team-section { padding: 100px 50px; background-color: #111; text-align: center; }
+.team-section { padding: 100px 50px; background-color: #252B36; text-align: center; }
 .team-section h2 { font-size: 40px; margin-bottom: 50px; color: gold; }
 .team-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 40px; }
 .team-member { background-color: #222; padding: 20px; border-radius: 10px; width: 220px; transition: transform 0.3s, box-shadow 0.3s; }
@@ -44,11 +44,11 @@ header nav ul li a:hover, header nav ul li a.active { color: #ffc107; }
 .team-member p { color: #fff; }
 
 /* Leaderboard */
-.leaderboard-section { padding: 100px 50px; text-align: center; background-color: #111; }
+.leaderboard-section { padding: 100px 50px; text-align: center; background-color: #252B36; }
 .leaderboard-section h2 { font-size: 40px; margin-bottom: 30px; color: gold; }
 #leaderboard { margin: auto; width: 80%; border-collapse: collapse; background-color: #222; border-radius: 10px; overflow: hidden; }
 #leaderboard th, #leaderboard td { padding: 15px; border-bottom: 1px solid #333; }
-#leaderboard th { background-color: #111; color: gold; }
+#leaderboard th { background-color: #252B36; color: gold; }
 #leaderboard td { color: #ccc; }
 #leaderboard td[contenteditable="true"] { background-color: #111; }
 
