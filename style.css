@@ -54,3 +54,14 @@ header nav ul li a:hover, header nav ul li a.active { color: #ffc107; }
 
 .btn { cursor: pointer; }
 
+.slide-up {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1.5s ease-out; /* 0.8s -> 1.5s ile yavaşlatıldı */
+}
+
+
+.slide-up.show {
+  opacity: 1;
+  transform: translateY(0);
+}

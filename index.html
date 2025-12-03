@@ -6,6 +6,7 @@
 <title>Loyal Team Force - Ana Sayfa</title>
 <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <section class="hero">
@@ -19,8 +20,9 @@
 <section class="about">
     <div class="container">
         <h2>Hakkımızda</h2>
-        <p>Loyal Team Force, oyun ve proje dünyasında liderliği, stratejiyi ve profesyonelliği temsil eder.  
-        Ekibimiz, birbirine bağlı ve her zaman en iyiyi hedefleyen üyelerden oluşur.</p>
+        <p class="slide-up">Loyal Team Force (LTF)
+             Güven, bağlılık ve dayanışma üzerine kurulu bir ekip olarak bir araya gelmiştir. Biz sadece bir ekip değil, birbirine destek olan, birlikte büyüyen ve birlikte başaran bir aileyiz. Her üyemiz yeteneklerini en iyi şekilde ortaya koyarken, ortak hedeflerimize katkıda bulunur. Misyonumuz, adalet, saygı ve sadakati temel alarak sürekli gelişmek ve sınırları zorlamak; vizyonumuz ise Loyal Team Force’u ilham verici bir topluluk hâline getirerek kalıcı bir etki bırakmaktır. LTF, yalnızca bir isim değil; güvenin, bağlılığın ve kararlılığın simgesidir.</p>
+        <p>
     </div>
 </section>
 
@@ -53,7 +55,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Hamburger Menü Test</title>
+<title>.</title>
 
 <style>
     body {
@@ -157,6 +159,22 @@
   <span class="bar bar2"></span>
   <span class="bar bar3"></span>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const slideElements = document.querySelectorAll('.slide-up');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('show');
+      }
+    });
+  }, { threshold: 0.3 });
+
+  slideElements.forEach(el => observer.observe(el));
+});
+</script>
 
 
 </body>
