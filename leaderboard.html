@@ -1,162 +1,809 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loyal Team Force - Liderlik Tablosu</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loyal Team Force - Liderlik Tablosu</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* RESET VE TEMEL STILLER */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* RENK PALETİ - Sadece 2 renk */
+        :root {
+            --siyah: #0A0A0F;
+            --siyah-2: #1A1A20;
+            --sari: #FFD700;
+            --beyaz: #FFFFFF;
+            --gri: #2A2A30;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--siyah);
+            color: var(--beyaz);
+            line-height: 1.6;
+        }
+
+        /* ===== SADECE GEREKLİ ANİMASYONLAR ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* LOADING - Index'tekiyle aynı */
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--siyah);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+
+        .loader-wrapper.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--gri);
+            border-top-color: var(--sari);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* HAMBURGER */
+        .hamburger {
+            width: 40px;
+            height: 30px;
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 5px;
+            animation: fadeIn 0.8s;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background: var(--sari);
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+
+        .hamburger.open .bar1 {
+            transform: translateY(12px) rotate(45deg);
+        }
+
+        .hamburger.open .bar2 {
+            opacity: 0;
+        }
+
+        .hamburger.open .bar3 {
+            transform: translateY(-12px) rotate(-45deg);
+        }
+
+        /* SIDE MENU */
+        .side-menu {
+            width: 260px;
+            height: 100vh;
+            background: var(--siyah-2);
+            position: fixed;
+            top: 0;
+            left: -280px;
+            z-index: 99;
+            transition: left 0.3s;
+            padding: 80px 0 30px;
+            border-right: 2px solid var(--sari);
+        }
+
+        .side-menu.open {
+            left: 0;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 25px;
+            color: var(--beyaz);
+            text-decoration: none;
+            transition: background 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-link i {
+            width: 20px;
+            color: var(--sari);
+        }
+
+        .menu-link:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-left-color: var(--sari);
+        }
+
+        .menu-link.active {
+            background: rgba(255, 215, 0, 0.15);
+            border-left-color: var(--sari);
+            color: var(--sari);
+        }
+
+        .menu-footer {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+
+        /* HERO SECTION */
+        .leaderboard-hero {
+            min-height: 30vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, var(--siyah), var(--siyah-2));
+            border-bottom: 3px solid var(--sari);
+            padding: 60px 20px;
+        }
+
+        .leaderboard-hero-content {
+            max-width: 800px;
+        }
+
+        .leaderboard-hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 700;
+            color: var(--sari);
+            margin-bottom: 15px;
+            animation: fadeInUp 0.8s;
+        }
+
+        .leaderboard-hero p {
+            font-size: 1.1rem;
+            color: var(--beyaz);
+            opacity: 0.9;
+            animation: fadeInUp 0.8s 0.1s both;
+        }
+
+        /* EK BİLGİ */
+        .info-box {
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid var(--sari);
+            border-radius: 8px;
+            padding: 15px 25px;
+            margin-top: 25px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            animation: scaleIn 0.8s 0.2s both;
+        }
+
+        .info-box i {
+            color: var(--sari);
+            font-size: 1.1rem;
+        }
+
+        .info-box span {
+            color: var(--beyaz);
+            font-size: 0.95rem;
+        }
+
+        .info-box strong {
+            color: var(--sari);
+            font-weight: 600;
+        }
+
+        /* STATS */
+        .stats-container {
+            max-width: 1000px;
+            margin: -25px auto 0;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .stat-card {
+            background: var(--siyah-2);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            animation: scaleIn 0.6s;
+            animation-fill-mode: both;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--sari);
+            display: block;
+        }
+
+        .stat-card .label {
+            color: var(--beyaz);
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        /* FILTER BUTTONS */
+        .filter-section {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 25px;
+            background: transparent;
+            border: 2px solid var(--sari);
+            border-radius: 30px;
+            color: var(--beyaz);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            animation: scaleIn 0.5s;
+            animation-fill-mode: both;
+        }
+
+        .filter-btn:nth-child(1) { animation-delay: 0.1s; }
+        .filter-btn:nth-child(2) { animation-delay: 0.2s; }
+        .filter-btn:nth-child(3) { animation-delay: 0.3s; }
+        .filter-btn:nth-child(4) { animation-delay: 0.4s; }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--sari);
+            color: var(--siyah);
+        }
+
+        /* TABLE SECTION */
+        .table-section {
+            max-width: 1000px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+        }
+
+        .table-container {
+            background: var(--siyah-2);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            animation: scaleIn 0.8s;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: rgba(255, 215, 0, 0.1);
+            border-bottom: 2px solid var(--sari);
+        }
+
+        th {
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--sari);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+            animation: slideInRight 0.5s;
+            animation-fill-mode: both;
+        }
+
+        /* Satırlar için gecikmeli animasyon */
+        tbody tr:nth-child(1) { animation-delay: 0.05s; }
+        tbody tr:nth-child(2) { animation-delay: 0.1s; }
+        tbody tr:nth-child(3) { animation-delay: 0.15s; }
+        tbody tr:nth-child(4) { animation-delay: 0.2s; }
+        tbody tr:nth-child(5) { animation-delay: 0.25s; }
+        tbody tr:nth-child(6) { animation-delay: 0.3s; }
+        tbody tr:nth-child(7) { animation-delay: 0.35s; }
+        tbody tr:nth-child(8) { animation-delay: 0.4s; }
+        tbody tr:nth-child(9) { animation-delay: 0.45s; }
+        tbody tr:nth-child(10) { animation-delay: 0.5s; }
+        tbody tr:nth-child(11) { animation-delay: 0.55s; }
+        tbody tr:nth-child(12) { animation-delay: 0.6s; }
+        tbody tr:nth-child(13) { animation-delay: 0.65s; }
+        tbody tr:nth-child(14) { animation-delay: 0.7s; }
+        tbody tr:nth-child(15) { animation-delay: 0.75s; }
+
+        tbody tr:hover {
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        /* İlk 3 sıra için özel stiller (sadece renk) */
+        tbody tr:nth-child(1) td:first-child {
+            color: var(--sari);
+            font-weight: 700;
+        }
+
+        tbody tr:nth-child(2) td:first-child {
+            color: var(--sari);
+            font-weight: 700;
+        }
+
+        tbody tr:nth-child(3) td:first-child {
+            color: var(--sari);
+            font-weight: 700;
+        }
+
+        /* Rank badge'leri - Sadece sarı tonları */
+        .rank-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--sari);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        /* Admin notu */
+        .admin-note {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: 30px;
+            font-size: 0.9rem;
+            color: var(--beyaz);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            animation: fadeInUp 0.8s 0.3s both;
+        }
+
+        .admin-note i {
+            color: var(--sari);
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--siyah-2);
+            padding: 40px 20px 20px;
+            border-top: 2px solid var(--sari);
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-logo h2 {
+            font-size: 1.8rem;
+            color: var(--sari);
+            margin-bottom: 5px;
+        }
+
+        .footer-logo p {
+            color: var(--beyaz);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .footer-links h4,
+        .footer-social h4 {
+            color: var(--sari);
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 8px;
+        }
+
+        .footer-links a {
+            color: var(--beyaz);
+            text-decoration: none;
+            transition: color 0.2s;
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--sari);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icons a {
+            color: var(--beyaz);
+            font-size: 1.3rem;
+            transition: color 0.2s;
+        }
+
+        .social-icons a:hover {
+            color: var(--sari);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: var(--beyaz);
+            opacity: 0.6;
+            font-size: 0.8rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+                margin-top: 20px;
+            }
+            
+            .filter-section {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .filter-btn {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            table {
+                min-width: 600px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .social-icons {
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- LOADING - Index'tekiyle aynı -->
+    <div class="loader-wrapper" id="loader">
+        <div class="loader"></div>
+    </div>
 
-<section class="leaderboard-section">
-    <h2>Liderlik Tablosu</h2>
-    <p>Sadece admin oyuncu sıralamasını değiştirebilir.</p>
-    <table id="leaderboard">
-        <thead>
-            <tr>
-                <th>Sıra</th>
-                <th>İsim</th>
-                <th>Puan</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td>1</td><td>Yahya</td><td>12x Masters</td></tr>
-            <tr><td>2</td><td>Negan</td><td>6x Masters</td></tr>
-            <tr><td>3</td><td>Quartex</td><td>3x Masters</td></tr>
-            <tr><td>4</td><td>Vanilya</td><td>1x Masters</td></tr>
-            <tr><td>5</td><td>Yıldız<td>7x Legendary</td></tr>
-            <tr><td>6</td><td>Raii</td><td>5x Legendary</td></tr>
-            <tr><td>7</td><td>Thousand</td><td>4x Legendary</td></tr>
-            <tr><td>9</td><td>Ekin</td><td>2x Legendary</td></tr>
-            <tr><td>10</td><td>Taha</td><td>1x Legendary</td></tr>
-            <tr><td>11</td><td>Ekeo</td><td>4x Mythic</td></tr>
-            <tr><td>12</td><td>Tamer</td><td>3x Mythic</td></tr>
-            <tr><td>13</td><td>Narancia</td><td>1x Mythic</td></tr>
-            <tr><td>14</td><td>Chivas</td><td>3x Diamond</td></tr>
-            <tr><td>15</td><td>Rawen</td><td>1x Gold</td></tr>
-        </tbody>
-    </table>
-    <button id="sortBtn" class="btn" style="display:none;">Sırala</button>
-</section>
+    <!-- HAMBURGER -->
+    <div id="menuBtn" class="hamburger">
+        <span class="bar1"></span>
+        <span class="bar2"></span>
+        <span class="bar3"></span>
+    </div>
 
-<footer>
-    <p>Kurucu: Zinny | Kurucu Yardımcısı: Chivas</p>
-    <p>&copy; 2025 Loyal Team Force. Tüm Hakları Saklıdır.</p>
-</footer>
+    <!-- SIDE MENU -->
+    <nav id="sideMenu" class="side-menu">
+        <div class="menu-items">
+            <a href="index.html" class="menu-link">
+                <i class="fas fa-home"></i>
+                Ana Sayfa
+            </a>
+            <a href="leaderboard.html" class="menu-link active">
+                <i class="fas fa-trophy"></i>
+                Liderlik Tablosu
+            </a>
+            <a href="proje.html" class="menu-link">
+                <i class="fas fa-code-branch"></i>
+                Projelerimiz
+            </a>
+            <a href="social.html" class="menu-link">
+                <i class="fas fa-users"></i>
+                Sosyal Medya
+            </a>
+            <a href="team.html" class="menu-link">
+                <i class="fas fa-user-ninja"></i>
+                Takımımız
+            </a>
+        </div>
+        <div class="menu-footer">
+            <p>LTF © 2025</p>
+        </div>
+    </nav>
 
-<script src="script.js"></script>
-</body>
-</html>
+    <!-- HERO SECTION -->
+    <section class="leaderboard-hero">
+        <div class="leaderboard-hero-content">
+            <h1>LİDERLİK TABLOSU</h1>
+            <p>En başarılı oyuncularımızın sıralaması</p>
+            
+            <!-- Admin Bilgi -->
+            <div class="info-box">
+                <i class="fas fa-shield-alt"></i>
+                <span>Sadece <strong>admin</strong> sıralamayı değiştirebilir</span>
+            </div>
+        </div>
+    </section>
 
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="UTF-8">
-<title>Hamburger Menü Test</title>
+    <!-- STATS -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <span class="number">15</span>
+            <span class="label">Toplam Oyuncu</span>
+        </div>
+        <div class="stat-card">
+            <span class="number">4</span>
+            <span class="label">Masters</span>
+        </div>
+        <div class="stat-card">
+            <span class="number">5</span>
+            <span class="label">Legendary+</span>
+        </div>
+    </div>
 
-<style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-    }
+    <!-- FILTER BUTTONS -->
+    <div class="filter-section">
+        <button class="filter-btn active" onclick="filterTable('all')">TÜMÜ</button>
+        <button class="filter-btn" onclick="filterTable('masters')">MASTERS</button>
+        <button class="filter-btn" onclick="filterTable('legendary')">LEGENDARY</button>
+        <button class="filter-btn" onclick="filterTable('mythic')">MYTHIC</button>
+    </div>
 
-    /* --- ANİMASYONLU HAMBURGER --- */
-    .hamburger {
-        width: 35px;
-        height: 28px;
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        z-index: 1000;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        cursor: pointer;
-    }
+    <!-- TABLE SECTION -->
+    <section class="table-section">
+        <div class="table-container">
+            <table id="leaderboard">
+                <thead>
+                    <tr>
+                        <th>Sıra</th>
+                        <th>İsim</th>
+                        <th>Başarı</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-rank="masters">
+                        <td>1</td>
+                        <td><i class="fas fa-crown" style="color: var(--sari); margin-right: 8px;"></i> Yahya</td>
+                        <td><span class="rank-badge">12x MASTERS</span></td>
+                    </tr>
+                    <tr data-rank="masters">
+                        <td>2</td>
+                        <td>Negan</td>
+                        <td><span class="rank-badge">6x MASTERS</span></td>
+                    </tr>
+                    <tr data-rank="masters">
+                        <td>3</td>
+                        <td>Quartex</td>
+                        <td><span class="rank-badge">3x MASTERS</span></td>
+                    </tr>
+                    <tr data-rank="masters">
+                        <td>4</td>
+                        <td>Vanilya</td>
+                        <td><span class="rank-badge">1x MASTERS</span></td>
+                    </tr>
+                    <tr data-rank="legendary">
+                        <td>5</td>
+                        <td>Yıldız</td>
+                        <td><span class="rank-badge">7x LEGENDARY</span></td>
+                    </tr>
+                    <tr data-rank="legendary">
+                        <td>6</td>
+                        <td>Raii</td>
+                        <td><span class="rank-badge">5x LEGENDARY</span></td>
+                    </tr>
+                    <tr data-rank="legendary">
+                        <td>7</td>
+                        <td>Thousand</td>
+                        <td><span class="rank-badge">4x LEGENDARY</span></td>
+                    </tr>
+                    <tr data-rank="legendary">
+                        <td>8</td>
+                        <td>Ekin</td>
+                        <td><span class="rank-badge">2x LEGENDARY</span></td>
+                    </tr>
+                    <tr data-rank="legendary">
+                        <td>9</td>
+                        <td>Taha</td>
+                        <td><span class="rank-badge">1x LEGENDARY</span></td>
+                    </tr>
+                    <tr data-rank="mythic">
+                        <td>10</td>
+                        <td>Ekeo</td>
+                        <td><span class="rank-badge">4x MYTHIC</span></td>
+                    </tr>
+                    <tr data-rank="mythic">
+                        <td>11</td>
+                        <td>Tamer</td>
+                        <td><span class="rank-badge">3x MYTHIC</span></td>
+                    </tr>
+                    <tr data-rank="mythic">
+                        <td>12</td>
+                        <td>Narancia</td>
+                        <td><span class="rank-badge">1x MYTHIC</span></td>
+                    </tr>
+                    <tr data-rank="diamond">
+                        <td>13</td>
+                        <td>Chivas</td>
+                        <td><span class="rank-badge">3x DIAMOND</span></td>
+                    </tr>
+                    <tr data-rank="gold">
+                        <td>14</td>
+                        <td>Rawen</td>
+                        <td><span class="rank-badge">1x GOLD</span></td>
+                    </tr>
+                    <tr data-rank="gold">
+                        <td>15</td>
+                        <td>Zinny</td>
+                        <td><span class="rank-badge">1x GOLD</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-    .hamburger span {
-        display: block;
-        height: 4px;
-        background: #fff;
-        border-radius: 4px;
-        transition: 0.35s ease;
-    }
+        <!-- Admin Notu -->
+        <div class="admin-note">
+            <i class="fas fa-lock"></i>
+            <span>Sıralama her ay güncellenir</span>
+        </div>
+    </section>
 
-    /* X HALİ */
-    .hamburger.open .bar1 {
-        transform: translateY(12px) rotate(45deg);
-    }
-    .hamburger.open .bar2 {
-        opacity: 0;
-    }
-    .hamburger.open .bar3 {
-        transform: translateY(-12px) rotate(-45deg);
-    }
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>LTF</h2>
+                    <p>Loyal Team Force</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Hızlı Bağlantılar</h4>
+                    <ul>
+                        <li><a href="index.html">Ana Sayfa</a></li>
+                        <li><a href="team.html">Takımımız</a></li>
+                        <li><a href="proje.html">Projeler</a></li>
+                        <li><a href="social.html">İletişim</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h4>Sosyal Medya</h4>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Kurucu: Zinny | Kurucu Yardımcısı: Chivas</p>
+                <p>© 2025 Loyal Team Force. Tüm Hakları Saklıdır.</p>
+            </div>
+        </div>
+    </footer>
 
-    /* Menü */
-    .side-menu {
-        width: 220px;
-        height: 100%;
-        background: #222;
-        color: #fff;
-        position: fixed;
-        top: 0;
-        left: -220px;
-        padding-top: 60px;
-        transition: left 0.3s;
-    }
+    <script>
+        // LOADING
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 1000);
+        });
 
-    .side-menu a {
-        display: block;
-        color: #fff;
-        padding: 15px;
-        text-decoration: none;
-        font-size: 18px;
-    }
+        // HAMBURGER MENU
+        const btn = document.getElementById("menuBtn");
+        const menu = document.getElementById("sideMenu");
 
-    .side-menu a:hover {
-        background: #444;
-    }
+        btn.addEventListener("click", function() {
+            menu.classList.toggle("open");
+            btn.classList.toggle("open");
+        });
 
-    .side-menu.open {
-        left: 0;
-    }
-</style>
-</head>
+        // Menü dışına tıklandığında kapat
+        document.addEventListener('click', function(e) {
+            if (!menu.contains(e.target) && !btn.contains(e.target)) {
+                menu.classList.remove('open');
+                btn.classList.remove('open');
+            }
+        });
 
-<body>
-
-<!-- ANİMASYONLU HAMBURGER BUTONU -->
-<div id="menuBtn" class="hamburger">
-    <span class="bar1"></span>
-    <span class="bar2"></span>
-    <span class="bar3"></span>
-</div>
-
-<nav id="sideMenu" class="side-menu">
-    <a href="index.html">Ana Sayfa</a>
-    <a href="leaderboard.html">Liderlik Tablosu</a>
-    <a href="proje.html">Projelerimiz</a>
-    <a href="social.html">Sosyal Medya</a>
-    <a href="team.html">Takımımız</a>
-</nav>
-
-<script>
-    const btn = document.getElementById("menuBtn");
-    const menu = document.getElementById("sideMenu");
-
-    btn.addEventListener("click", () => {
-        menu.classList.toggle("open");
-        btn.classList.toggle("open");
-    });
-</script>
-
-<div class="menu-icon" id="menuBtn"></div>
-  <span class="bar bar1"></span>
-  <span class="bar bar2"></span>
-  <span class="bar bar3"></span>
-</div>
-
-
+        // FİLTRELEME
+        function filterTable(rank) {
+            const rows = document.querySelectorAll('#leaderboard tbody tr');
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            rows.forEach((row, index) => {
+                if (rank === 'all') {
+                    row.style.display = '';
+                    row.style.animation = 'slideInRight 0.5s ease';
+                    row.style.animationDelay = (index * 0.03) + 's';
+                } else {
+                    if (row.dataset.rank === rank) {
+                        row.style.display = '';
+                        row.style.animation = 'scaleIn 0.5s ease';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
