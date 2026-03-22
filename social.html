@@ -1,154 +1,180 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <title>Loyal Team Force - Sosyal Medya</title>
     <meta charset="UTF-8">
+    <meta name="description" content="Loyal Team Force sosyal medya hesapları">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sosyal Medya Hesaplarımız</title>
-    <link rel="stylesheet" href="social.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    
+    <style>
+        /* Ana sayfayla aynı renk ve stil */
+        .social-section {
+            padding: 80px 20px;
+            background: #f5f5f5;
+        }
+        
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .social-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .social-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .social-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+        
+        .social-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .social-username {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .follow-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            background: #333;
+            color: white;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            transition: background 0.3s;
+        }
+        
+        .social-card:hover .follow-btn {
+            background: #ff6b6b;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .social-section h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .social-section p {
+            color: #666;
+            margin-bottom: 40px;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            margin-top: 50px;
+            padding: 12px 30px;
+            background: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: #ff6b6b;
+        }
+    </style>
 </head>
 <body>
 
-    <header>
-        <h1>Sosyal Medya Hesaplarımız</h1>
-    </header>
-
-    <div class="social-container">
-
-        <a href="https://instagram.com/ltfxlsw" class="card" target="_blank">
-    <img class="icon" src="imstagramlogo.jpg" alt="Instagram">
-    <h2>Instagram</h2>
-</a>
-
-       <a href="https://instagram.com/ltfxlsw" class="card" target="_blank">
-    <img class="icon" src="imstagramlogo.jpg" alt="Instagram">
-    <h2>YouTube</h2>
-</a>
-
-       <a href="https://discord.gg/ltf" class="card" target="_blank">
-    <img class="icon" src="discordlogo.jpeg" alt="Instagram">
-    <h2>Discord</h2>
-</a>
-
-       <a href="https://instagram.com/ltfxlsw" class="card" target="_blank">
-    <img class="icon" src="imstagramlogo.jpg" alt="Instagram">
-    <h2>TikTok</h2>
-</a>
-
+<!-- Ana sayfandaki gibi hero bölümü -->
+<section class="hero">
+    <div class="hero-content">
+        <h1><span>Sosyal Medya</span></h1>
+        <p>Bizi takip edin, bize katılın!</p>
     </div>
+</section>
 
-    <script src="social.js"></script>
-</body>
-</html>
-
-<<!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="UTF-8">
-<title>Hamburger Menü Test</title>
-
-<style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-    }
-
-    /* --- ANİMASYONLU HAMBURGER --- */
-    .hamburger {
-        width: 35px;
-        height: 28px;
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        z-index: 1000;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        cursor: pointer;
-    }
-
-    .hamburger span {
-        display: block;
-        height: 4px;
-        background: #fff;
-        border-radius: 4px;
-        transition: 0.35s ease;
-    }
-
-    /* X HALİ */
-    .hamburger.open .bar1 {
-        transform: translateY(12px) rotate(45deg);
-    }
-    .hamburger.open .bar2 {
-        opacity: 0;
-    }
-    .hamburger.open .bar3 {
-        transform: translateY(-12px) rotate(-45deg);
-    }
-
-    /* Menü */
-    .side-menu {
-        width: 220px;
-        height: 100%;
-        background: #222;
-        color: #fff;
-        position: fixed;
-        top: 0;
-        left: -220px;
-        padding-top: 60px;
-        transition: left 0.3s;
-    }
-
-    .side-menu a {
-        display: block;
-        color: #fff;
-        padding: 15px;
-        text-decoration: none;
-        font-size: 18px;
-    }
-
-    .side-menu a:hover {
-        background: #444;
-    }
-
-    .side-menu.open {
-        left: 0;
-    }
-</style>
-</head>
-
-<body>
-
-<!-- ANİMASYONLU HAMBURGER BUTONU -->
-<div id="menuBtn" class="hamburger">
-    <span class="bar1"></span>
-    <span class="bar2"></span>
-    <span class="bar3"></span>
-</div>
-
-<nav id="sideMenu" class="side-menu">
-    <a href="index.html">Ana Sayfa</a>
-    <a href="leaderboard.html">Liderlik Tablosu</a>
-    <a href="proje.html">Projelerimiz</a>
-    <a href="social.html">Sosyal Medya</a>
-    <a href="team.html">Takımımız</a>
-</nav>
-
-<script>
-    const btn = document.getElementById("menuBtn");
-    const menu = document.getElementById("sideMenu");
-
-    btn.addEventListener("click", () => {
-        menu.classList.toggle("open");
-        btn.classList.toggle("open");
-    });
-</script>
-
-<div class="menu-icon" id="menuBtn"></div>
-  <span class="bar bar1"></span>
-  <span class="bar bar2"></span>
-  <span class="bar bar3"></span>
-</div>
-
+<!-- Sosyal medya kartları -->
+<section class="social-section">
+    <div class="container">
+        <h2>🔗 Bağlantılarımız</h2>
+        <p>Instagram, Twitter, Discord, TikTok ve daha fazlası</p>
+        
+        <div class="social-grid">
+            <!-- Instagram -->
+            <a href="#" class="social-card" target="_blank">
+                <div class="social-icon">📷</div>
+                <div class="social-name">Instagram</div>
+                <div class="social-username">@loyalteamforce</div>
+                <span class="follow-btn">Takip Et</span>
+            </a>
+            
+            <!-- Twitter -->
+            <a href="#" class="social-card" target="_blank">
+                <div class="social-icon">🐦</div>
+                <div class="social-name">Twitter</div>
+                <div class="social-username">@loyalteamforce</div>
+                <span class="follow-btn">Takip Et</span>
+            </a>
+            
+            <!-- Discord -->
+            <a href="#" class="social-card" target="_blank">
+                <div class="social-icon">💬</div>
+                <div class="social-name">Discord</div>
+                <div class="social-username">loyalteamforce</div>
+                <span class="follow-btn">Katıl</span>
+            </a>
+            
+            <!-- TikTok -->
+            <a href="#" class="social-card" target="_blank">
+                <div class="social-icon">🎵</div>
+                <div class="social-name">TikTok</div>
+                <div class="social-username">@loyalteamforce</div>
+                <span class="follow-btn">Takip Et</span>
+            </a>
+            
+            <!-- YouTube -->
+            <a href="#" class="social-card" target="_blank">
+                <div class="social-icon">▶️</div>
+                <div class="social-name">YouTube</div>
+                <div class="social-username">Loyal Team Force</div>
+                <span class="follow-btn">Abone Ol</span>
+            </a>
+            
+            <!-- Facebook -->
+            <a href="#" class="social-card" target="_blank">
+                <div class="social-icon">👍</div>
+                <div class="social-name">Facebook</div>
+                <div class="social-username">Loyal Team Force</div>
+                <span class="follow-btn">Takip Et</span>
+            </a>
+        </div>
+        
+        <a href="index.html" class="back-btn">← Ana Sayfaya Dön</a>
+    </div>
+</section>
 
 </body>
 </html>
