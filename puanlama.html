@@ -21,7 +21,6 @@
             box-sizing: border-box;
         }
 
-        /* RENK PALETİ */
         :root {
             --siyah: #0A0A0F;
             --siyah-2: #1A1A20;
@@ -220,7 +219,7 @@
 
         .rating-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
             gap: 30px;
             margin-bottom: 40px;
         }
@@ -250,10 +249,65 @@
             color: var(--altin);
         }
 
+        /* Kullanıcı Bilgi Alanı */
+        .user-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .avatar-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .avatar-option {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--siyah);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .avatar-option:hover {
+            transform: scale(1.1);
+        }
+
+        .avatar-option.selected {
+            border-color: var(--altin);
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        .username-input {
+            flex: 1;
+            background: var(--siyah);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 30px;
+            padding: 12px 18px;
+            color: var(--beyaz);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .username-input:focus {
+            outline: none;
+            border-color: var(--altin);
+        }
+
         .stars {
             display: flex;
             gap: 8px;
             cursor: pointer;
+            margin: 15px 0;
         }
 
         .star {
@@ -360,24 +414,55 @@
 
         .feedback-list {
             margin-top: 20px;
-            max-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
         }
 
         .feedback-item {
             background: rgba(10, 10, 15, 0.6);
-            padding: 12px;
+            padding: 15px;
             border-radius: 12px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             border-left: 3px solid var(--altin);
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .feedback-avatar {
+            width: 45px;
+            height: 45px;
+            background: var(--siyah);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .feedback-content {
+            flex: 1;
         }
 
         .feedback-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
             flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        .feedback-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .feedback-name {
+            font-weight: 600;
+            color: var(--altin);
         }
 
         .feedback-stars {
@@ -392,8 +477,10 @@
         }
 
         .feedback-text {
-            font-size: 0.85rem;
-            opacity: 0.8;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 5px;
+            word-break: break-word;
         }
 
         .empty-feedback {
@@ -439,6 +526,8 @@
             .big-score { font-size: 3.5rem; }
             .toast { bottom: 20px; right: 20px; left: 20px; transform: translateY(100px); }
             .toast.show { transform: translateY(0); }
+            .feedback-item { flex-direction: column; }
+            .feedback-avatar { align-self: center; }
         }
     </style>
 </head>
@@ -472,6 +561,22 @@
             <div class="rating-grid">
                 <div class="card">
                     <h2><i class="fas fa-star"></i> Senin Puanın</h2>
+                    
+                    <!-- KULLANICI BİLGİ ALANI -->
+                    <div class="user-info">
+                        <div class="avatar-selector" id="avatarSelector">
+                            <div class="avatar-option" data-avatar="😎">😎</div>
+                            <div class="avatar-option" data-avatar="👨‍💻">👨‍💻</div>
+                            <div class="avatar-option" data-avatar="🎮">🎮</div>
+                            <div class="avatar-option" data-avatar="🔥">🔥</div>
+                            <div class="avatar-option" data-avatar="⭐">⭐</div>
+                            <div class="avatar-option" data-avatar="🚀">🚀</div>
+                            <div class="avatar-option" data-avatar="🐱‍👤">🐱‍👤</div>
+                            <div class="avatar-option" data-avatar="🎧">🎧</div>
+                        </div>
+                        <input type="text" class="username-input" id="usernameInput" placeholder="Kullanıcı adınız (zorunlu)" maxlength="25">
+                    </div>
+                    
                     <div class="stars" id="ratingStars">
                         <i class="far fa-star star" data-value="1"></i>
                         <i class="far fa-star star" data-value="2"></i>
@@ -491,7 +596,7 @@
                 <div class="card average-card">
                     <h2><i class="fas fa-chart-line"></i> Ortalama Puan</h2>
                     <div class="average-score">
-                        <div class="big-score" id="averageScore">--</div>
+                        <div class="big-score" id="averageScore">0.00</div>
                         <div class="total-votes" id="totalVotes">Yükleniyor...</div>
                         <div class="star-display" id="averageStars">
                             <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
@@ -531,11 +636,26 @@
         // Global değişkenler
         let currentRating = 0;
         let isSubmitting = false;
+        let selectedAvatar = "😎";
+        let username = "";
         
         const stars = document.querySelectorAll('.star');
         const selectedRatingText = document.getElementById('selectedRatingText');
         const submitBtn = document.getElementById('submitBtn');
         const feedbackTextarea = document.getElementById('feedbackText');
+        const usernameInput = document.getElementById('usernameInput');
+        
+        // Avatar seçimi
+        const avatarOptions = document.querySelectorAll('.avatar-option');
+        avatarOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                avatarOptions.forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+                selectedAvatar = opt.dataset.avatar;
+            });
+        });
+        // İlk avatarları seçili yap
+        avatarOptions[0].classList.add('selected');
         
         // Yıldız işlemleri
         stars.forEach(star => {
@@ -573,9 +693,15 @@
             
             ratingsRef.on('value', (snapshot) => {
                 const data = snapshot.val();
-                if (data) {
+                if (data && typeof data === 'object') {
                     const ratingsArray = Object.values(data);
-                    updateAverageScore(ratingsArray);
+                    if (ratingsArray.length > 0) {
+                        const validRatings = ratingsArray.filter(r => typeof r === 'number' || (r && typeof r.rating === 'number'));
+                        const numbers = validRatings.map(r => typeof r === 'number' ? r : r.rating);
+                        updateAverageScore(numbers);
+                    } else {
+                        updateAverageScore([]);
+                    }
                 } else {
                     updateAverageScore([]);
                 }
@@ -583,7 +709,7 @@
             
             feedbacksRef.on('value', (snapshot) => {
                 const data = snapshot.val();
-                if (data) {
+                if (data && typeof data === 'object') {
                     const feedbacksArray = Object.values(data);
                     feedbacksArray.sort((a, b) => b.timestamp - a.timestamp);
                     updateFeedbackList(feedbacksArray);
@@ -598,7 +724,7 @@
             const totalVotesEl = document.getElementById('totalVotes');
             const avgStarsEl = document.getElementById('averageStars');
             
-            if (ratingsArray.length === 0) {
+            if (!ratingsArray || ratingsArray.length === 0) {
                 avgScoreEl.textContent = '0.00';
                 totalVotesEl.textContent = '0 kişi puanladı';
                 avgStarsEl.innerHTML = '<i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>';
@@ -624,19 +750,25 @@
         function updateFeedbackList(feedbacksArray) {
             const feedbackListDiv = document.getElementById('feedbackList');
             
-            if (feedbacksArray.length === 0) {
+            if (!feedbacksArray || feedbacksArray.length === 0) {
                 feedbackListDiv.innerHTML = '<div class="empty-feedback"><i class="fas fa-inbox"></i> Henüz geri bildirim yok. İlk sen paylaş!</div>';
                 return;
             }
             
-            const recent = feedbacksArray.slice(0, 10);
+            const recent = feedbacksArray.slice(0, 15);
             feedbackListDiv.innerHTML = recent.map(fb => `
                 <div class="feedback-item">
-                    <div class="feedback-header">
-                        <div class="feedback-stars">${'★'.repeat(fb.rating)}${'☆'.repeat(5 - fb.rating)}</div>
-                        <div class="feedback-date">${fb.date}</div>
+                    <div class="feedback-avatar">${fb.avatar || '😎'}</div>
+                    <div class="feedback-content">
+                        <div class="feedback-header">
+                            <div class="feedback-user">
+                                <span class="feedback-name">${escapeHtml(fb.username || 'Anonim')}</span>
+                                <div class="feedback-stars">${'★'.repeat(fb.rating)}${'☆'.repeat(5 - fb.rating)}</div>
+                            </div>
+                            <div class="feedback-date">${fb.date}</div>
+                        </div>
+                        <div class="feedback-text">${escapeHtml(fb.text || 'Geri bildirim yazılmamış')}</div>
                     </div>
-                    <div class="feedback-text">${escapeHtml(fb.text || 'Geri bildirim yazılmamış')}</div>
                 </div>
             `).join('');
         }
@@ -660,12 +792,20 @@
         }
         
         // Firebase'e gönder
-        async function submitToFirebase(rating, feedbackText) {
+        async function submitToFirebase(rating, feedbackText, username, avatar) {
             const now = new Date();
             const dateStr = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
             const id = Date.now() + '_' + Math.random().toString(36).substr(2, 6);
             
-            const feedbackData = { rating, text: feedbackText || '', date: dateStr, timestamp: now.getTime() };
+            const feedbackData = { 
+                rating, 
+                text: feedbackText || '', 
+                date: dateStr, 
+                timestamp: now.getTime(),
+                username: username,
+                avatar: avatar
+            };
+            
             const ratingData = { rating, timestamp: now.getTime() };
             
             try {
@@ -681,6 +821,15 @@
         // Gönder butonu
         submitBtn.addEventListener('click', async () => {
             if (isSubmitting) return;
+            
+            username = usernameInput.value.trim();
+            if (username === "") {
+                showToast('Lütfen kullanıcı adınızı girin!', true);
+                usernameInput.style.animation = 'shake 0.4s ease';
+                setTimeout(() => usernameInput.style.animation = '', 400);
+                return;
+            }
+            
             if (currentRating === 0) {
                 showToast('Lütfen bir puan seçin!', true);
                 document.querySelector('.stars').style.animation = 'shake 0.4s ease';
@@ -692,7 +841,7 @@
             submitBtn.innerHTML = '<span class="loading-spinner"></span> Gönderiliyor...';
             submitBtn.disabled = true;
             
-            const success = await submitToFirebase(currentRating, feedbackTextarea.value.trim());
+            const success = await submitToFirebase(currentRating, feedbackTextarea.value.trim(), username, selectedAvatar);
             
             if (success) {
                 showToast('Geri bildiriminiz için teşekkürler! 🎉');
@@ -700,6 +849,7 @@
                 highlightStars(0);
                 selectedRatingText.textContent = 'Puan seçilmedi';
                 feedbackTextarea.value = '';
+                // username'i temizleme, bir sonraki için kalabilir
             } else {
                 showToast('Bir hata oluştu. Lütfen tekrar deneyin.', true);
             }
