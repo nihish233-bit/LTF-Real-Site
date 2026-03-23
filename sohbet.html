@@ -13,6 +13,7 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
     
     <style>
         * {
@@ -36,10 +37,7 @@
             --accent-hover: #e6c300;
             --accent-glow: rgba(255, 215, 0, 0.2);
             --danger: #e74c3c;
-            --danger-hover: #c0392b;
             --success: #2ecc71;
-            --info: #3498db;
-            --warning: #f39c12;
             --online: #2ecc71;
             --offline: #7f8c8d;
             --admin: #e74c3c;
@@ -68,7 +66,6 @@
             height: 100vh;
         }
 
-        /* SCROLLBAR */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-secondary); }
         ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
@@ -144,7 +141,7 @@
             width: 100%;
         }
 
-        /* SIDEBAR (Kanallar & Kullanıcılar) */
+        /* SIDEBAR */
         .chat-sidebar {
             width: 280px;
             background: var(--bg-secondary);
@@ -211,7 +208,6 @@
         .profile-info h4 { font-size: 0.9rem; margin-bottom: 2px; }
         .profile-info p { font-size: 0.7rem; color: var(--text-muted); }
 
-        /* Kanallar */
         .channels-section, .users-section {
             padding: 15px;
         }
@@ -242,11 +238,9 @@
 
         .channel-icon { width: 32px; text-align: center; }
         .channel-name { flex: 1; font-size: 0.9rem; }
-        .channel-badge { font-size: 0.7rem; color: var(--text-muted); }
 
         .user-status { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
         .user-status.online { background: var(--online); }
-        .user-status.offline { background: var(--offline); }
 
         /* ANA CHAT ALANI */
         .chat-main {
@@ -361,53 +355,28 @@
             word-break: break-word;
         }
 
-        .message-text img {
-            max-width: 200px;
-            max-height: 150px;
+        .message-image {
+            max-width: 250px;
+            max-height: 200px;
             border-radius: 12px;
             cursor: pointer;
-        }
-
-        .message-reactions {
-            display: flex;
-            gap: 8px;
             margin-top: 8px;
-            flex-wrap: wrap;
+            transition: transform 0.2s;
         }
 
-        .reaction {
-            background: var(--bg-hover);
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
+        .message-image:hover {
+            transform: scale(1.02);
+        }
+
+        .upload-progress {
+            display: inline-flex;
             align-items: center;
-            gap: 4px;
-        }
-
-        .reaction:hover { background: var(--accent-glow); }
-
-        .message-actions {
-            display: none;
             gap: 8px;
-            margin-top: 8px;
+            background: var(--bg-primary);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
         }
-
-        .message-group:hover .message-actions { display: flex; }
-
-        .msg-action {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 0.7rem;
-            cursor: pointer;
-            padding: 2px 6px;
-            border-radius: 12px;
-        }
-
-        .msg-action:hover { color: var(--accent); background: var(--bg-hover); }
 
         /* GİRİŞ ALANI */
         .message-input-area {
@@ -467,6 +436,12 @@
         }
 
         .send-btn:hover { transform: scale(1.05); box-shadow: 0 2px 15px var(--accent-glow); }
+        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* Gizli Dosya Input */
+        #fileInput {
+            display: none;
+        }
 
         /* MODAL */
         .modal {
@@ -511,6 +486,13 @@
             margin-top: 15px;
         }
 
+        .image-preview {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 12px;
+            margin: 10px 0;
+        }
+
         .toast {
             position: fixed;
             bottom: 30px;
@@ -543,8 +525,7 @@
 
         @media (max-width: 768px) {
             .message-content { max-width: 85%; }
-            .chat-header { padding: 12px 15px; }
-            .messages-area { padding: 15px; }
+            .message-image { max-width: 180px; }
         }
     </style>
 </head>
@@ -570,7 +551,6 @@
     </nav>
 
     <div class="chat-container">
-        <!-- SIDEBAR -->
         <div class="chat-sidebar" id="chatSidebar">
             <div class="sidebar-header">
                 <div class="user-profile" id="profileBtn">
@@ -616,7 +596,6 @@
             </div>
         </div>
 
-        <!-- ANA CHAT ALANI -->
         <div class="chat-main">
             <div class="chat-header">
                 <div class="chat-header-info">
@@ -625,7 +604,6 @@
                 </div>
                 <div class="chat-actions">
                     <button class="chat-action-btn" id="themeToggleBtn"><i class="fas fa-moon"></i></button>
-                    <button class="chat-action-btn" id="searchBtn"><i class="fas fa-search"></i></button>
                     <button class="chat-action-btn" id="mobileSidebarToggle"><i class="fas fa-bars"></i></button>
                 </div>
             </div>
@@ -646,6 +624,9 @@
             </div>
         </div>
     </div>
+
+    <!-- GİZLİ DOSYA SEÇİCİ -->
+    <input type="file" id="fileInput" accept="image/*">
 
     <!-- PROFİL MODAL -->
     <div id="profileModal" class="modal">
@@ -692,6 +673,7 @@
         
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+        const storage = firebase.storage();
         
         // Kullanıcı bilgileri
         let userId = localStorage.getItem('chat_user_id');
@@ -704,31 +686,23 @@
             id: userId,
             username: localStorage.getItem('chat_username') || 'Misafir',
             avatar: localStorage.getItem('chat_avatar') || '😎',
-            role: 'member',
-            joinDate: new Date().toLocaleDateString(),
-            about: 'Merhaba! Ben LTF topluluğunun bir üyesiyim.'
+            role: 'member'
         };
         
         let currentChannel = 'genel';
         let currentTheme = localStorage.getItem('chat_theme') || 'dark';
         let messageListener = null;
+        let isUploading = false;
         
-        // DOM Elementleri
         const messagesArea = document.getElementById('messagesArea');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
-        const profileAvatar = document.getElementById('profileAvatar');
-        const profileName = document.getElementById('profileName');
-        const profileRole = document.getElementById('profileRole');
-        const currentChannelEl = document.getElementById('currentChannel');
+        const fileInput = document.getElementById('fileInput');
         
-        // Tema uygulama
         function applyTheme() {
             document.documentElement.setAttribute('data-theme', currentTheme);
             const themeIcon = document.querySelector('#themeToggleBtn i');
-            if (themeIcon) {
-                themeIcon.className = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-            }
+            if (themeIcon) themeIcon.className = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
         }
         
         document.getElementById('themeToggleBtn')?.addEventListener('click', () => {
@@ -738,17 +712,15 @@
             showToast(`${currentTheme === 'dark' ? '🌙 Koyu' : '☀️ Açık'} tema aktif`);
         });
         
-        // Profil güncelleme
         function updateProfileUI() {
-            profileAvatar.textContent = currentUser.avatar;
-            profileName.textContent = currentUser.username;
-            profileRole.textContent = currentUser.role === 'admin' ? 'Admin' : currentUser.role === 'mod' ? 'Moderatör' : 'Üye';
+            document.getElementById('profileAvatar').textContent = currentUser.avatar;
+            document.getElementById('profileName').textContent = currentUser.username;
+            document.getElementById('profileRole').textContent = currentUser.role === 'admin' ? 'Admin' : currentUser.role === 'mod' ? 'Moderatör' : 'Üye';
             document.getElementById('modalAvatar').textContent = currentUser.avatar;
             document.getElementById('modalUsername').value = currentUser.username;
             document.getElementById('modalAvatarSelect').value = currentUser.avatar;
         }
         
-        // Toast bildirimi
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toastMessage');
@@ -760,8 +732,69 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
         
-        // Mesaj gönderme
-        async function sendMessage() {
+        // Resim yükleme ve gönderme
+        async function uploadAndSendImage(file) {
+            if (!file || !file.type.startsWith('image/')) {
+                showToast('Lütfen bir resim dosyası seçin!', true);
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('Resim 5MB\'dan küçük olmalı!', true);
+                return;
+            }
+            
+            isUploading = true;
+            sendBtn.disabled = true;
+            
+            // Yükleme durumu göster
+            const loadingMsg = document.createElement('div');
+            loadingMsg.className = 'upload-progress';
+            loadingMsg.innerHTML = '<span class="loading-spinner"></span> Resim yükleniyor...';
+            messagesArea.appendChild(loadingMsg);
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+            
+            try {
+                const fileName = `${Date.now()}_${userId}_${file.name}`;
+                const storageRef = storage.ref(`chat_images/${currentChannel}/${fileName}`);
+                const uploadTask = storageRef.put(file);
+                
+                const snapshot = await uploadTask;
+                const downloadURL = await snapshot.ref.getDownloadURL();
+                
+                // Mesajı gönder
+                const now = new Date();
+                const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+                const messageId = Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+                
+                const messageData = {
+                    type: 'image',
+                    imageUrl: downloadURL,
+                    text: file.name,
+                    username: currentUser.username,
+                    avatar: currentUser.avatar,
+                    role: currentUser.role,
+                    time: timeStr,
+                    timestamp: now.getTime(),
+                    userId: userId,
+                    channel: currentChannel
+                };
+                
+                await database.ref(`chat_messages/${currentChannel}/${messageId}`).set(messageData);
+                showToast('Resim gönderildi!');
+                
+            } catch (error) {
+                console.error('Yükleme hatası:', error);
+                showToast('Resim yüklenemedi!', true);
+            } finally {
+                isUploading = false;
+                sendBtn.disabled = false;
+                loadingMsg.remove();
+            }
+        }
+        
+        // Metin mesajı gönderme
+        async function sendTextMessage() {
             const messageText = messageInput.value.trim();
             if (!messageText) return;
             
@@ -770,6 +803,7 @@
             const messageId = Date.now() + '_' + Math.random().toString(36).substr(2, 6);
             
             const messageData = {
+                type: 'text',
                 text: messageText,
                 username: currentUser.username,
                 avatar: currentUser.avatar,
@@ -788,6 +822,27 @@
                 showToast('Mesaj gönderilemedi!', true);
             }
         }
+        
+        function sendMessage() {
+            if (isUploading) {
+                showToast('Resim yükleniyor, lütfen bekleyin...', true);
+                return;
+            }
+            sendTextMessage();
+        }
+        
+        // Galeriden resim seçme
+        document.getElementById('imageBtn').addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                uploadAndSendImage(file);
+            }
+            fileInput.value = '';
+        });
         
         // Mesajları dinleme
         function loadMessages() {
@@ -812,54 +867,57 @@
                 return;
             }
             
-            messagesArea.innerHTML = messages.map(msg => `
-                <div class="message-group ${msg.userId === userId ? 'own' : ''}">
-                    <div class="message-avatar">${msg.avatar || '😎'}</div>
-                    <div class="message-content">
-                        <div class="message-header">
-                            <span class="message-name ${msg.role}">${escapeHtml(msg.username)}</span>
-                            <span class="message-time">${msg.time}</span>
-                        </div>
-                        <div class="message-text">${formatMessageText(msg.text)}</div>
-                        <div class="message-actions">
-                            <button class="msg-action" onclick="replyToMessage('${msg.username}')"><i class="fas fa-reply"></i> Yanıtla</button>
-                            <button class="msg-action" onclick="addReaction('${msg.id}')"><i class="far fa-smile"></i> Tepki</button>
+            messagesArea.innerHTML = messages.map(msg => {
+                let contentHtml = '';
+                if (msg.type === 'image') {
+                    contentHtml = `
+                        <div class="message-text">📷 ${escapeHtml(msg.text || 'Resim')}</div>
+                        <img class="message-image" src="${msg.imageUrl}" alt="Resim" onclick="window.open('${msg.imageUrl}', '_blank')">
+                    `;
+                } else {
+                    contentHtml = `<div class="message-text">${formatMessageText(msg.text)}</div>`;
+                }
+                
+                return `
+                    <div class="message-group ${msg.userId === userId ? 'own' : ''}">
+                        <div class="message-avatar">${msg.avatar || '😎'}</div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-name ${msg.role}">${escapeHtml(msg.username)}</span>
+                                <span class="message-time">${msg.time}</span>
+                            </div>
+                            ${contentHtml}
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
             
             messagesArea.scrollTop = messagesArea.scrollHeight;
         }
         
         function formatMessageText(text) {
-            // URL'leri link yap
             text = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color: var(--accent);">$1</a>');
-            // Resim URL'lerini göster
-            text = text.replace(/(https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp))/gi, '<img src="$1" onclick="openImage(this.src)">');
             return text;
         }
         
         function escapeHtml(text) {
+            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
         
-        // Kanal değiştirme
         function changeChannel(channel) {
             currentChannel = channel;
-            currentChannelEl.textContent = `# ${channel.charAt(0).toUpperCase() + channel.slice(1)}`;
+            document.getElementById('currentChannel').textContent = `# ${channel.charAt(0).toUpperCase() + channel.slice(1)}`;
             loadMessages();
             
-            // UI aktif kanal güncelleme
             document.querySelectorAll('.channel-item').forEach(item => {
                 item.classList.remove('active');
                 if (item.dataset.channel === channel) item.classList.add('active');
             });
         }
         
-        // Aktif kullanıcıları güncelle
         function updateOnlineUsers() {
             const usersRef = database.ref('chat_messages');
             const oneMinuteAgo = Date.now() - 60000;
@@ -883,16 +941,13 @@
                     });
                 }
                 
-                const onlineCount = users.size;
-                document.getElementById('onlineCount').textContent = onlineCount;
-                
+                document.getElementById('onlineCount').textContent = users.size;
                 const usersList = document.getElementById('usersList');
                 if (usersList) {
                     usersList.innerHTML = Array.from(users.values()).map(user => `
-                        <div class="user-item" onclick="showUserProfile('${escapeHtml(user.username)}')">
+                        <div class="user-item">
                             <div class="user-status online"></div>
                             <span>${escapeHtml(user.username)}</span>
-                            <span style="font-size: 0.7rem; margin-left: auto;">${user.role === 'admin' ? '👑' : user.role === 'mod' ? '🛡️' : ''}</span>
                         </div>
                     `).join('');
                     
@@ -903,7 +958,6 @@
             });
         }
         
-        // Kullanıcı aktivitesini güncelle
         function updateUserActivity() {
             const activityRef = database.ref(`user_activity/${userId}`);
             activityRef.set({
@@ -937,31 +991,17 @@
             }
         });
         
-        // Emoji ekleme
         document.getElementById('emojiBtn').addEventListener('click', () => {
-            const emojis = ['😀', '😂', '😍', '🔥', '👍', '🎉', '❤️', '😎', '🚀', '⭐', '💪', '🎮'];
+            const emojis = ['😀', '😂', '😍', '🔥', '👍', '🎉', '❤️', '😎', '🚀', '⭐'];
             const emoji = emojis[Math.floor(Math.random() * emojis.length)];
             messageInput.value += emoji;
             messageInput.focus();
         });
         
-        // Resim ekleme
-        document.getElementById('imageBtn').addEventListener('click', () => {
-            const url = prompt('Resim URL\'sini girin:');
-            if (url && (url.startsWith('http') || url.startsWith('data:image'))) {
-                messageInput.value += ` ${url} `;
-                messageInput.focus();
-            } else if (url) {
-                showToast('Geçerli bir resim URL\'si girin!', true);
-            }
-        });
-        
-        // Mobil sidebar toggle
         document.getElementById('mobileSidebarToggle').addEventListener('click', () => {
             document.getElementById('chatSidebar').classList.toggle('open');
         });
         
-        // Kanal değiştirme eventleri
         document.querySelectorAll('.channel-item').forEach(item => {
             item.addEventListener('click', () => {
                 changeChannel(item.dataset.channel);
@@ -971,7 +1011,6 @@
             });
         });
         
-        // Yeni kanal oluşturma
         document.getElementById('createChannelBtn').addEventListener('click', () => {
             const channelName = prompt('Kanal adı girin (sadece harf ve rakam):');
             if (channelName && /^[a-zA-Z0-9ğüşıöçĞÜŞİÖÇ]+$/.test(channelName)) {
@@ -996,7 +1035,6 @@
             }
         });
         
-        // Enter ile gönderme
         messageInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -1006,36 +1044,17 @@
         
         sendBtn.addEventListener('click', sendMessage);
         
-        // Yanıtlama fonksiyonu
-        window.replyToMessage = (username) => {
-            messageInput.value = `@${username} `;
-            messageInput.focus();
-        };
-        
-        // Resim açma
-        window.openImage = (src) => {
-            window.open(src, '_blank');
-        };
-        
-        // Profil gösterme
-        window.showUserProfile = (username) => {
-            showToast(`${username} - Profil görüntüleniyor`);
-        };
-        
-        // Periyodik güncellemeler
         setInterval(() => {
             updateOnlineUsers();
             updateUserActivity();
         }, 30000);
         
-        // Başlat
         updateProfileUI();
         applyTheme();
         loadMessages();
         updateOnlineUsers();
         updateUserActivity();
         
-        // Hamburger menu
         const btn = document.getElementById("menuBtn");
         const menu = document.getElementById("sideMenu");
         btn.addEventListener("click", (e) => {
