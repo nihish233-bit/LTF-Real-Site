@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LTF Liderlik Tablosu | Loyal Team Force</title>
+    <title>LTF Uzay Liderlik Tablosu | Loyal Team Force</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         * {
@@ -16,14 +16,16 @@
         }
 
         :root {
-            --bg-dark: #050505;
-            --bg-card: #0F0F0F;
-            --bg-sidebar: #0A0A0A;
+            --bg-dark: #0a0a2a;
+            --bg-card: rgba(10, 10, 42, 0.7);
+            --bg-sidebar: rgba(5, 5, 25, 0.95);
             --gold: #FFD700;
             --dark-red: #8B0000;
             --white: #FFFFFF;
-            --light-blue: #87CEEB;
-            --gray-border: #1F1F1F;
+            --light-blue: #4A9EFF;
+            --purple: #9B59B6;
+            --cyan: #00FFFF;
+            --gray-border: #2a2a4a;
             --green-success: #00C851;
         }
 
@@ -33,64 +35,71 @@
             color: var(--white);
             line-height: 1.6;
             overflow-x: hidden;
+            position: relative;
         }
 
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 5px; }
-
-        @keyframes slowDrift {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 100% 100%; }
-        }
-
-        body::before {
-            content: '';
+        /* UZAY ARKA PLANI */
+        .stars {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 20% 40%, rgba(255, 215, 0, 0.03) 0%, transparent 40%),
-                        radial-gradient(circle at 80% 70%, rgba(135, 206, 235, 0.02) 0%, transparent 50%);
-            animation: slowDrift 45s ease-in-out infinite alternate;
             pointer-events: none;
             z-index: -1;
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
         }
 
-        @keyframes glowPulse {
-            0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
-            100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
+        @keyframes twinkle {
+            0% { opacity: 0.2; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.2); }
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        @keyframes float {
+            0% { transform: translateY(0px) translateX(0px); }
+            100% { transform: translateY(-100px) translateX(50px); }
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-150px) scale(1.5); }
+        .planet {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(2px);
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: -1;
         }
 
-        @keyframes sparkle {
-            0% { opacity: 0; transform: scale(0); }
-            50% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(0); }
+        .meteor {
+            position: fixed;
+            width: 2px;
+            height: 50px;
+            background: linear-gradient(180deg, rgba(255,215,0,0.8), transparent);
+            animation: meteor 3s linear infinite;
+            pointer-events: none;
+            z-index: -1;
         }
 
-        /* Login Modal */
+        @keyframes meteor {
+            0% { transform: translateX(-100px) translateY(-100px) rotate(45deg); opacity: 1; }
+            100% { transform: translateX(100vw) translateY(100vh) rotate(45deg); opacity: 0; }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+
+        /* LOGIN MODAL - UZAY TEMALI */
         .login-modal {
             position: fixed;
             top: 0;
@@ -98,7 +107,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             z-index: 10000;
             display: flex;
             align-items: center;
@@ -106,31 +115,32 @@
             transition: all 0.3s;
         }
 
-        .login-modal.hidden {
-            display: none;
-        }
+        .login-modal.hidden { display: none; }
 
         .login-card {
-            background: linear-gradient(135deg, var(--bg-card), #0a0a0a);
+            background: linear-gradient(135deg, rgba(10, 10, 42, 0.9), rgba(5, 5, 25, 0.95));
+            backdrop-filter: blur(10px);
             border-radius: 30px;
             padding: 40px;
             text-align: center;
             border: 2px solid var(--gold);
-            max-width: 400px;
+            max-width: 450px;
             width: 90%;
             animation: fadeInUp 0.5s ease;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
         }
 
         .login-card h2 {
+            font-family: 'Orbitron', monospace;
             color: var(--gold);
             margin-bottom: 10px;
         }
 
         .login-card input {
             width: 100%;
-            padding: 15px;
-            margin: 20px 0;
-            background: var(--bg-dark);
+            padding: 14px;
+            margin: 10px 0;
+            background: rgba(0, 0, 0, 0.6);
             border: 1px solid var(--gray-border);
             border-radius: 50px;
             color: var(--white);
@@ -141,10 +151,11 @@
         .login-card input:focus {
             outline: none;
             border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
         }
 
         .login-card button {
-            background: var(--gold);
+            background: linear-gradient(135deg, var(--gold), #FFA500);
             color: #000;
             border: none;
             padding: 12px 30px;
@@ -153,29 +164,76 @@
             cursor: pointer;
             width: 100%;
             font-size: 1rem;
+            margin-top: 10px;
+            transition: all 0.3s;
         }
 
+        .login-card button:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+
+        .switch-mode {
+            margin-top: 15px;
+            color: var(--light-blue);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .switch-mode:hover { color: var(--gold); }
+
+        /* USER INFO BAR */
         .user-info-bar {
-            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            background: linear-gradient(135deg, rgba(10, 10, 42, 0.9), rgba(5, 5, 25, 0.95));
+            backdrop-filter: blur(10px);
             padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--gold);
+            border-bottom: 2px solid var(--gold);
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 15px;
+            position: relative;
+            z-index: 10;
         }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            background: linear-gradient(135deg, var(--purple), var(--light-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .profile-avatar:hover { transform: scale(1.05); border-color: var(--cyan); }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-avatar i { font-size: 24px; color: var(--gold); }
 
         .user-welcome {
             color: var(--gold);
-            font-weight: bold;
+            font-family: 'Orbitron', monospace;
         }
 
         .logout-btn {
             background: transparent;
             border: 1px solid var(--dark-red);
             color: var(--dark-red);
-            padding: 5px 15px;
+            padding: 6px 15px;
             border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s;
@@ -184,6 +242,7 @@
         .logout-btn:hover {
             background: var(--dark-red);
             color: var(--white);
+            box-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
         }
 
         /* HAMBURGER MENU */
@@ -208,34 +267,25 @@
             width: 100%;
             background: var(--gold);
             border-radius: 4px;
-            transition: all 0.25s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: all 0.25s;
         }
-        .hamburger.open .bar1 {
-            transform: translateY(12px) rotate(45deg);
-            background: var(--white);
-        }
-        .hamburger.open .bar2 {
-            opacity: 0;
-            transform: scaleX(0);
-        }
-        .hamburger.open .bar3 {
-            transform: translateY(-12px) rotate(-45deg);
-            background: var(--white);
-        }
+        .hamburger.open .bar1 { transform: translateY(12px) rotate(45deg); background: var(--cyan); }
+        .hamburger.open .bar2 { opacity: 0; transform: scaleX(0); }
+        .hamburger.open .bar3 { transform: translateY(-12px) rotate(-45deg); background: var(--cyan); }
 
         /* SIDE MENU */
         .side-menu {
             width: 280px;
             height: 100vh;
-            background: rgba(10, 10, 10, 0.98);
-            backdrop-filter: blur(12px);
+            background: rgba(5, 5, 25, 0.98);
+            backdrop-filter: blur(15px);
             position: fixed;
             top: 0;
             left: -300px;
             z-index: 1000;
             transition: left 0.3s ease-out;
             padding: 90px 0 30px;
-            border-right: 1px solid rgba(255, 215, 0, 0.3);
+            border-right: 2px solid var(--gold);
             box-shadow: 4px 0 25px rgba(0,0,0,0.5);
         }
         .side-menu.open { left: 0; }
@@ -248,32 +298,14 @@
             text-decoration: none;
             transition: all 0.2s;
             border-left: 3px solid transparent;
-            font-weight: 500;
         }
-        .menu-link i { width: 24px; color: var(--gold); font-size: 1.2rem; }
-        .menu-link:hover {
-            background: rgba(255, 215, 0, 0.08);
-            border-left-color: var(--gold);
-            padding-left: 32px;
-        }
-        .menu-link.active {
-            background: rgba(255, 215, 0, 0.12);
-            border-left-color: var(--gold);
-            color: var(--gold);
-        }
-        .menu-footer {
-            position: absolute;
-            bottom: 30px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 0.75rem;
-            opacity: 0.5;
-        }
+        .menu-link i { width: 24px; color: var(--gold); }
+        .menu-link:hover { background: rgba(255, 215, 0, 0.1); border-left-color: var(--gold); padding-left: 32px; }
+        .menu-link.active { background: rgba(255, 215, 0, 0.15); border-left-color: var(--gold); color: var(--gold); }
 
         /* Header */
         .leaderboard-header {
-            background: linear-gradient(135deg, #030303 0%, #0a0a0a 100%);
+            background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(10,10,42,0.8));
             border-bottom: 2px solid var(--gold);
             padding: 30px 20px 20px;
             text-align: center;
@@ -281,16 +313,16 @@
         }
 
         .leaderboard-header h1 {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Orbitron', monospace;
             font-size: clamp(1.8rem, 5vw, 3rem);
             font-weight: 900;
-            background: linear-gradient(135deg, var(--gold) 0%, #FFE55C 100%);
+            background: linear-gradient(135deg, var(--gold), var(--cyan));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
 
-        /* Günlük Ödül Kutusu */
+        /* Kutu Tasarımı */
         .daily-box-section {
             max-width: 1400px;
             margin: 30px auto 0;
@@ -298,171 +330,79 @@
         }
 
         .chest-container {
-            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            background: linear-gradient(135deg, rgba(10, 10, 42, 0.8), rgba(5, 5, 25, 0.9));
+            backdrop-filter: blur(10px);
             border-radius: 30px;
             padding: 40px;
             text-align: center;
-            border: 2px solid rgba(255, 215, 0, 0.3);
+            border: 2px solid rgba(255, 215, 0, 0.5);
             position: relative;
             overflow: hidden;
             cursor: pointer;
         }
 
-        .chest-3d {
-            perspective: 1000px;
-            display: inline-block;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .chest-box {
-            width: 280px;
-            height: 220px;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.3s ease;
-            cursor: pointer;
-        }
-
+        .chest-3d { perspective: 1000px; display: inline-block; margin-bottom: 20px; }
+        .chest-box { width: 280px; height: 220px; position: relative; transform-style: preserve-3d; transition: transform 0.3s; cursor: pointer; }
         .chest-box.shake { animation: shake 0.3s ease-in-out; }
-        .chest-box.open { animation: openBox 0.5s ease-out; }
-
         .chest-body {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             background: linear-gradient(145deg, #8B5A2B, #5D3A1A);
             border-radius: 20px;
-            position: relative;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             border: 3px solid var(--gold);
         }
-
         .chest-lid {
-            width: 100%;
-            height: 80px;
+            width: 100%; height: 80px;
             background: linear-gradient(145deg, #C97E3A, #8B4513);
-            position: absolute;
-            top: -40px;
-            left: 0;
+            position: absolute; top: -40px; left: 0;
             border-radius: 20px 20px 0 0;
             transform-origin: bottom center;
-            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: transform 0.5s;
             border: 3px solid var(--gold);
             border-bottom: none;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
-            cursor: pointer;
         }
-
-        .chest-lid::before {
-            content: '🔒';
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 24px;
-            background: var(--gold);
-            border-radius: 50%;
-            padding: 5px;
-        }
-
+        .chest-lid::before { content: '🔒'; position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); font-size: 24px; background: var(--gold); border-radius: 50%; padding: 5px; }
         .chest-lid.opening { transform: rotateX(-120deg) translateY(-30px); }
 
-        .click-counter { margin-top: 15px; font-size: 0.9rem; color: var(--light-blue); }
-        .reward-display { margin-top: 20px; font-size: 2rem; font-weight: bold; color: var(--gold); display: none; }
-
-        /* XP Kazanma Yöntemleri */
-        .xp-methods {
-            max-width: 1400px;
-            margin: 40px auto 0;
-            padding: 0 20px;
-        }
-
+        /* XP Kartları */
         .methods-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
             margin-top: 15px;
         }
 
         .method-card {
-            background: var(--bg-card);
+            background: rgba(10, 10, 42, 0.6);
+            backdrop-filter: blur(5px);
             border-radius: 15px;
             padding: 15px;
             text-align: center;
-            border: 1px solid var(--gray-border);
+            border: 1px solid rgba(255, 215, 0, 0.3);
             transition: all 0.3s;
-            position: relative;
         }
-
-        .method-card:hover { transform: translateY(-3px); border-color: var(--gold); }
-        .method-card i { font-size: 1.8rem; color: var(--gold); margin-bottom: 8px; }
-        .method-card h4 { font-size: 0.9rem; margin-bottom: 5px; }
-        .method-card p { font-size: 0.8rem; color: var(--light-blue); font-weight: 600; }
-        
-        .method-status {
-            font-size: 0.7rem;
-            margin-top: 8px;
-            padding: 4px 8px;
-            border-radius: 20px;
-            display: inline-block;
-        }
-        
-        .method-status.available { background: rgba(0, 200, 81, 0.2); color: var(--green-success); }
-        .method-status.claimed { background: rgba(100, 100, 100, 0.2); color: #888; }
-        .method-status.waiting { background: rgba(255, 215, 0, 0.2); color: var(--gold); }
-
-        .section-title {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            color: var(--gold);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Filtre Bölümü */
-        .filters-section {
-            padding: 40px 20px 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .search-bar { display: flex; justify-content: center; margin-bottom: 30px; }
-        .search-input {
-            background: var(--bg-card);
-            border: 1px solid var(--gray-border);
-            border-radius: 50px;
-            padding: 14px 25px;
-            width: 100%;
-            max-width: 500px;
-            color: var(--white);
-            font-size: 1rem;
-        }
-        .search-input:focus { outline: none; border-color: var(--gold); }
+        .method-card:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: 0 0 20px rgba(255,215,0,0.2); }
+        .method-card i { font-size: 2rem; color: var(--gold); margin-bottom: 8px; }
 
         /* Liderlik Tablosu */
-        .leaderboard-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px 60px;
-        }
-
-        .leaderboard-grid { display: flex; flex-direction: column; gap: 15px; }
-
         .leader-card {
-            background: linear-gradient(95deg, var(--bg-card) 0%, #0c0c0c 100%);
+            background: linear-gradient(95deg, rgba(10, 10, 42, 0.7), rgba(5, 5, 25, 0.8));
+            backdrop-filter: blur(5px);
             border-radius: 20px;
             padding: 20px 25px;
             display: flex;
             align-items: center;
             gap: 20px;
             transition: all 0.4s;
-            border: 1px solid rgba(255, 215, 0, 0.1);
-            animation: fadeInUp 0.6s ease forwards;
+            border: 1px solid rgba(255, 215, 0, 0.2);
         }
-
-        .leader-card:hover { transform: translateY(-5px) scale(1.02); border-color: var(--gold); }
+        .leader-card:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: 0 0 30px rgba(255,215,0,0.2); }
         .leader-card.top-1 { border: 2px solid var(--gold); animation: glowPulse 2s infinite; }
+
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
+            100% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); }
+        }
 
         .rank { font-size: 1.8rem; font-weight: 800; min-width: 60px; text-align: center; }
         .rank-1 { color: var(--gold); }
@@ -470,39 +410,41 @@
         .rank-3 { color: #CD7F32; }
         .rank-other { color: #666; }
 
-        .avatar {
-            width: 60px;
-            height: 60px;
+        .avatar-img {
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--gold), #FFE55C);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+            border: 2px solid var(--gold);
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--purple), var(--light-blue));
         }
-        .avatar img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid var(--bg-dark); }
-        .medal { position: absolute; bottom: -5px; right: -5px; font-size: 1.2rem; }
 
-        .user-info { flex: 1; }
-        .user-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .badge { background: rgba(255, 215, 0, 0.2); color: var(--gold); padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; }
-        .level-badge { background: rgba(135, 206, 235, 0.2); color: var(--light-blue); padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; }
-        .user-stats span { font-size: 0.8rem; color: #aaa; margin-right: 15px; }
+        .xp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--cyan)); border-radius: 10px; transition: width 1s ease; }
 
-        .xp-section { min-width: 250px; }
-        .xp-label { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 5px; color: #aaa; }
-        .xp-bar-bg { background: #1e1e1e; height: 8px; border-radius: 10px; overflow: hidden; }
-        .xp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), #FFE55C); border-radius: 10px; width: 0%; transition: width 1s ease; }
-
-        .points { text-align: right; min-width: 100px; }
-        .points-value { font-size: 1.3rem; font-weight: 800; color: var(--gold); }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-100px); }
+        }
+        @keyframes sparkle {
+            0% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
 
         .level-up-notification {
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, var(--gold), #FFE55C);
+            background: linear-gradient(135deg, var(--gold), var(--cyan));
             color: #000;
             padding: 20px 40px;
             border-radius: 20px;
@@ -510,63 +452,65 @@
             font-weight: bold;
             z-index: 2000;
             animation: bounce 0.5s ease;
-            box-shadow: 0 0 50px rgba(255,215,0,0.5);
             white-space: nowrap;
+            font-family: 'Orbitron', monospace;
         }
-
-        footer {
-            background: #080808;
-            padding: 40px 20px 20px;
-            border-top: 1px solid rgba(255, 215, 0, 0.3);
-            text-align: center;
-            color: #777;
+        @keyframes bounce {
+            0%,100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
         }
 
         @media (max-width: 900px) {
-            .leader-card { flex-wrap: wrap; padding: 20px; }
+            .leader-card { flex-wrap: wrap; }
             .rank { min-width: 50px; font-size: 1.3rem; }
-            .avatar { width: 50px; height: 50px; }
-            .avatar img { width: 45px; height: 45px; }
-            .xp-section { min-width: 100%; margin-top: 10px; }
-            .points { min-width: auto; }
             .chest-box { width: 200px; height: 160px; }
             .chest-lid { height: 60px; top: -30px; }
-            .user-info-bar { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
 <body>
 
+    <!-- UZAY EFEKTLERİ -->
+    <div class="stars" id="stars"></div>
+    <div class="planet" style="width: 300px; height: 300px; background: radial-gradient(circle, #9B59B6, transparent); top: 10%; right: -100px;"></div>
+    <div class="planet" style="width: 150px; height: 150px; background: radial-gradient(circle, #FFD700, transparent); bottom: 20%; left: -50px;"></div>
+
     <!-- LOGIN MODAL -->
     <div id="loginModal" class="login-modal">
         <div class="login-card">
-            <i class="fas fa-user-astronaut" style="font-size: 3rem; color: var(--gold); margin-bottom: 20px;"></i>
-            <h2>Hoş Geldin!</h2>
-            <p style="color: #aaa; margin-bottom: 20px;">Kullanıcı adınla giriş yap veya yeni hesap oluştur</p>
-            <input type="text" id="usernameInput" placeholder="Kullanıcı adın" maxlength="20">
-            <button id="loginBtn">Giriş Yap / Kayıt Ol</button>
+            <i class="fas fa-rocket" style="font-size: 3rem; color: var(--gold); margin-bottom: 20px;"></i>
+            <h2>🚀 UZAY LİDERLİK</h2>
+            <p style="color: #aaa;">Giriş Yap veya Kayıt Ol</p>
+            <input type="text" id="loginUsername" placeholder="Kullanıcı Adı">
+            <input type="password" id="loginPassword" placeholder="Şifre">
+            <button id="loginSubmitBtn">Giriş Yap</button>
+            <div class="switch-mode" id="switchToRegister">Hesabın yok mu? Kayıt Ol</div>
         </div>
     </div>
 
     <!-- USER INFO BAR -->
     <div id="userInfoBar" class="user-info-bar" style="display: none;">
-        <div class="user-welcome">
-            <i class="fas fa-user"></i> Hoş geldin, <span id="currentUserName">Zinny</span>!
+        <div class="user-profile">
+            <div class="profile-avatar" id="profileAvatarBtn">
+                <i class="fas fa-user-astronaut"></i>
+            </div>
+            <div class="user-welcome">
+                <i class="fas fa-star"></i> Hoş geldin, <span id="currentUserName"></span>!
+            </div>
         </div>
         <div>
-            <span id="userLevel" style="color: var(--light-blue);">Seviye 1</span>
-            <button id="logoutBtn" class="logout-btn">Çıkış Yap</button>
+            <span id="userLevel" style="color: var(--cyan);"></span>
+            <button id="logoutBtn" class="logout-btn">🚀 Çıkış Yap</button>
         </div>
     </div>
 
     <!-- HAMBURGER MENU -->
-    <button id="menuBtn" class="hamburger" aria-label="Menü">
+    <button id="menuBtn" class="hamburger">
         <span class="bar1"></span>
         <span class="bar2"></span>
         <span class="bar3"></span>
     </button>
 
-    <!-- SIDE MENU -->
     <nav id="sideMenu" class="side-menu">
         <div class="menu-items">
             <a href="index.html" class="menu-link"><i class="fas fa-home"></i> Ana Sayfa</a>
@@ -581,7 +525,7 @@
     </nav>
 
     <div class="leaderboard-header">
-        <h1><i class="fas fa-trophy"></i> Liderlik Tablosu</h1>
+        <h1><i class="fas fa-trophy"></i> UZAY LİDERLİK TABLOSU</h1>
         <p>⚡ HERKES KENDİ XP'SİNİ KAZANIR! Aktif ol, XP kazan, seviye atla! ⚡</p>
     </div>
 
@@ -591,44 +535,41 @@
             <div class="chest-3d">
                 <div class="chest-box" id="chestBox">
                     <div class="chest-lid" id="chestLid"></div>
-                    <div class="chest-body">
-                        <div class="chest-detail"></div>
-                    </div>
+                    <div class="chest-body"></div>
                 </div>
             </div>
             <div class="click-counter" id="clickCounter">🔒 Kutuya tıkla! (0/3)</div>
             <div class="reward-display" id="rewardDisplay"></div>
-            <p style="margin-top: 15px; color: #aaa; font-size: 0.8rem;">✨ Kapağa 3 kez tıkla, içinden XP çıksın! (Günde 1 kez) ✨</p>
+            <p style="margin-top: 15px; color: #aaa;">✨ Kapağa 3 kez tıkla, içinden XP çıksın! (Günde 1 kez) ✨</p>
         </div>
     </div>
 
     <!-- XP Kazanma Yöntemleri -->
-    <div class="xp-methods">
-        <div class="section-title">
-            <i class="fas fa-chart-line"></i>
-            <span>⚡ OTOMATİK XP KAZANMA GÖREVLERİ (Hepsi Çalışıyor!)</span>
+    <div class="xp-methods" style="max-width:1400px; margin:40px auto 0; padding:0 20px;">
+        <div class="section-title" style="color:var(--gold); font-family:'Orbitron'; margin-bottom:20px;">
+            <i class="fas fa-chart-line"></i> ⚡ OTOMATİK XP KAZANMA GÖREVLERİ
         </div>
         <div class="methods-grid" id="methodsGrid"></div>
     </div>
 
     <!-- Filtre Bölümü -->
-    <div class="filters-section">
-        <div class="search-bar">
-            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Kullanıcı adı ile ara...">
+    <div class="filters-section" style="max-width:1400px; margin:40px auto 0; padding:0 20px;">
+        <div class="search-bar" style="display:flex; justify-content:center; margin-bottom:30px;">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔭 Kullanıcı adı ile ara..." style="background:rgba(10,10,42,0.8); border:1px solid var(--gray-border); border-radius:50px; padding:14px 25px; width:100%; max-width:500px; color:white;">
         </div>
     </div>
 
     <!-- Liderlik Tablosu -->
-    <div class="leaderboard-container">
-        <div id="leaderboardGrid" class="leaderboard-grid"></div>
+    <div class="leaderboard-container" style="max-width:1400px; margin:0 auto; padding:0 20px 60px;">
+        <div id="leaderboardGrid" class="leaderboard-grid" style="display:flex; flex-direction:column; gap:15px;"></div>
     </div>
 
-    <footer>
-        <p>© 2025 Loyal Team Force - HERKES KENDİ XP'SİNİ KAZANIR! | Seviye atlamak zorlaşıyor! | Görevler %100 çalışıyor!</p>
+    <footer style="background:#030318; padding:40px 20px 20px; border-top:1px solid var(--gold); text-align:center; color:#777;">
+        <p>© 2025 Loyal Team Force - UZAY LİDERLİK | HERKES KENDİ XP'SİNİ KAZANIR! | Şifreli Giriş | Profil Fotoğrafı</p>
     </footer>
 
     <script>
-        // ============= ZORLAŞTIRILMIŞ SEVİYE SİSTEMİ =============
+        // ============= SEVİYE SİSTEMİ =============
         function getRequiredXPForLevel(level) {
             if(level <= 10) return 500;
             if(level <= 20) return 1000;
@@ -671,62 +612,57 @@
             return (currentLevelXP / requiredXP) * 100;
         }
         
-        // ============= KULLANICI SİSTEMİ =============
-        let allUsers = []; // Tüm kullanıcılar
-        let currentUser = null; // Şu anki kullanıcı
+        // ============= KULLANICI SİSTEMİ (Şifreli) =============
+        let allUsers = [];
+        let currentUser = null;
+        let isRegisterMode = false;
         
-        // Kullanıcı verilerini yükle
         function loadUsers() {
-            const saved = localStorage.getItem('ltf_all_users');
+            const saved = localStorage.getItem('ltf_space_users');
             if(saved) {
                 allUsers = JSON.parse(saved);
             } else {
-                // Varsayılan kullanıcılar (hepsi 0 XP)
+                // Varsayılan kullanıcılar
                 allUsers = [
-                    { id: 1, name: "Zinny", xp: 0, role: "Kurucu", activity: 98, weeklyXP: 0, lastDaily: "", lastChest: "", lastHourly: 0, lastRandom: 0, lastChat: 0 },
-                    { id: 2, name: "Chivas", xp: 0, role: "Kurucu Yardımcısı", activity: 95, weeklyXP: 0, lastDaily: "", lastChest: "", lastHourly: 0, lastRandom: 0, lastChat: 0 },
-                    { id: 3, name: "Efe", xp: 0, role: "Moderatör", activity: 92, weeklyXP: 0, lastDaily: "", lastChest: "", lastHourly: 0, lastRandom: 0, lastChat: 0 },
-                    { id: 4, name: "Mert", xp: 0, role: "Geliştirici", activity: 88, weeklyXP: 0, lastDaily: "", lastChest: "", lastHourly: 0, lastRandom: 0, lastChat: 0 },
-                    { id: 5, name: "Selin", xp: 0, role: "Tasarımcı", activity: 85, weeklyXP: 0, lastDaily: "", lastChest: "", lastHourly: 0, lastRandom: 0, lastChat: 0 },
-                    { id: 6, name: "Can", xp: 0, role: "Geliştirici", activity: 82, weeklyXP: 0, lastDaily: "", lastChest: "", lastHourly: 0, lastRandom: 0, lastChat: 0 },
-                    { id: 7, name: "Zeynep", xp: 0, role: "Sosyal Medya", activity: 79, weeklyXP: 0, lastDaily: "", lastChest: "", lastHourly: 0, lastRandom: 0, lastChat: 0 },
-                    { id: 8, name: "Kaan", xp: 0, role: "İçerik Üretici", activity: 75, weeklyXP: 0, lastDaily: "", lastChest: "", lastHourly: 0, lastRandom: 0, lastChat: 0 },
-                    { id: 9, name: "Elif", xp: 0, role: "Destek", activity: 71, weeklyXP: 0, lastDaily: "", lastChest: "", lastHourly: 0, lastRandom: 0, lastChat: 0 },
-                    { id: 10, name: "Ali", xp: 0, role: "Üye", activity: 68, weeklyXP: 0, lastDaily: "", lastChest: "", lastHourly: 0, lastRandom: 0, lastChat: 0 }
+                    { id: 1, name: "Zinny", password: "1234", xp: 0, role: "Kurucu", activity: 98, weeklyXP: 0, avatar: "", lastDaily: "", lastChest: "", lastHourly: 0, lastRandom: 0, lastChat: 0 },
+                    { id: 2, name: "Chivas", password: "1234", xp: 0, role: "Kurucu Yardımcısı", activity: 95, weeklyXP: 0, avatar: "", lastDaily: "", lastChest: "", lastHourly: 0, lastRandom: 0, lastChat: 0 }
                 ];
                 saveUsers();
             }
         }
         
         function saveUsers() {
-            localStorage.setItem('ltf_all_users', JSON.stringify(allUsers));
+            localStorage.setItem('ltf_space_users', JSON.stringify(allUsers));
         }
         
-        // Kullanıcı bul veya oluştur
-        function findOrCreateUser(username) {
-            let user = allUsers.find(u => u.name.toLowerCase() === username.toLowerCase());
-            if(!user) {
-                const newId = allUsers.length + 1;
-                user = {
-                    id: newId,
-                    name: username,
-                    xp: 0,
-                    role: "Üye",
-                    activity: 50,
-                    weeklyXP: 0,
-                    lastDaily: "",
-                    lastChest: "",
-                    lastHourly: 0,
-                    lastRandom: 0,
-                    lastChat: 0
-                };
-                allUsers.push(user);
-                saveUsers();
+        function findUser(username, password) {
+            return allUsers.find(u => u.name.toLowerCase() === username.toLowerCase() && u.password === password);
+        }
+        
+        function createUser(username, password) {
+            if(allUsers.some(u => u.name.toLowerCase() === username.toLowerCase())) {
+                return { success: false, message: "Bu kullanıcı adı zaten var!" };
             }
-            return user;
+            const newUser = {
+                id: allUsers.length + 1,
+                name: username,
+                password: password,
+                xp: 0,
+                role: "Üye",
+                activity: 50,
+                weeklyXP: 0,
+                avatar: "",
+                lastDaily: "",
+                lastChest: "",
+                lastHourly: 0,
+                lastRandom: 0,
+                lastChat: 0
+            };
+            allUsers.push(newUser);
+            saveUsers();
+            return { success: true, user: newUser };
         }
         
-        // Kullanıcıya XP ekle
         function addXP(userId, amount, source) {
             const userIndex = allUsers.findIndex(u => u.id === userId);
             if(userIndex === -1) return false;
@@ -739,26 +675,12 @@
             allUsers[userIndex].xp = newXP;
             allUsers[userIndex].weeklyXP = (allUsers[userIndex].weeklyXP || 0) + amount;
             
-            // Toast bildirimi
             const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                background: linear-gradient(135deg, var(--gold), #FFE55C);
-                color: #000;
-                padding: 12px 20px;
-                border-radius: 50px;
-                font-weight: 700;
-                z-index: 1000;
-                animation: floatUp 2s ease forwards;
-                pointer-events: none;
-            `;
+            toast.style.cssText = `position:fixed; bottom:20px; right:20px; background:linear-gradient(135deg,var(--gold),var(--cyan)); color:#000; padding:12px 20px; border-radius:50px; font-weight:700; z-index:1000; animation:floatUp 2s forwards; pointer-events:none;`;
             toast.innerHTML = `✨ ${source} ile +${amount} XP kazandın! ✨`;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 2000);
             
-            // Seviye atlama kontrolü
             if(newLevel > oldLevel) {
                 const notification = document.createElement('div');
                 notification.className = 'level-up-notification';
@@ -783,8 +705,37 @@
             if(currentUser) {
                 document.getElementById('currentUserName').innerHTML = currentUser.name;
                 const level = calculateLevel(currentUser.xp);
-                document.getElementById('userLevel').innerHTML = `Seviye ${level} | ${currentUser.xp} XP`;
+                document.getElementById('userLevel').innerHTML = `🚀 Seviye ${level} | 🌟 ${currentUser.xp} XP`;
+                // Profil fotoğrafını göster
+                const avatarDiv = document.querySelector('.profile-avatar');
+                if(currentUser.avatar && currentUser.avatar !== "") {
+                    avatarDiv.innerHTML = `<img src="${currentUser.avatar}" alt="avatar">`;
+                } else {
+                    avatarDiv.innerHTML = `<i class="fas fa-user-astronaut"></i>`;
+                }
             }
+        }
+        
+        // Profil fotoğrafı yükleme
+        function uploadAvatar() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if(file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        currentUser.avatar = event.target.result;
+                        saveUsers();
+                        updateUserInfo();
+                        renderLeaderboard();
+                        alert("✨ Profil fotoğrafın güncellendi! ✨");
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
         }
         
         // ============= OTOMATİK GÖREVLER =============
@@ -795,7 +746,6 @@
                 addXP(currentUser.id, 50, "🌟 Günlük Giriş");
                 currentUser.lastDaily = today;
                 saveUsers();
-                updateMethodStatus('daily', true);
                 return true;
             }
             return false;
@@ -808,7 +758,6 @@
                 addXP(currentUser.id, 25, "⏰ Saatlik Aktiflik");
                 currentUser.lastHourly = now;
                 saveUsers();
-                updateMethodStatus('hourly', true);
                 return true;
             }
             return false;
@@ -822,7 +771,6 @@
                 addXP(currentUser.id, randomXP, "🎲 Rastgele Bonus");
                 currentUser.lastRandom = now;
                 saveUsers();
-                updateMethodStatus('random', true);
                 return true;
             }
             return false;
@@ -836,7 +784,6 @@
                 addXP(currentUser.id, chatXP, "💬 Sohbet Aktifliği");
                 currentUser.lastChat = now;
                 saveUsers();
-                updateMethodStatus('chat', true);
                 return true;
             }
             return false;
@@ -854,41 +801,13 @@
             return now.getDate() !== last.getDate() || now.getMonth() !== last.getMonth() || now.getFullYear() !== last.getFullYear();
         }
         
-        function createParticles(x, y, xpAmount) {
-            for(let i = 0; i < 15; i++) {
+        function createParticles(x, y) {
+            for(let i = 0; i < 20; i++) {
                 const particle = document.createElement('div');
-                particle.style.cssText = `
-                    position: fixed;
-                    left: ${x + (Math.random() - 0.5) * 100}px;
-                    top: ${y + (Math.random() - 0.5) * 100}px;
-                    font-size: ${16 + Math.random() * 20}px;
-                    font-weight: bold;
-                    color: var(--gold);
-                    text-shadow: 0 0 10px rgba(255,215,0,0.8);
-                    pointer-events: none;
-                    z-index: 2000;
-                    animation: floatUp 1.5s ease-out forwards;
-                `;
-                particle.innerHTML = `+${Math.floor(xpAmount / 3)}`;
+                particle.style.cssText = `position:fixed; left:${x + (Math.random()-0.5)*100}px; top:${y + (Math.random()-0.5)*100}px; font-size:${16+Math.random()*20}px; font-weight:bold; color:var(--gold); pointer-events:none; z-index:2000; animation:floatUp 1.5s forwards;`;
+                particle.innerHTML = `✨ +${Math.floor(Math.random() * 100) + 50}`;
                 document.body.appendChild(particle);
                 setTimeout(() => particle.remove(), 1500);
-            }
-            for(let i = 0; i < 30; i++) {
-                const sparkle = document.createElement('div');
-                sparkle.style.cssText = `
-                    position: fixed;
-                    left: ${x + (Math.random() - 0.5) * 150}px;
-                    top: ${y + (Math.random() - 0.5) * 150}px;
-                    width: ${2 + Math.random() * 3}px;
-                    height: ${2 + Math.random() * 3}px;
-                    background: var(--gold);
-                    border-radius: 50%;
-                    pointer-events: none;
-                    z-index: 2000;
-                    animation: sparkle 0.8s ease-out forwards;
-                `;
-                document.body.appendChild(sparkle);
-                setTimeout(() => sparkle.remove(), 800);
             }
         }
         
@@ -911,7 +830,7 @@
             setTimeout(() => {
                 isOpen = true;
                 const chestRect = chestBox.getBoundingClientRect();
-                createParticles(chestRect.left + chestRect.width / 2, chestRect.top + chestRect.height / 2, rewardXP);
+                createParticles(chestRect.left + chestRect.width/2, chestRect.top + chestRect.height/2);
                 addXP(currentUser.id, rewardXP, "🎁 Günlük Kutu");
                 
                 rewardDisplay.innerHTML = `✨ +${rewardXP} XP KAZANDIN! ✨`;
@@ -922,20 +841,13 @@
                 
                 setTimeout(() => rewardDisplay.style.display = 'none', 3000);
                 document.getElementById('clickCounter').innerHTML = '🎉 Kutu Açıldı! Yarın tekrar gel! 🎉';
-                updateMethodStatus('chest', true);
             }, 500);
         }
         
-        function handleChestClick(e) {
-            if(!currentUser) {
-                alert("Lütfen önce giriş yapın!");
-                return;
-            }
+        function handleChestClick() {
+            if(!currentUser) { alert("Lütfen önce giriş yapın!"); return; }
             if(isOpen) return;
-            if(!canOpenChest()) {
-                alert("🎁 Bugünkü kutunu zaten açtın! Yarın tekrar dene!");
-                return;
-            }
+            if(!canOpenChest()) { alert("Bugünkü kutunu zaten açtın! Yarın tekrar dene!"); return; }
             
             clickCount++;
             const chestBox = document.getElementById('chestBox');
@@ -943,38 +855,21 @@
             setTimeout(() => chestBox.classList.remove('shake'), 300);
             document.getElementById('clickCounter').innerHTML = `🔓 Kutuya tıkla! (${clickCount}/3)`;
             
-            if(clickCount >= 3) {
-                openChest();
-            }
+            if(clickCount >= 3) openChest();
         }
         
         function resetChestDaily() {
             if(canOpenChest() && isOpen) {
                 isOpen = false;
                 clickCount = 0;
-                const chestLid = document.getElementById('chestLid');
-                const chestBox = document.getElementById('chestBox');
-                chestLid.classList.remove('opening');
-                chestBox.classList.remove('open');
+                document.getElementById('chestLid').classList.remove('opening');
+                document.getElementById('chestBox').classList.remove('open');
                 document.getElementById('clickCounter').innerHTML = '🔒 Kutuya tıkla! (0/3)';
                 document.getElementById('rewardDisplay').style.display = 'none';
             }
         }
         
         // ============= GÖRÜNÜM =============
-        function updateMethodStatus(method, claimed) {
-            const statusSpan = document.getElementById(`status-${method}`);
-            if(statusSpan) {
-                if(claimed) {
-                    statusSpan.innerHTML = '✓ Alındı';
-                    statusSpan.className = 'method-status claimed';
-                } else {
-                    statusSpan.innerHTML = '⏳ Bekliyor';
-                    statusSpan.className = 'method-status waiting';
-                }
-            }
-        }
-        
         function renderLeaderCard(user) {
             const level = calculateLevel(user.xp);
             const xpPercentage = getXpPercentage(user.xp);
@@ -982,45 +877,46 @@
             const nextLevelXP = getNextLevelRequiredXP(user.xp);
             const rankClass = user.rank === 1 ? 'top-1' : '';
             const rankColorClass = user.rank === 1 ? 'rank-1' : (user.rank === 2 ? 'rank-2' : (user.rank === 3 ? 'rank-3' : 'rank-other'));
-            const medalIcon = user.rank === 1 ? '<i class="fas fa-crown"></i>' : (user.rank === 2 ? '<i class="fas fa-medal"></i>' : (user.rank === 3 ? '<i class="fas fa-medal"></i>' : ''));
+            const medalIcon = user.rank === 1 ? '👑' : (user.rank === 2 ? '🥈' : (user.rank === 3 ? '🥉' : ''));
             const isCurrentUser = currentUser && user.id === currentUser.id;
             
             return `
                 <div class="leader-card ${rankClass}">
                     <div class="rank ${rankColorClass}">#${user.rank}</div>
-                    <div class="avatar">
-                        <div style="width:55px;height:55px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#FFE55C);display:flex;align-items:center;justify-content:center;">
-                            <span style="font-size:24px;">${user.name.charAt(0).toUpperCase()}</span>
-                        </div>
-                        ${medalIcon ? `<div class="medal">${medalIcon}</div>` : ''}
+                    <div>
+                        ${user.avatar && user.avatar !== "" ? 
+                            `<img src="${user.avatar}" class="avatar-img" style="width:55px;height:55px;">` : 
+                            `<div style="width:55px;height:55px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--light-blue));display:flex;align-items:center;justify-content:center;"><span style="font-size:24px;">${user.name.charAt(0).toUpperCase()}</span></div>`
+                        }
+                        ${medalIcon ? `<div style="position:absolute; margin-left:-15px; margin-top:-10px; font-size:20px;">${medalIcon}</div>` : ''}
                     </div>
-                    <div class="user-info">
-                        <div class="user-name">
+                    <div class="user-info" style="flex:1;">
+                        <div class="user-name" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
                             <h3>${user.name} ${isCurrentUser ? '(Sen)' : ''}</h3>
-                            <span class="badge">${user.role}</span>
-                            <span class="level-badge"><i class="fas fa-star"></i> Seviye ${level}</span>
+                            <span class="badge" style="background:rgba(255,215,0,0.2); color:var(--gold); padding:2px 10px; border-radius:20px;">${user.role}</span>
+                            <span class="level-badge" style="background:rgba(74,158,255,0.2); color:var(--cyan); padding:2px 10px; border-radius:20px;"><i class="fas fa-star"></i> Seviye ${level}</span>
                         </div>
-                        <div class="user-stats">
+                        <div class="user-stats" style="display:flex; gap:20px; font-size:0.8rem; color:#aaa;">
                             <span><i class="fas fa-bolt"></i> %${user.activity} aktiflik</span>
                             <span><i class="fas fa-chart-line"></i> Haftalık: ${(user.weeklyXP || 0)} XP</span>
                         </div>
                     </div>
-                    <div class="xp-section">
-                        <div class="xp-label">
+                    <div class="xp-section" style="min-width:250px;">
+                        <div class="xp-label" style="display:flex; justify-content:space-between; font-size:0.7rem;">
                             <span>🎯 ${user.xp.toLocaleString()} XP</span>
                             <span>📊 ${xpPercentage.toFixed(0)}%</span>
                         </div>
-                        <div class="xp-bar-bg">
-                            <div class="xp-bar-fill" style="width: ${xpPercentage}%"></div>
+                        <div class="xp-bar-bg" style="background:#1e1e3e; height:8px; border-radius:10px;">
+                            <div class="xp-bar-fill" style="width: ${xpPercentage}%; height:100%; background:linear-gradient(90deg,var(--gold),var(--cyan)); border-radius:10px;"></div>
                         </div>
-                        <div class="xp-label" style="margin-top: 5px;">
+                        <div class="xp-label" style="display:flex; justify-content:space-between; font-size:0.7rem; margin-top:5px;">
                             <span>⬆️ ${nextLevelXP - currentLevelXP} XP kalan</span>
                             <span>🎯 Seviye ${level + 1} (${getRequiredXPForLevel(level)} XP)</span>
                         </div>
                     </div>
-                    <div class="points">
-                        <div class="points-value">${user.xp.toLocaleString()}</div>
-                        <div class="points-label">Toplam Puan</div>
+                    <div class="points" style="text-align:right;">
+                        <div class="points-value" style="font-size:1.3rem; font-weight:800; color:var(--gold);">${user.xp.toLocaleString()}</div>
+                        <div class="points-label" style="font-size:0.7rem;">Toplam Puan</div>
                     </div>
                 </div>
             `;
@@ -1029,25 +925,22 @@
         function renderLeaderboard() {
             const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
             let filtered = [...allUsers];
-            if(searchTerm) {
-                filtered = filtered.filter(user => user.name.toLowerCase().includes(searchTerm));
-            }
+            if(searchTerm) filtered = filtered.filter(u => u.name.toLowerCase().includes(searchTerm));
             const grid = document.getElementById("leaderboardGrid");
             if(filtered.length === 0) {
-                grid.innerHTML = `<div style="text-align: center; padding: 60px;"><i class="fas fa-search" style="font-size: 3rem;"></i><h3>Sonuç Bulunamadı</h3></div>`;
+                grid.innerHTML = `<div style="text-align:center; padding:60px;"><i class="fas fa-search" style="font-size:3rem;"></i><h3>Uzayda kimse yok...</h3></div>`;
                 return;
             }
             grid.innerHTML = filtered.map(user => renderLeaderCard(user)).join('');
         }
         
         function renderMethods() {
-            const methodsGrid = document.getElementById('methodsGrid');
-            methodsGrid.innerHTML = `
-                <div class="method-card"><i class="fas fa-calendar-day"></i><h4>🌟 Günlük Giriş</h4><p>+50 XP</p><div id="status-daily" class="method-status waiting">⏳ Bekliyor</div></div>
-                <div class="method-card"><i class="fas fa-gift"></i><h4>🎁 Günlük Kutu</h4><p>+150-600 XP</p><div id="status-chest" class="method-status waiting">⏳ Bekliyor</div></div>
-                <div class="method-card"><i class="fas fa-clock"></i><h4>⏰ Saatlik Aktiflik</h4><p>+25 XP (Her 1 saat)</p><div id="status-hourly" class="method-status waiting">⏳ Bekliyor</div></div>
-                <div class="method-card"><i class="fas fa-dice-d6"></i><h4>🎲 Rastgele Bonus</h4><p>+5-30 XP (Her 2 saat)</p><div id="status-random" class="method-status waiting">⏳ Bekliyor</div></div>
-                <div class="method-card"><i class="fas fa-comments"></i><h4>💬 Sohbet Aktifliği</h4><p>+10-50 XP (Her 30 dk)</p><div id="status-chat" class="method-status waiting">⏳ Bekliyor</div></div>
+            document.getElementById('methodsGrid').innerHTML = `
+                <div class="method-card"><i class="fas fa-calendar-day"></i><h4>🌟 Günlük Giriş</h4><p>+50 XP</p></div>
+                <div class="method-card"><i class="fas fa-gift"></i><h4>🎁 Günlük Kutu</h4><p>+150-600 XP</p></div>
+                <div class="method-card"><i class="fas fa-clock"></i><h4>⏰ Saatlik Aktiflik</h4><p>+25 XP (Her 1 saat)</p></div>
+                <div class="method-card"><i class="fas fa-dice-d6"></i><h4>🎲 Rastgele Bonus</h4><p>+5-30 XP (Her 2 saat)</p></div>
+                <div class="method-card"><i class="fas fa-comments"></i><h4>💬 Sohbet Aktifliği</h4><p>+10-50 XP (Her 30 dk)</p></div>
             `;
         }
         
@@ -1063,53 +956,94 @@
             }
         }
         
-        // ============= GİRİŞ SİSTEMİ =============
-        function login(username) {
-            if(!username || username.trim() === "") {
-                alert("Lütfen bir kullanıcı adı girin!");
-                return false;
-            }
-            username = username.trim();
-            currentUser = findOrCreateUser(username);
-            localStorage.setItem('ltf_current_user', JSON.stringify({name: currentUser.name, id: currentUser.id}));
+        // ============= GİRİŞ/KAYIT SİSTEMİ =============
+        function showLogin() {
+            const modal = document.getElementById('loginModal');
+            modal.classList.remove('hidden');
+            document.getElementById('loginSubmitBtn').innerHTML = 'Giriş Yap';
+            document.getElementById('switchToRegister').innerHTML = 'Hesabın yok mu? Kayıt Ol';
+            isRegisterMode = false;
+        }
+        
+        function handleAuth() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
             
-            document.getElementById('loginModal').classList.add('hidden');
-            document.getElementById('userInfoBar').style.display = 'flex';
-            updateUserInfo();
-            resetChestDaily();
-            runAllTasks();
-            renderLeaderboard();
-            return true;
+            if(!username || !password) {
+                alert("Lütfen kullanıcı adı ve şifre girin!");
+                return;
+            }
+            
+            if(isRegisterMode) {
+                const result = createUser(username, password);
+                if(result.success) {
+                    alert("✅ Kayıt başarılı! Şimdi giriş yapabilirsin.");
+                    showLogin();
+                } else {
+                    alert(result.message);
+                }
+            } else {
+                const user = findUser(username, password);
+                if(user) {
+                    currentUser = user;
+                    localStorage.setItem('ltf_space_current', JSON.stringify({id: user.id, name: user.name}));
+                    document.getElementById('loginModal').classList.add('hidden');
+                    document.getElementById('userInfoBar').style.display = 'flex';
+                    updateUserInfo();
+                    resetChestDaily();
+                    runAllTasks();
+                    renderLeaderboard();
+                } else {
+                    alert("❌ Kullanıcı adı veya şifre hatalı!");
+                }
+            }
         }
         
         function logout() {
             currentUser = null;
-            localStorage.removeItem('ltf_current_user');
-            document.getElementById('loginModal').classList.remove('hidden');
+            localStorage.removeItem('ltf_space_current');
             document.getElementById('userInfoBar').style.display = 'none';
+            showLogin();
             clickCount = 0;
             isOpen = false;
             renderLeaderboard();
         }
         
-        // ============= EVENT LISTENERS =============
-        document.getElementById('loginBtn')?.addEventListener('click', () => {
-            const username = document.getElementById('usernameInput').value;
-            login(username);
-        });
+        // Uzay efektleri
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for(let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 2 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
         
-        document.getElementById('usernameInput')?.addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') {
-                const username = document.getElementById('usernameInput').value;
-                login(username);
+        // ============= EVENT LISTENERS =============
+        document.getElementById('loginSubmitBtn')?.addEventListener('click', handleAuth);
+        document.getElementById('switchToRegister')?.addEventListener('click', () => {
+            isRegisterMode = !isRegisterMode;
+            const btn = document.getElementById('loginSubmitBtn');
+            const switchBtn = document.getElementById('switchToRegister');
+            if(isRegisterMode) {
+                btn.innerHTML = 'Kayıt Ol';
+                switchBtn.innerHTML = 'Zaten hesabın var mı? Giriş Yap';
+            } else {
+                btn.innerHTML = 'Giriş Yap';
+                switchBtn.innerHTML = 'Hesabın yok mu? Kayıt Ol';
             }
         });
-        
         document.getElementById('logoutBtn')?.addEventListener('click', logout);
         document.getElementById('searchInput')?.addEventListener('input', renderLeaderboard);
-        
-        const chestBox = document.getElementById('chestBox');
-        if(chestBox) chestBox.addEventListener('click', handleChestClick);
+        document.getElementById('chestBox')?.addEventListener('click', handleChestClick);
+        document.querySelector('.profile-avatar')?.addEventListener('click', () => {
+            if(currentUser) uploadAvatar();
+        });
         
         const btn = document.getElementById("menuBtn");
         const menu = document.getElementById("sideMenu");
@@ -1139,11 +1073,12 @@
         renderMethods();
         updateRanks();
         renderLeaderboard();
+        createStars();
         
-        const savedUser = localStorage.getItem('ltf_current_user');
+        const savedUser = localStorage.getItem('ltf_space_current');
         if(savedUser) {
             const parsed = JSON.parse(savedUser);
-            const user = allUsers.find(u => u.id === parsed.id || u.name === parsed.name);
+            const user = allUsers.find(u => u.id === parsed.id);
             if(user) {
                 currentUser = user;
                 document.getElementById('loginModal').classList.add('hidden');
@@ -1153,10 +1088,10 @@
                 runAllTasks();
                 renderLeaderboard();
             } else {
-                document.getElementById('loginModal').classList.remove('hidden');
+                showLogin();
             }
         } else {
-            document.getElementById('loginModal').classList.remove('hidden');
+            showLogin();
         }
     </script>
 </body>
