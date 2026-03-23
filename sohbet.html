@@ -2,13 +2,13 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>LTF - Canlı Sohbet</title>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -22,454 +22,529 @@
         }
 
         :root {
-            --siyah: #0A0A0F;
-            --siyah-2: #1A1A20;
-            --altin: #FFD700;
-            --kirmizi: #8B0000;
-            --beyaz: #FFFFFF;
-            --mavi: #87CEEB;
-            --gri: #2A2A30;
+            --bg-primary: #0A0A0F;
+            --bg-secondary: #111115;
+            --bg-tertiary: #1A1A20;
+            --bg-hover: #252530;
+            --sidebar-bg: #0F0F14;
+            --chat-bg: #0A0A0F;
+            --border-color: #2A2A30;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A0A0A8;
+            --text-muted: #6B6B74;
+            --accent: #FFD700;
+            --accent-hover: #e6c300;
+            --accent-glow: rgba(255, 215, 0, 0.2);
+            --danger: #e74c3c;
+            --danger-hover: #c0392b;
+            --success: #2ecc71;
+            --info: #3498db;
+            --warning: #f39c12;
+            --online: #2ecc71;
+            --offline: #7f8c8d;
+            --admin: #e74c3c;
+            --mod: #3498db;
+            --member: #2ecc71;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #F5F5F5;
+            --bg-secondary: #FFFFFF;
+            --bg-tertiary: #E8E8E8;
+            --bg-hover: #E0E0E0;
+            --sidebar-bg: #FFFFFF;
+            --chat-bg: #F8F8F8;
+            --border-color: #DDDDDD;
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --text-muted: #888888;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--siyah);
-            color: var(--beyaz);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
         }
 
-        @keyframes slowDrift {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 100% 100%; }
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 20% 40%, rgba(255, 215, 0, 0.03) 0%, transparent 40%),
-                        radial-gradient(circle at 80% 70%, rgba(139, 0, 0, 0.03) 0%, transparent 40%);
-            animation: slowDrift 35s ease-in-out infinite;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        @keyframes fadeInLeft {
-            from { opacity: 0; transform: translateX(-30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .fade-left { animation: fadeInLeft 0.5s ease forwards; }
-        .fade-up { animation: fadeInUp 0.3s ease forwards; }
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
         /* HAMBURGER MENU */
         .hamburger {
             width: 40px;
             height: 30px;
             position: fixed;
-            top: 25px;
-            left: 25px;
-            z-index: 100;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             cursor: pointer;
             padding: 5px;
-            z-index: 101;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
         .hamburger span {
             display: block;
             height: 3px;
             width: 100%;
-            background: var(--altin);
+            background: var(--accent);
             border-radius: 3px;
             transition: 0.3s;
         }
 
-        .hamburger.open .bar1 {
-            transform: translateY(12px) rotate(45deg);
-            background: var(--mavi);
-        }
-
-        .hamburger.open .bar2 {
-            opacity: 0;
-        }
-
-        .hamburger.open .bar3 {
-            transform: translateY(-12px) rotate(-45deg);
-            background: var(--mavi);
-        }
+        .hamburger.open .bar1 { transform: translateY(12px) rotate(45deg); }
+        .hamburger.open .bar2 { opacity: 0; }
+        .hamburger.open .bar3 { transform: translateY(-12px) rotate(-45deg); }
 
         /* SIDE MENU */
         .side-menu {
-            width: 260px;
+            width: 280px;
             height: 100vh;
-            background: var(--siyah-2);
+            background: var(--sidebar-bg);
             position: fixed;
             top: 0;
-            left: -280px;
-            z-index: 99;
+            left: -300px;
+            z-index: 999;
             transition: left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            padding: 80px 0 30px;
-            border-right: 2px solid var(--altin);
+            padding: 80px 0 20px;
+            border-right: 1px solid var(--border-color);
+            box-shadow: 5px 0 20px rgba(0,0,0,0.2);
+            overflow-y: auto;
         }
 
-        .side-menu.open {
-            left: 0;
-        }
+        .side-menu.open { left: 0; }
 
         .menu-link {
             display: flex;
             align-items: center;
             gap: 15px;
-            padding: 15px 25px;
-            color: var(--beyaz);
+            padding: 12px 25px;
+            color: var(--text-secondary);
             text-decoration: none;
             transition: all 0.2s;
-            border-left: 3px solid transparent;
+            margin: 2px 0;
         }
 
-        .menu-link i {
-            width: 20px;
-            color: var(--altin);
+        .menu-link i { width: 24px; font-size: 1.1rem; }
+        .menu-link:hover { background: var(--bg-hover); color: var(--accent); }
+        .menu-link.active { background: var(--accent-glow); color: var(--accent); border-right: 3px solid var(--accent); }
+
+        /* ANA CHAT LAYOUT */
+        .chat-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
         }
 
-        .menu-link:hover {
-            background: rgba(255, 215, 0, 0.1);
-            border-left-color: var(--altin);
+        /* SIDEBAR (Kanallar & Kullanıcılar) */
+        .chat-sidebar {
+            width: 280px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            transition: transform 0.3s;
         }
 
-        .menu-link.active {
-            background: rgba(255, 215, 0, 0.15);
-            border-left-color: var(--altin);
-            color: var(--altin);
+        @media (max-width: 768px) {
+            .chat-sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                height: 100vh;
+                z-index: 100;
+                transform: translateX(-100%);
+            }
+            .chat-sidebar.open { transform: translateX(0); }
+            .chat-main { width: 100%; }
         }
 
-        .menu-footer {
-            position: absolute;
-            bottom: 30px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 0.8rem;
-            opacity: 0.6;
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        /* ANA İÇERİK */
-        .main-content {
-            min-height: 100vh;
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 12px;
+            transition: background 0.2s;
+        }
+
+        .user-profile:hover { background: var(--bg-hover); }
+
+        .profile-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent), #FFA500);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 100px 20px 80px;
-        }
-
-        .container {
-            max-width: 900px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        /* SOHBET KARTI */
-        .chat-card {
-            background: var(--siyah-2);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            overflow: hidden;
-            animation: fadeInUp 0.5s;
-        }
-
-        .chat-header {
-            background: linear-gradient(135deg, var(--siyah), var(--siyah-2));
-            padding: 20px 25px;
-            border-bottom: 2px solid var(--altin);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .chat-header h1 {
             font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .chat-header h1 i {
-            color: var(--altin);
-        }
-
-        .online-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 215, 0, 0.1);
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 0.85rem;
+            position: relative;
         }
 
         .online-dot {
-            width: 10px;
-            height: 10px;
-            background: #2ecc71;
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 12px;
+            height: 12px;
+            background: var(--online);
             border-radius: 50%;
-            animation: pulse 1.5s infinite;
+            border: 2px solid var(--bg-secondary);
         }
 
-        /* KULLANICI BİLGİ ALANI */
-        .user-setup {
-            padding: 20px 25px;
-            background: rgba(0, 0, 0, 0.3);
-            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        .profile-info h4 { font-size: 0.9rem; margin-bottom: 2px; }
+        .profile-info p { font-size: 0.7rem; color: var(--text-muted); }
+
+        /* Kanallar */
+        .channels-section, .users-section {
+            padding: 15px;
+        }
+
+        .section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .channel-item, .user-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+        }
+
+        .channel-item:hover, .user-item:hover { background: var(--bg-hover); }
+        .channel-item.active { background: var(--accent-glow); color: var(--accent); }
+
+        .channel-icon { width: 32px; text-align: center; }
+        .channel-name { flex: 1; font-size: 0.9rem; }
+        .channel-badge { font-size: 0.7rem; color: var(--text-muted); }
+
+        .user-status { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
+        .user-status.online { background: var(--online); }
+        .user-status.offline { background: var(--offline); }
+
+        /* ANA CHAT ALANI */
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--chat-bg);
+        }
+
+        .chat-header {
+            padding: 15px 25px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header-info h2 { font-size: 1.2rem; margin-bottom: 2px; }
+        .chat-header-info p { font-size: 0.75rem; color: var(--text-muted); }
+
+        .chat-actions {
             display: flex;
             gap: 15px;
-            align-items: center;
-            flex-wrap: wrap;
         }
 
-        .avatar-selector {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .avatar-option {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: var(--siyah);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
+        .chat-action-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
             cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s;
+            font-size: 1.1rem;
+            transition: color 0.2s;
         }
 
-        .avatar-option:hover {
-            transform: scale(1.1);
-        }
-
-        .avatar-option.selected {
-            border-color: var(--altin);
-            background: rgba(255, 215, 0, 0.2);
-        }
-
-        .username-input {
-            flex: 1;
-            background: var(--siyah);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 30px;
-            padding: 12px 18px;
-            color: var(--beyaz);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            min-width: 150px;
-        }
-
-        .username-input:focus {
-            outline: none;
-            border-color: var(--altin);
-        }
+        .chat-action-btn:hover { color: var(--accent); }
 
         /* MESAJ ALANI */
         .messages-area {
-            height: 450px;
+            flex: 1;
             overflow-y: auto;
             padding: 20px 25px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            background: rgba(0, 0, 0, 0.2);
+            gap: 16px;
         }
 
-        .messages-area::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .messages-area::-webkit-scrollbar-track {
-            background: var(--siyah);
-            border-radius: 10px;
-        }
-
-        .messages-area::-webkit-scrollbar-thumb {
-            background: var(--altin);
-            border-radius: 10px;
-        }
-
-        .message-item {
+        .message-group {
             display: flex;
             gap: 12px;
-            align-items: flex-start;
             animation: fadeInUp 0.2s ease;
         }
 
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .message-avatar {
-            width: 40px;
-            height: 40px;
-            background: var(--siyah);
+            width: 42px;
+            height: 42px;
+            background: var(--bg-tertiary);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.3rem;
             flex-shrink: 0;
-            border: 1px solid rgba(255, 215, 0, 0.3);
         }
 
         .message-content {
             flex: 1;
-            background: var(--siyah);
-            padding: 10px 15px;
+            background: var(--bg-tertiary);
+            padding: 10px 14px;
             border-radius: 18px;
             border-bottom-left-radius: 4px;
+            max-width: 70%;
+        }
+
+        .message-group.own .message-content {
+            background: linear-gradient(135deg, var(--accent), #e6c300);
+            color: var(--bg-primary);
+            border-bottom-right-radius: 4px;
+            border-bottom-left-radius: 18px;
         }
 
         .message-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
             margin-bottom: 5px;
+            flex-wrap: wrap;
         }
 
         .message-name {
             font-weight: 600;
-            color: var(--altin);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
+        .message-name.admin { color: var(--admin); }
+        .message-name.mod { color: var(--mod); }
+        .message-name.member { color: var(--member); }
+
         .message-time {
-            font-size: 0.7rem;
-            opacity: 0.5;
+            font-size: 0.65rem;
+            color: var(--text-muted);
         }
 
         .message-text {
-            font-size: 0.95rem;
-            word-break: break-word;
+            font-size: 0.9rem;
             line-height: 1.4;
+            word-break: break-word;
         }
 
-        .empty-messages {
-            text-align: center;
-            opacity: 0.5;
-            padding: 40px;
+        .message-text img {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 12px;
+            cursor: pointer;
         }
 
-        /* MESAJ GÖNDERME ALANI */
+        .message-reactions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .reaction {
+            background: var(--bg-hover);
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .reaction:hover { background: var(--accent-glow); }
+
+        .message-actions {
+            display: none;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .message-group:hover .message-actions { display: flex; }
+
+        .msg-action {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 12px;
+        }
+
+        .msg-action:hover { color: var(--accent); background: var(--bg-hover); }
+
+        /* GİRİŞ ALANI */
         .message-input-area {
             padding: 20px 25px;
-            border-top: 1px solid rgba(255, 215, 0, 0.1);
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
             display: flex;
             gap: 12px;
-            align-items: center;
-            background: var(--siyah-2);
+            align-items: flex-end;
         }
+
+        .input-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .input-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .input-btn:hover { color: var(--accent); background: var(--bg-hover); }
 
         .message-input {
             flex: 1;
-            background: var(--siyah);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 30px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
             padding: 12px 18px;
-            color: var(--beyaz);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
             resize: none;
+            max-height: 100px;
         }
 
         .message-input:focus {
             outline: none;
-            border-color: var(--altin);
+            border-color: var(--accent);
         }
 
         .send-btn {
-            background: linear-gradient(135deg, var(--altin), #e6c300);
-            color: var(--siyah);
+            background: linear-gradient(135deg, var(--accent), #e6c300);
             border: none;
-            width: 45px;
-            height: 45px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             transition: all 0.2s;
-            display: flex;
+        }
+
+        .send-btn:hover { transform: scale(1.05); box-shadow: 0 2px 15px var(--accent-glow); }
+
+        /* MODAL */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            display: none;
             align-items: center;
             justify-content: center;
         }
 
-        .send-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        .modal.open { display: flex; }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 24px;
+            padding: 25px;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid var(--border-color);
         }
 
-        .send-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
+        .modal-content h3 { margin-bottom: 15px; }
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            margin: 10px 0;
         }
 
-        .loading-spinner {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2px solid var(--siyah);
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 0.6s linear infinite;
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 15px;
         }
 
         .toast {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: var(--siyah-2);
-            border-left: 4px solid var(--altin);
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--accent);
             padding: 12px 20px;
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 200;
+            z-index: 2000;
             transform: translateX(400px);
             transition: transform 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .toast.show {
-            transform: translateX(0);
+        .toast.show { transform: translateX(0); }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--accent);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
         }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         @media (max-width: 768px) {
-            .user-setup { flex-direction: column; align-items: stretch; }
-            .avatar-selector { justify-content: center; }
-            .messages-area { height: 350px; }
-            .toast { bottom: 20px; right: 20px; left: 20px; transform: translateY(100px); }
-            .toast.show { transform: translateY(0); }
+            .message-content { max-width: 85%; }
+            .chat-header { padding: 12px 15px; }
+            .messages-area { padding: 15px; }
         }
     </style>
 </head>
@@ -491,46 +566,112 @@
             <a href="puanlama.html" class="menu-link"><i class="fas fa-star"></i> Puanlama</a>
             <a href="sohbet.html" class="menu-link active"><i class="fas fa-comments"></i> Sohbet</a>
         </div>
-        <div class="menu-footer"><p>LTF © 2025</p></div>
+        <div class="menu-footer" style="margin-top: auto; text-align: center; padding: 20px; opacity: 0.5;">LTF © 2025</div>
     </nav>
 
-    <div class="main-content">
-        <div class="container">
-            <div class="chat-card">
-                <div class="chat-header">
-                    <h1><i class="fas fa-comments"></i> Canlı Sohbet</h1>
-                    <div class="online-status">
-                        <div class="online-dot"></div>
-                        <span id="onlineCount">0</span> kişi aktif
+    <div class="chat-container">
+        <!-- SIDEBAR -->
+        <div class="chat-sidebar" id="chatSidebar">
+            <div class="sidebar-header">
+                <div class="user-profile" id="profileBtn">
+                    <div class="profile-avatar" id="profileAvatar">😎</div>
+                    <div class="profile-info">
+                        <h4 id="profileName">Kullanıcı</h4>
+                        <p id="profileRole">Üye</p>
                     </div>
                 </div>
+            </div>
 
-                <div class="user-setup">
-                    <div class="avatar-selector" id="avatarSelector">
-                        <div class="avatar-option" data-avatar="😎">😎</div>
-                        <div class="avatar-option" data-avatar="👨‍💻">👨‍💻</div>
-                        <div class="avatar-option" data-avatar="🎮">🎮</div>
-                        <div class="avatar-option" data-avatar="🔥">🔥</div>
-                        <div class="avatar-option" data-avatar="⭐">⭐</div>
-                        <div class="avatar-option" data-avatar="🚀">🚀</div>
-                        <div class="avatar-option" data-avatar="🐱‍👤">🐱‍👤</div>
-                        <div class="avatar-option" data-avatar="🎧">🎧</div>
+            <div class="channels-section">
+                <div class="section-title">
+                    <span><i class="fas fa-hashtag"></i> KANALLAR</span>
+                    <i class="fas fa-plus" style="cursor: pointer;" id="createChannelBtn"></i>
+                </div>
+                <div id="channelsList">
+                    <div class="channel-item active" data-channel="genel">
+                        <div class="channel-icon"><i class="fas fa-comments"></i></div>
+                        <div class="channel-name"># Genel</div>
                     </div>
-                    <input type="text" class="username-input" id="usernameInput" placeholder="Kullanıcı adınız (zorunlu)" maxlength="25">
-                </div>
-
-                <div class="messages-area" id="messagesArea">
-                    <div class="empty-messages">
-                        <i class="fas fa-comment-dots"></i> Sohbete hoş geldin! İlk mesajı sen gönder.
+                    <div class="channel-item" data-channel="oyun">
+                        <div class="channel-icon"><i class="fas fa-gamepad"></i></div>
+                        <div class="channel-name"># Oyun</div>
+                    </div>
+                    <div class="channel-item" data-channel="projeler">
+                        <div class="channel-icon"><i class="fas fa-code"></i></div>
+                        <div class="channel-name"># Projeler</div>
+                    </div>
+                    <div class="channel-item" data-channel="duyurular">
+                        <div class="channel-icon"><i class="fas fa-bullhorn"></i></div>
+                        <div class="channel-name"># Duyurular</div>
                     </div>
                 </div>
+            </div>
 
-                <div class="message-input-area">
-                    <textarea class="message-input" id="messageInput" rows="1" placeholder="Mesajınızı yazın..." onkeydown="if(event.keyCode===13 && !event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
-                    <button class="send-btn" id="sendBtn">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
+            <div class="users-section">
+                <div class="section-title">
+                    <span><i class="fas fa-users"></i> AKTİF KULLANICILAR</span>
+                    <span id="onlineCount">0</span>
                 </div>
+                <div id="usersList"></div>
+            </div>
+        </div>
+
+        <!-- ANA CHAT ALANI -->
+        <div class="chat-main">
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <h2 id="currentChannel"># Genel</h2>
+                    <p id="channelDesc">Her konuda sohbet edin</p>
+                </div>
+                <div class="chat-actions">
+                    <button class="chat-action-btn" id="themeToggleBtn"><i class="fas fa-moon"></i></button>
+                    <button class="chat-action-btn" id="searchBtn"><i class="fas fa-search"></i></button>
+                    <button class="chat-action-btn" id="mobileSidebarToggle"><i class="fas fa-bars"></i></button>
+                </div>
+            </div>
+
+            <div class="messages-area" id="messagesArea">
+                <div style="text-align: center; opacity: 0.5; padding: 40px;">
+                    <i class="fas fa-spinner fa-spin"></i> Mesajlar yükleniyor...
+                </div>
+            </div>
+
+            <div class="message-input-area">
+                <div class="input-actions">
+                    <button class="input-btn" id="emojiBtn"><i class="far fa-smile"></i></button>
+                    <button class="input-btn" id="imageBtn"><i class="fas fa-image"></i></button>
+                </div>
+                <textarea class="message-input" id="messageInput" rows="1" placeholder="Mesajınızı yazın..."></textarea>
+                <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROFİL MODAL -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-user"></i> Profilim</h3>
+            <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
+                <div class="profile-avatar" style="width: 60px; height: 60px; font-size: 2rem;" id="modalAvatar">😎</div>
+                <div>
+                    <input type="text" class="modal-input" id="modalUsername" placeholder="Kullanıcı adı" style="margin: 0;">
+                    <select id="modalAvatarSelect" class="modal-input" style="margin-top: 8px;">
+                        <option value="😎">😎 Havalı</option>
+                        <option value="👨‍💻">👨‍💻 Geliştirici</option>
+                        <option value="🎮">🎮 Oyuncu</option>
+                        <option value="🔥">🔥 Ateş</option>
+                        <option value="⭐">⭐ Yıldız</option>
+                        <option value="🚀">🚀 Roket</option>
+                        <option value="🐱‍👤">🐱‍👤 Ninja</option>
+                        <option value="🎧">🎧 Müzik</option>
+                        <option value="💪">💪 Güçlü</option>
+                        <option value="🎨">🎨 Sanatçı</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="send-btn" id="saveProfileBtn" style="width: auto; padding: 10px 20px;">Kaydet</button>
+                <button class="input-btn" id="closeProfileBtn">Kapat</button>
             </div>
         </div>
     </div>
@@ -538,7 +679,7 @@
     <div id="toast" class="toast"><i class="fas fa-check-circle"></i><span id="toastMessage"></span></div>
 
     <script>
-        // ========== FIREBASE KONFIGÜRASYONU ==========
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDAi_IqftZcuMmgvjIHlZXlC0hV2KmZA78",
             authDomain: "ltf-puanlama-9a139.firebaseapp.com",
@@ -546,105 +687,83 @@
             storageBucket: "ltf-puanlama-9a139.firebasestorage.app",
             messagingSenderId: "158627242883",
             appId: "1:158627242883:web:09aa2caff119ae9ebc0cb6",
-            measurementId: "G-T1C2ZFV4MC",
             databaseURL: "https://ltf-puanlama-9a139-default-rtdb.firebaseio.com"
         };
         
-        // Firebase başlat
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         
-        // Global değişkenler
-        let selectedAvatar = "😎";
-        let username = "";
-        let isSending = false;
-        
-        const messagesArea = document.getElementById('messagesArea');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const usernameInput = document.getElementById('usernameInput');
-        const onlineCountSpan = document.getElementById('onlineCount');
-        
-        // Kullanıcı ID (oturum için)
+        // Kullanıcı bilgileri
         let userId = localStorage.getItem('chat_user_id');
         if (!userId) {
             userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
             localStorage.setItem('chat_user_id', userId);
         }
         
-        // Avatar seçimi
-        const avatarOptions = document.querySelectorAll('.avatar-option');
-        avatarOptions.forEach(opt => {
-            opt.addEventListener('click', () => {
-                avatarOptions.forEach(o => o.classList.remove('selected'));
-                opt.classList.add('selected');
-                selectedAvatar = opt.dataset.avatar;
-                localStorage.setItem('chat_avatar', selectedAvatar);
-            });
-        });
+        let currentUser = {
+            id: userId,
+            username: localStorage.getItem('chat_username') || 'Misafir',
+            avatar: localStorage.getItem('chat_avatar') || '😎',
+            role: 'member',
+            joinDate: new Date().toLocaleDateString(),
+            about: 'Merhaba! Ben LTF topluluğunun bir üyesiyim.'
+        };
         
-        // Kayıtlı avatarı yükle
-        const savedAvatar = localStorage.getItem('chat_avatar');
-        if (savedAvatar) {
-            selectedAvatar = savedAvatar;
-            avatarOptions.forEach(opt => {
-                if (opt.dataset.avatar === savedAvatar) {
-                    opt.classList.add('selected');
-                }
-            });
-        } else {
-            avatarOptions[0].classList.add('selected');
-        }
+        let currentChannel = 'genel';
+        let currentTheme = localStorage.getItem('chat_theme') || 'dark';
+        let messageListener = null;
         
-        // Kayıtlı kullanıcı adını yükle
-        const savedUsername = localStorage.getItem('chat_username');
-        if (savedUsername) {
-            usernameInput.value = savedUsername;
-            username = savedUsername;
-        }
+        // DOM Elementleri
+        const messagesArea = document.getElementById('messagesArea');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const profileAvatar = document.getElementById('profileAvatar');
+        const profileName = document.getElementById('profileName');
+        const profileRole = document.getElementById('profileRole');
+        const currentChannelEl = document.getElementById('currentChannel');
         
-        usernameInput.addEventListener('change', () => {
-            username = usernameInput.value.trim();
-            if (username) {
-                localStorage.setItem('chat_username', username);
+        // Tema uygulama
+        function applyTheme() {
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            const themeIcon = document.querySelector('#themeToggleBtn i');
+            if (themeIcon) {
+                themeIcon.className = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
             }
+        }
+        
+        document.getElementById('themeToggleBtn')?.addEventListener('click', () => {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('chat_theme', currentTheme);
+            applyTheme();
+            showToast(`${currentTheme === 'dark' ? '🌙 Koyu' : '☀️ Açık'} tema aktif`);
         });
         
-        // Toast göster
+        // Profil güncelleme
+        function updateProfileUI() {
+            profileAvatar.textContent = currentUser.avatar;
+            profileName.textContent = currentUser.username;
+            profileRole.textContent = currentUser.role === 'admin' ? 'Admin' : currentUser.role === 'mod' ? 'Moderatör' : 'Üye';
+            document.getElementById('modalAvatar').textContent = currentUser.avatar;
+            document.getElementById('modalUsername').value = currentUser.username;
+            document.getElementById('modalAvatarSelect').value = currentUser.avatar;
+        }
+        
+        // Toast bildirimi
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toastMessage');
             const icon = toast.querySelector('i');
-            
             toastMessage.textContent = message;
             icon.className = isError ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
-            toast.style.borderLeftColor = isError ? 'var(--kirmizi)' : 'var(--altin)';
+            toast.style.borderLeftColor = isError ? 'var(--danger)' : 'var(--accent)';
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
         
-        // Mesaj gönder
+        // Mesaj gönderme
         async function sendMessage() {
-            if (isSending) return;
-            
-            const newUsername = usernameInput.value.trim();
-            if (newUsername === "") {
-                showToast('Lütfen kullanıcı adınızı girin!', true);
-                usernameInput.style.animation = 'shake 0.4s ease';
-                setTimeout(() => usernameInput.style.animation = '', 400);
-                return;
-            }
-            username = newUsername;
-            
             const messageText = messageInput.value.trim();
-            if (messageText === "") {
-                showToast('Mesaj yazın!', true);
-                return;
-            }
-            
-            isSending = true;
-            sendBtn.innerHTML = '<span class="loading-spinner"></span>';
-            sendBtn.disabled = true;
+            if (!messageText) return;
             
             const now = new Date();
             const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
@@ -652,33 +771,30 @@
             
             const messageData = {
                 text: messageText,
-                username: username,
-                avatar: selectedAvatar,
+                username: currentUser.username,
+                avatar: currentUser.avatar,
+                role: currentUser.role,
                 time: timeStr,
                 timestamp: now.getTime(),
-                userId: userId
+                userId: userId,
+                channel: currentChannel
             };
             
             try {
-                await database.ref('chat_messages/' + messageId).set(messageData);
+                await database.ref(`chat_messages/${currentChannel}/${messageId}`).set(messageData);
                 messageInput.value = '';
                 messageInput.style.height = 'auto';
-                showToast('Mesaj gönderildi!');
             } catch (error) {
-                console.error('Mesaj hatası:', error);
                 showToast('Mesaj gönderilemedi!', true);
             }
-            
-            sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
-            sendBtn.disabled = false;
-            isSending = false;
         }
         
-        // Mesajları dinle
+        // Mesajları dinleme
         function loadMessages() {
-            const messagesRef = database.ref('chat_messages');
+            if (messageListener) messageListener();
             
-            messagesRef.on('value', (snapshot) => {
+            const messagesRef = database.ref(`chat_messages/${currentChannel}`);
+            messageListener = messagesRef.on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data && typeof data === 'object') {
                     const messagesArray = Object.values(data);
@@ -692,52 +808,37 @@
         
         function displayMessages(messages) {
             if (!messages || messages.length === 0) {
-                messagesArea.innerHTML = '<div class="empty-messages"><i class="fas fa-comment-dots"></i> Sohbete hoş geldin! İlk mesajı sen gönder.</div>';
+                messagesArea.innerHTML = '<div style="text-align: center; opacity: 0.5; padding: 40px;"><i class="fas fa-comment-dots"></i> Henüz mesaj yok. İlk mesajı sen gönder!</div>';
                 return;
             }
             
             messagesArea.innerHTML = messages.map(msg => `
-                <div class="message-item fade-up">
+                <div class="message-group ${msg.userId === userId ? 'own' : ''}">
                     <div class="message-avatar">${msg.avatar || '😎'}</div>
                     <div class="message-content">
                         <div class="message-header">
-                            <span class="message-name">${escapeHtml(msg.username || 'Anonim')}</span>
+                            <span class="message-name ${msg.role}">${escapeHtml(msg.username)}</span>
                             <span class="message-time">${msg.time}</span>
                         </div>
-                        <div class="message-text">${escapeHtml(msg.text)}</div>
+                        <div class="message-text">${formatMessageText(msg.text)}</div>
+                        <div class="message-actions">
+                            <button class="msg-action" onclick="replyToMessage('${msg.username}')"><i class="fas fa-reply"></i> Yanıtla</button>
+                            <button class="msg-action" onclick="addReaction('${msg.id}')"><i class="far fa-smile"></i> Tepki</button>
+                        </div>
                     </div>
                 </div>
             `).join('');
             
-            // Son mesaja kaydır
             messagesArea.scrollTop = messagesArea.scrollHeight;
         }
         
-        // Aktif kullanıcı sayısı (son 1 dakika içinde mesaj atanlar)
-        function updateOnlineCount() {
-            const messagesRef = database.ref('chat_messages');
-            const oneMinuteAgo = Date.now() - 60000;
-            
-            messagesRef.once('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data && typeof data === 'object') {
-                    const messagesArray = Object.values(data);
-                    const recentUsers = new Set();
-                    messagesArray.forEach(msg => {
-                        if (msg.timestamp > oneMinuteAgo && msg.userId) {
-                            recentUsers.add(msg.userId);
-                        }
-                    });
-                    onlineCountSpan.textContent = recentUsers.size;
-                } else {
-                    onlineCountSpan.textContent = 0;
-                }
-            });
+        function formatMessageText(text) {
+            // URL'leri link yap
+            text = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color: var(--accent);">$1</a>');
+            // Resim URL'lerini göster
+            text = text.replace(/(https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp))/gi, '<img src="$1" onclick="openImage(this.src)">');
+            return text;
         }
-        
-        // Her 30 saniyede bir aktif kullanıcı sayısını güncelle
-        setInterval(updateOnlineCount, 30000);
-        updateOnlineCount();
         
         function escapeHtml(text) {
             const div = document.createElement('div');
@@ -745,14 +846,194 @@
             return div.innerHTML;
         }
         
-        // Textarea yüksekliğini otomatik ayarla
-        messageInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+        // Kanal değiştirme
+        function changeChannel(channel) {
+            currentChannel = channel;
+            currentChannelEl.textContent = `# ${channel.charAt(0).toUpperCase() + channel.slice(1)}`;
+            loadMessages();
+            
+            // UI aktif kanal güncelleme
+            document.querySelectorAll('.channel-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.channel === channel) item.classList.add('active');
+            });
+        }
+        
+        // Aktif kullanıcıları güncelle
+        function updateOnlineUsers() {
+            const usersRef = database.ref('chat_messages');
+            const oneMinuteAgo = Date.now() - 60000;
+            
+            usersRef.once('value', (snapshot) => {
+                const users = new Map();
+                const data = snapshot.val();
+                if (data) {
+                    Object.values(data).forEach(channelMsgs => {
+                        if (channelMsgs && typeof channelMsgs === 'object') {
+                            Object.values(channelMsgs).forEach(msg => {
+                                if (msg.timestamp > oneMinuteAgo && msg.userId) {
+                                    users.set(msg.userId, {
+                                        username: msg.username,
+                                        avatar: msg.avatar,
+                                        role: msg.role
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+                
+                const onlineCount = users.size;
+                document.getElementById('onlineCount').textContent = onlineCount;
+                
+                const usersList = document.getElementById('usersList');
+                if (usersList) {
+                    usersList.innerHTML = Array.from(users.values()).map(user => `
+                        <div class="user-item" onclick="showUserProfile('${escapeHtml(user.username)}')">
+                            <div class="user-status online"></div>
+                            <span>${escapeHtml(user.username)}</span>
+                            <span style="font-size: 0.7rem; margin-left: auto;">${user.role === 'admin' ? '👑' : user.role === 'mod' ? '🛡️' : ''}</span>
+                        </div>
+                    `).join('');
+                    
+                    if (users.size === 0) {
+                        usersList.innerHTML = '<div style="text-align:center; opacity:0.5; padding:20px;">Kimse aktif değil</div>';
+                    }
+                }
+            });
+        }
+        
+        // Kullanıcı aktivitesini güncelle
+        function updateUserActivity() {
+            const activityRef = database.ref(`user_activity/${userId}`);
+            activityRef.set({
+                username: currentUser.username,
+                avatar: currentUser.avatar,
+                role: currentUser.role,
+                lastActive: Date.now(),
+                channel: currentChannel
+            });
+        }
+        
+        // Profil modal
+        const profileModal = document.getElementById('profileModal');
+        document.getElementById('profileBtn').addEventListener('click', () => profileModal.classList.add('open'));
+        document.getElementById('closeProfileBtn').addEventListener('click', () => profileModal.classList.remove('open'));
+        
+        document.getElementById('saveProfileBtn').addEventListener('click', () => {
+            const newUsername = document.getElementById('modalUsername').value.trim();
+            const newAvatar = document.getElementById('modalAvatarSelect').value;
+            if (newUsername) {
+                currentUser.username = newUsername;
+                currentUser.avatar = newAvatar;
+                localStorage.setItem('chat_username', newUsername);
+                localStorage.setItem('chat_avatar', newAvatar);
+                updateProfileUI();
+                updateUserActivity();
+                showToast('Profil güncellendi!');
+                profileModal.classList.remove('open');
+            } else {
+                showToast('Kullanıcı adı boş olamaz!', true);
+            }
         });
         
-        // Gönder butonu
+        // Emoji ekleme
+        document.getElementById('emojiBtn').addEventListener('click', () => {
+            const emojis = ['😀', '😂', '😍', '🔥', '👍', '🎉', '❤️', '😎', '🚀', '⭐', '💪', '🎮'];
+            const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+            messageInput.value += emoji;
+            messageInput.focus();
+        });
+        
+        // Resim ekleme
+        document.getElementById('imageBtn').addEventListener('click', () => {
+            const url = prompt('Resim URL\'sini girin:');
+            if (url && (url.startsWith('http') || url.startsWith('data:image'))) {
+                messageInput.value += ` ${url} `;
+                messageInput.focus();
+            } else if (url) {
+                showToast('Geçerli bir resim URL\'si girin!', true);
+            }
+        });
+        
+        // Mobil sidebar toggle
+        document.getElementById('mobileSidebarToggle').addEventListener('click', () => {
+            document.getElementById('chatSidebar').classList.toggle('open');
+        });
+        
+        // Kanal değiştirme eventleri
+        document.querySelectorAll('.channel-item').forEach(item => {
+            item.addEventListener('click', () => {
+                changeChannel(item.dataset.channel);
+                if (window.innerWidth <= 768) {
+                    document.getElementById('chatSidebar').classList.remove('open');
+                }
+            });
+        });
+        
+        // Yeni kanal oluşturma
+        document.getElementById('createChannelBtn').addEventListener('click', () => {
+            const channelName = prompt('Kanal adı girin (sadece harf ve rakam):');
+            if (channelName && /^[a-zA-Z0-9ğüşıöçĞÜŞİÖÇ]+$/.test(channelName)) {
+                const channelId = channelName.toLowerCase();
+                if (!document.querySelector(`.channel-item[data-channel="${channelId}"]`)) {
+                    const channelsList = document.getElementById('channelsList');
+                    const newChannel = document.createElement('div');
+                    newChannel.className = 'channel-item';
+                    newChannel.setAttribute('data-channel', channelId);
+                    newChannel.innerHTML = `
+                        <div class="channel-icon"><i class="fas fa-hashtag"></i></div>
+                        <div class="channel-name"># ${channelName}</div>
+                    `;
+                    newChannel.addEventListener('click', () => changeChannel(channelId));
+                    channelsList.appendChild(newChannel);
+                    showToast(`${channelName} kanalı oluşturuldu!`);
+                } else {
+                    showToast('Bu kanal zaten var!', true);
+                }
+            } else if (channelName) {
+                showToast('Sadece harf ve rakam kullanın!', true);
+            }
+        });
+        
+        // Enter ile gönderme
+        messageInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
         sendBtn.addEventListener('click', sendMessage);
+        
+        // Yanıtlama fonksiyonu
+        window.replyToMessage = (username) => {
+            messageInput.value = `@${username} `;
+            messageInput.focus();
+        };
+        
+        // Resim açma
+        window.openImage = (src) => {
+            window.open(src, '_blank');
+        };
+        
+        // Profil gösterme
+        window.showUserProfile = (username) => {
+            showToast(`${username} - Profil görüntüleniyor`);
+        };
+        
+        // Periyodik güncellemeler
+        setInterval(() => {
+            updateOnlineUsers();
+            updateUserActivity();
+        }, 30000);
+        
+        // Başlat
+        updateProfileUI();
+        applyTheme();
+        loadMessages();
+        updateOnlineUsers();
+        updateUserActivity();
         
         // Hamburger menu
         const btn = document.getElementById("menuBtn");
@@ -768,9 +1049,6 @@
                 btn.classList.remove('open');
             }
         });
-        
-        // Başlat
-        loadMessages();
     </script>
 </body>
 </html>
