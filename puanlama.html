@@ -24,10 +24,15 @@
         :root {
             --siyah: #0A0A0F;
             --siyah-2: #1A1A20;
+            --siyah-3: #252530;
             --altin: #FFD700;
+            --altin-glow: rgba(255, 215, 0, 0.2);
             --kirmizi: #8B0000;
+            --kirmizi-light: #b30000;
             --beyaz: #FFFFFF;
             --mavi: #87CEEB;
+            --yesil: #2ecc71;
+            --turuncu: #e67e22;
         }
 
         body {
@@ -39,9 +44,17 @@
             min-height: 100vh;
         }
 
+        /* Arka Plan Animasyonu */
         @keyframes slowDrift {
             0% { background-position: 0% 0%; }
-            100% { background-position: 100% 100%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         body::before {
@@ -52,15 +65,27 @@
             width: 100%;
             height: 100%;
             background: radial-gradient(circle at 20% 40%, rgba(255, 215, 0, 0.03) 0%, transparent 40%),
-                        radial-gradient(circle at 80% 70%, rgba(139, 0, 0, 0.03) 0%, transparent 40%);
+                        radial-gradient(circle at 80% 70%, rgba(139, 0, 0, 0.03) 0%, transparent 40%),
+                        radial-gradient(circle at 50% 90%, rgba(135, 206, 235, 0.02) 0%, transparent 50%);
             animation: slowDrift 35s ease-in-out infinite;
             pointer-events: none;
             z-index: -1;
         }
 
+        /* Animasyonlar */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         @keyframes scaleIn {
@@ -70,21 +95,28 @@
 
         @keyframes starGlow {
             0% { transform: scale(1); }
-            50% { transform: scale(1.1); text-shadow: 0 0 8px var(--altin); }
+            50% { transform: scale(1.15); text-shadow: 0 0 10px var(--altin); }
             100% { transform: scale(1); }
         }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-3px); }
-            75% { transform: translateX(3px); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
         .fade-up { animation: fadeInUp 0.6s ease forwards; }
+        .fade-left { animation: fadeInLeft 0.6s ease forwards; }
+        .fade-right { animation: fadeInRight 0.6s ease forwards; }
         .scale-in { animation: scaleIn 0.5s ease forwards; }
 
         /* HAMBURGER MENU */
@@ -101,6 +133,9 @@
             cursor: pointer;
             padding: 5px;
             z-index: 101;
+            background: rgba(10, 10, 15, 0.8);
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
         }
 
         .hamburger span {
@@ -128,16 +163,17 @@
 
         /* SIDE MENU */
         .side-menu {
-            width: 260px;
+            width: 280px;
             height: 100vh;
-            background: var(--siyah-2);
+            background: linear-gradient(135deg, var(--siyah-2), var(--siyah));
             position: fixed;
             top: 0;
-            left: -280px;
+            left: -300px;
             z-index: 99;
             transition: left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            padding: 80px 0 30px;
+            padding: 90px 0 30px;
             border-right: 2px solid var(--altin);
+            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
         }
 
         .side-menu.open {
@@ -148,25 +184,28 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            padding: 15px 25px;
+            padding: 14px 25px;
             color: var(--beyaz);
             text-decoration: none;
             transition: all 0.2s;
             border-left: 3px solid transparent;
+            margin: 5px 0;
         }
 
         .menu-link i {
-            width: 20px;
+            width: 24px;
             color: var(--altin);
+            font-size: 1.2rem;
         }
 
         .menu-link:hover {
-            background: rgba(255, 215, 0, 0.1);
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);
             border-left-color: var(--altin);
+            padding-left: 30px;
         }
 
         .menu-link.active {
-            background: rgba(255, 215, 0, 0.15);
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent);
             border-left-color: var(--altin);
             color: var(--altin);
         }
@@ -177,25 +216,23 @@
             left: 0;
             right: 0;
             text-align: center;
-            font-size: 0.8rem;
-            opacity: 0.6;
+            font-size: 0.75rem;
+            opacity: 0.5;
         }
 
         /* Ana İçerik */
         .main-content {
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 100px 20px 80px;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1300px;
             width: 100%;
             margin: 0 auto;
         }
 
+        /* Başlık */
         .page-header {
             text-align: center;
             margin-bottom: 50px;
@@ -203,50 +240,66 @@
 
         .page-header h1 {
             font-family: 'Montserrat', sans-serif;
-            font-size: clamp(2rem, 6vw, 3.2rem);
+            font-size: clamp(2rem, 6vw, 3.5rem);
             font-weight: 800;
-            background: linear-gradient(135deg, var(--altin), var(--altin));
+            background: linear-gradient(135deg, var(--altin), #FFA500, var(--mavi));
+            background-size: 200% auto;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            animation: gradientFlow 3s ease infinite;
             margin-bottom: 15px;
         }
 
         .page-header p {
             color: var(--beyaz);
-            opacity: 0.8;
+            opacity: 0.7;
+            font-size: 1.1rem;
         }
 
-        .rating-grid {
+        /* Grid Yapısı */
+        .main-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            grid-template-columns: 1fr 0.8fr;
             gap: 30px;
             margin-bottom: 40px;
         }
 
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Kartlar */
         .card {
-            background: var(--siyah-2);
-            border-radius: 20px;
-            padding: 30px;
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            background: linear-gradient(135deg, var(--siyah-2), var(--siyah));
+            border-radius: 24px;
+            padding: 28px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
             transition: all 0.3s;
+            backdrop-filter: blur(10px);
         }
 
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             border-color: var(--altin);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
         }
 
-        .card h2 {
-            font-size: 1.6rem;
+        .card-title {
+            font-size: 1.4rem;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
         }
 
-        .card h2 i {
+        .card-title i {
             color: var(--altin);
+            font-size: 1.5rem;
         }
 
         /* Kullanıcı Bilgi Alanı */
@@ -254,8 +307,8 @@
             display: flex;
             gap: 15px;
             align-items: center;
-            margin-bottom: 20px;
             flex-wrap: wrap;
+            margin-bottom: 25px;
         }
 
         .avatar-selector {
@@ -265,14 +318,14 @@
         }
 
         .avatar-option {
-            width: 45px;
-            height: 45px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             background: var(--siyah);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             cursor: pointer;
             border: 2px solid transparent;
             transition: all 0.2s;
@@ -280,107 +333,154 @@
 
         .avatar-option:hover {
             transform: scale(1.1);
+            border-color: var(--altin);
         }
 
         .avatar-option.selected {
             border-color: var(--altin);
-            background: rgba(255, 215, 0, 0.2);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), transparent);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
         }
 
         .username-input {
             flex: 1;
             background: var(--siyah);
             border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 30px;
-            padding: 12px 18px;
+            border-radius: 40px;
+            padding: 12px 20px;
             color: var(--beyaz);
             font-family: 'Inter', sans-serif;
             font-size: 0.95rem;
+            transition: all 0.2s;
         }
 
         .username-input:focus {
             outline: none;
             border-color: var(--altin);
+            box-shadow: 0 0 0 2px var(--altin-glow);
         }
 
+        /* Yıldızlar */
         .stars {
             display: flex;
-            gap: 8px;
+            gap: 12px;
             cursor: pointer;
-            margin: 15px 0;
+            margin: 20px 0;
+            justify-content: center;
         }
 
         .star {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             color: #444;
             transition: all 0.15s;
             cursor: pointer;
         }
 
         .star:hover {
-            transform: scale(1.1);
+            transform: scale(1.15);
         }
 
         .star.active {
             color: var(--altin);
-            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
         }
 
         .rating-value {
-            font-size: 1rem;
+            text-align: center;
+            display: block;
+            font-size: 0.9rem;
             opacity: 0.7;
-            margin-left: 15px;
+            margin-bottom: 15px;
         }
 
         textarea {
             width: 100%;
             background: var(--siyah);
             border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 12px;
-            padding: 12px 15px;
+            border-radius: 16px;
+            padding: 14px 18px;
             color: var(--beyaz);
             font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
             resize: vertical;
-            margin-top: 15px;
+            transition: all 0.2s;
         }
 
         textarea:focus {
             outline: none;
             border-color: var(--altin);
+            box-shadow: 0 0 0 2px var(--altin-glow);
         }
 
         .btn-submit {
             background: linear-gradient(135deg, var(--altin), #e6c300);
             color: var(--siyah);
             border: none;
-            padding: 12px 28px;
-            border-radius: 40px;
+            padding: 14px 28px;
+            border-radius: 50px;
             font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
-            margin-top: 15px;
+            margin-top: 20px;
             width: 100%;
             transition: all 0.2s;
         }
 
-        .btn-submit:hover {
+        .btn-submit:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
         }
 
         .btn-submit:disabled {
             opacity: 0.6;
             cursor: not-allowed;
+            transform: none;
         }
 
-        .average-card {
+        /* Zaman Göstergesi */
+        .cooldown-timer {
+            background: linear-gradient(135deg, var(--kirmizi), #5a0000);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .cooldown-timer.show {
+            display: block;
+            animation: pulse 1s infinite;
+        }
+
+        .cooldown-timer i {
+            margin-right: 8px;
+        }
+
+        /* İstatistik Kartı */
+        .stats-card {
             background: linear-gradient(135deg, var(--kirmizi), #5a0000);
             border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 60%);
+            animation: slowDrift 20s linear infinite;
         }
 
         .average-score {
             text-align: center;
-            padding: 20px 0;
+            padding: 15px 0;
+            position: relative;
+            z-index: 1;
         }
 
         .big-score {
@@ -400,7 +500,7 @@
             display: flex;
             justify-content: center;
             gap: 12px;
-            margin-top: 15px;
+            margin: 15px 0;
         }
 
         .star-display i {
@@ -412,33 +512,97 @@
             color: var(--altin);
         }
 
+        /* Yıldız Dağılımı */
+        .rating-distribution {
+            margin-top: 20px;
+        }
+
+        .dist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .dist-label {
+            width: 35px;
+            font-size: 0.9rem;
+        }
+
+        .dist-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .dist-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--altin), #FFA500);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .dist-count {
+            width: 40px;
+            font-size: 0.8rem;
+            text-align: right;
+            opacity: 0.7;
+        }
+
+        /* Geri Bildirim Listesi */
         .feedback-list {
             margin-top: 20px;
-            max-height: 400px;
+            max-height: 500px;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .feedback-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .feedback-list::-webkit-scrollbar-track {
+            background: var(--siyah);
+            border-radius: 10px;
+        }
+
+        .feedback-list::-webkit-scrollbar-thumb {
+            background: var(--altin);
+            border-radius: 10px;
         }
 
         .feedback-item {
-            background: rgba(10, 10, 15, 0.6);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            border-left: 3px solid var(--altin);
+            background: rgba(10, 10, 15, 0.7);
+            padding: 16px;
+            border-radius: 18px;
+            border-left: 4px solid var(--altin);
+            transition: all 0.2s;
             display: flex;
             gap: 15px;
             align-items: flex-start;
         }
 
+        .feedback-item:hover {
+            background: rgba(255, 215, 0, 0.05);
+            transform: translateX(5px);
+        }
+
         .feedback-avatar {
-            width: 45px;
-            height: 45px;
-            background: var(--siyah);
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--siyah), var(--siyah-2));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             flex-shrink: 0;
+            border: 2px solid rgba(255, 215, 0, 0.3);
         }
 
         .feedback-content {
@@ -450,6 +614,7 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            gap: 8px;
             margin-bottom: 8px;
         }
 
@@ -461,8 +626,9 @@
         }
 
         .feedback-name {
-            font-weight: 600;
+            font-weight: 700;
             color: var(--altin);
+            font-size: 1rem;
         }
 
         .feedback-stars {
@@ -479,14 +645,43 @@
         .feedback-text {
             font-size: 0.9rem;
             opacity: 0.9;
-            margin-top: 5px;
-            word-break: break-word;
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .feedback-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+        }
+
+        .like-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+            padding: 4px 8px;
+            border-radius: 20px;
+        }
+
+        .like-btn:hover {
+            color: var(--altin);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .like-btn.liked {
+            color: var(--altin);
         }
 
         .empty-feedback {
             text-align: center;
             opacity: 0.5;
-            padding: 20px;
+            padding: 40px;
         }
 
         .loading-spinner {
@@ -501,29 +696,36 @@
             vertical-align: middle;
         }
 
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: var(--siyah-2);
+            background: linear-gradient(135deg, var(--siyah-2), var(--siyah));
             border-left: 4px solid var(--altin);
-            padding: 12px 20px;
-            border-radius: 12px;
+            padding: 14px 22px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             gap: 12px;
             z-index: 200;
             transform: translateX(400px);
             transition: transform 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         .toast.show {
             transform: translateX(0);
         }
 
+        .toast i {
+            color: var(--altin);
+            font-size: 1.2rem;
+        }
+
         @media (max-width: 768px) {
-            .star { font-size: 1.6rem; }
-            .big-score { font-size: 3.5rem; }
+            .star { font-size: 1.8rem; }
+            .big-score { font-size: 3rem; }
             .toast { bottom: 20px; right: 20px; left: 20px; transform: translateY(100px); }
             .toast.show { transform: translateY(0); }
             .feedback-item { flex-direction: column; }
@@ -547,9 +749,9 @@
             <a href="social.html" class="menu-link"><i class="fas fa-users"></i> Sosyal Medya</a>
             <a href="team.html" class="menu-link"><i class="fas fa-user-ninja"></i> Takımımız</a>
             <a href="puanlama.html" class="menu-link active"><i class="fas fa-star"></i> Puanlama</a>
-            <a href="sohbet.html" class="menu-link active"><i class="fas fa-comments"></i> Sohbet</a>
+            <a href="sohbet.html" class="menu-link"><i class="fas fa-comments"></i> Sohbet</a>
         </div>
-        <div class="menu-footer"><p>LTF © 2025</p></div>
+        <div class="menu-footer"><p>Loyal Team Force © 2025</p></div>
     </nav>
 
     <div class="main-content">
@@ -559,11 +761,14 @@
                 <p>Deneyiminizi paylaşın, topluluğumuzu geliştirin</p>
             </div>
 
-            <div class="rating-grid">
-                <div class="card">
-                    <h2><i class="fas fa-star"></i> Senin Puanın</h2>
+            <div class="main-grid">
+                <!-- SOL KART: PUANLAMA ALANI -->
+                <div class="card fade-left">
+                    <div class="card-title">
+                        <i class="fas fa-star"></i>
+                        <span>Senin Değerlendirmen</span>
+                    </div>
                     
-                    <!-- KULLANICI BİLGİ ALANI -->
                     <div class="user-info">
                         <div class="avatar-selector" id="avatarSelector">
                             <div class="avatar-option" data-avatar="😎">😎</div>
@@ -572,10 +777,12 @@
                             <div class="avatar-option" data-avatar="🔥">🔥</div>
                             <div class="avatar-option" data-avatar="⭐">⭐</div>
                             <div class="avatar-option" data-avatar="🚀">🚀</div>
-                            <div class="avatar-option" data-avatar="🐱">🐱</div>
+                            <div class="avatar-option" data-avatar="🐱‍👤">🐱‍👤</div>
                             <div class="avatar-option" data-avatar="🎧">🎧</div>
+                            <div class="avatar-option" data-avatar="💪">💪</div>
+                            <div class="avatar-option" data-avatar="🎨">🎨</div>
                         </div>
-                        <input type="text" class="username-input" id="usernameInput" placeholder="Kullanıcı adınız (zorunlu)" maxlength="25">
+                        <input type="text" class="username-input" id="usernameInput" placeholder="Kullanıcı adınız *" maxlength="25">
                     </div>
                     
                     <div class="stars" id="ratingStars">
@@ -585,17 +792,26 @@
                         <i class="far fa-star star" data-value="4"></i>
                         <i class="far fa-star star" data-value="5"></i>
                     </div>
-                    <span id="selectedRatingText" class="rating-value">Puan seçilmedi</span>
+                    <span id="selectedRatingText" class="rating-value">⭐ Puan seçilmedi</span>
                     
                     <textarea id="feedbackText" rows="3" placeholder="Geri bildiriminizi yazın... (isteğe bağlı)"></textarea>
                     
                     <button class="btn-submit" id="submitBtn">
                         <i class="fas fa-paper-plane"></i> Gönder
                     </button>
+                    
+                    <div id="cooldownTimer" class="cooldown-timer">
+                        <i class="fas fa-hourglass-half"></i>
+                        <span id="cooldownText"></span>
+                    </div>
                 </div>
 
-                <div class="card average-card">
-                    <h2><i class="fas fa-chart-line"></i> Ortalama Puan</h2>
+                <!-- SAĞ KART: İSTATİSTİKLER -->
+                <div class="card stats-card fade-right">
+                    <div class="card-title">
+                        <i class="fas fa-chart-simple"></i>
+                        <span>Topluluk İstatistikleri</span>
+                    </div>
                     <div class="average-score">
                         <div class="big-score" id="averageScore">0.00</div>
                         <div class="total-votes" id="totalVotes">Yükleniyor...</div>
@@ -603,11 +819,23 @@
                             <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
                         </div>
                     </div>
+                    
+                    <div class="rating-distribution" id="ratingDistribution">
+                        <div class="dist-item"><span class="dist-label">5 ★</span><div class="dist-bar"><div class="dist-fill" style="width: 0%"></div></div><span class="dist-count">0</span></div>
+                        <div class="dist-item"><span class="dist-label">4 ★</span><div class="dist-bar"><div class="dist-fill" style="width: 0%"></div></div><span class="dist-count">0</span></div>
+                        <div class="dist-item"><span class="dist-label">3 ★</span><div class="dist-bar"><div class="dist-fill" style="width: 0%"></div></div><span class="dist-count">0</span></div>
+                        <div class="dist-item"><span class="dist-label">2 ★</span><div class="dist-bar"><div class="dist-fill" style="width: 0%"></div></div><span class="dist-count">0</span></div>
+                        <div class="dist-item"><span class="dist-label">1 ★</span><div class="dist-bar"><div class="dist-fill" style="width: 0%"></div></div><span class="dist-count">0</span></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <h2><i class="fas fa-comments"></i> Son Geri Bildirimler</h2>
+            <!-- GERİ BİLDİRİM LİSTESİ -->
+            <div class="card fade-up" style="animation-delay: 0.1s;">
+                <div class="card-title">
+                    <i class="fas fa-comments"></i>
+                    <span>Son Geri Bildirimler</span>
+                </div>
                 <div id="feedbackList" class="feedback-list">
                     <div class="empty-feedback"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</div>
                 </div>
@@ -630,7 +858,6 @@
             databaseURL: "https://ltf-puanlama-9a139-default-rtdb.firebaseio.com"
         };
         
-        // Firebase başlat
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         
@@ -638,39 +865,62 @@
         let currentRating = 0;
         let isSubmitting = false;
         let selectedAvatar = "😎";
-        let username = "";
+        let userId = localStorage.getItem('rating_user_id');
+        if (!userId) {
+            userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
+            localStorage.setItem('rating_user_id', userId);
+        }
         
+        let lastRatingTime = null;
+        let cooldownInterval = null;
+        
+        // DOM elementleri
         const stars = document.querySelectorAll('.star');
         const selectedRatingText = document.getElementById('selectedRatingText');
         const submitBtn = document.getElementById('submitBtn');
         const feedbackTextarea = document.getElementById('feedbackText');
         const usernameInput = document.getElementById('usernameInput');
+        const cooldownTimer = document.getElementById('cooldownTimer');
+        const cooldownText = document.getElementById('cooldownText');
         
         // Avatar seçimi
         const avatarOptions = document.querySelectorAll('.avatar-option');
+        const savedAvatar = localStorage.getItem('rating_avatar');
+        if (savedAvatar) {
+            selectedAvatar = savedAvatar;
+            avatarOptions.forEach(opt => {
+                if (opt.dataset.avatar === savedAvatar) opt.classList.add('selected');
+            });
+        } else {
+            avatarOptions[0].classList.add('selected');
+        }
+        
         avatarOptions.forEach(opt => {
             opt.addEventListener('click', () => {
                 avatarOptions.forEach(o => o.classList.remove('selected'));
                 opt.classList.add('selected');
                 selectedAvatar = opt.dataset.avatar;
+                localStorage.setItem('rating_avatar', selectedAvatar);
             });
         });
-        // İlk avatarları seçili yap
-        avatarOptions[0].classList.add('selected');
+        
+        // Kullanıcı adı
+        const savedUsername = localStorage.getItem('rating_username');
+        if (savedUsername) usernameInput.value = savedUsername;
+        usernameInput.addEventListener('change', () => {
+            if (usernameInput.value.trim()) {
+                localStorage.setItem('rating_username', usernameInput.value.trim());
+            }
+        });
         
         // Yıldız işlemleri
         stars.forEach(star => {
-            star.addEventListener('mouseenter', function() {
-                const value = parseInt(this.dataset.value);
-                highlightStars(value);
-            });
-            star.addEventListener('mouseleave', function() {
-                highlightStars(currentRating);
-            });
+            star.addEventListener('mouseenter', function() { highlightStars(parseInt(this.dataset.value)); });
+            star.addEventListener('mouseleave', function() { highlightStars(currentRating); });
             star.addEventListener('click', function() {
                 currentRating = parseInt(this.dataset.value);
                 highlightStars(currentRating);
-                selectedRatingText.textContent = `${currentRating} / 5 yıldız`;
+                selectedRatingText.textContent = `⭐ ${currentRating} / 5 yıldız`;
                 this.style.animation = 'starGlow 0.3s ease';
                 setTimeout(() => this.style.animation = '', 300);
             });
@@ -679,15 +929,55 @@
         function highlightStars(rating) {
             stars.forEach(star => {
                 const value = parseInt(star.dataset.value);
-                if (value <= rating) {
-                    star.className = 'fas fa-star star active';
-                } else {
-                    star.className = 'far fa-star star';
-                }
+                if (value <= rating) star.className = 'fas fa-star star active';
+                else star.className = 'far fa-star star';
             });
         }
         
-        // Firebase'den veri oku
+        // Cooldown kontrolü
+        async function checkCooldown() {
+            const cooldownRef = database.ref('user_cooldowns/' + userId);
+            const snapshot = await cooldownRef.once('value');
+            const data = snapshot.val();
+            if (data && data.lastRatingTime) {
+                const lastTime = data.lastRatingTime;
+                const now = Date.now();
+                const sixHours = 6 * 60 * 60 * 1000;
+                const timeLeft = sixHours - (now - lastTime);
+                if (timeLeft > 0) {
+                    lastRatingTime = lastTime;
+                    startCooldownTimer(timeLeft);
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        function startCooldownTimer(msLeft) {
+            cooldownTimer.classList.add('show');
+            submitBtn.disabled = true;
+            
+            if (cooldownInterval) clearInterval(cooldownInterval);
+            
+            function updateTimer() {
+                const now = Date.now();
+                const remaining = (lastRatingTime + (6 * 60 * 60 * 1000)) - now;
+                if (remaining <= 0) {
+                    clearInterval(cooldownInterval);
+                    cooldownTimer.classList.remove('show');
+                    submitBtn.disabled = false;
+                } else {
+                    const hours = Math.floor(remaining / (60 * 60 * 1000));
+                    const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
+                    const seconds = Math.floor((remaining % (60 * 1000)) / 1000);
+                    cooldownText.textContent = `⏰ Bir sonraki puanlamanız ${hours} saat ${minutes} dakika ${seconds} saniye sonra`;
+                }
+            }
+            updateTimer();
+            cooldownInterval = setInterval(updateTimer, 1000);
+        }
+        
+        // Verileri yükle
         function loadData() {
             const ratingsRef = database.ref('ratings');
             const feedbacksRef = database.ref('feedbacks');
@@ -696,15 +986,12 @@
                 const data = snapshot.val();
                 if (data && typeof data === 'object') {
                     const ratingsArray = Object.values(data);
-                    if (ratingsArray.length > 0) {
-                        const validRatings = ratingsArray.filter(r => typeof r === 'number' || (r && typeof r.rating === 'number'));
-                        const numbers = validRatings.map(r => typeof r === 'number' ? r : r.rating);
-                        updateAverageScore(numbers);
-                    } else {
-                        updateAverageScore([]);
-                    }
+                    const numbers = ratingsArray.map(r => typeof r === 'number' ? r : r.rating);
+                    updateAverageScore(numbers);
+                    updateDistribution(numbers);
                 } else {
                     updateAverageScore([]);
+                    updateDistribution([]);
                 }
             });
             
@@ -740,23 +1027,33 @@
             const fullStars = Math.round(avg);
             avgStarsEl.innerHTML = '';
             for (let i = 1; i <= 5; i++) {
-                if (i <= fullStars) {
-                    avgStarsEl.innerHTML += '<i class="fas fa-star filled"></i>';
-                } else {
-                    avgStarsEl.innerHTML += '<i class="far fa-star"></i>';
-                }
+                if (i <= fullStars) avgStarsEl.innerHTML += '<i class="fas fa-star filled"></i>';
+                else avgStarsEl.innerHTML += '<i class="far fa-star"></i>';
+            }
+        }
+        
+        function updateDistribution(ratingsArray) {
+            const counts = {1:0,2:0,3:0,4:0,5:0};
+            ratingsArray.forEach(r => { if (r >= 1 && r <= 5) counts[r]++; });
+            const total = ratingsArray.length;
+            
+            for (let i = 1; i <= 5; i++) {
+                const percent = total > 0 ? (counts[i] / total) * 100 : 0;
+                const fillEl = document.querySelector(`.dist-item:nth-child(${6-i}) .dist-fill`);
+                const countEl = document.querySelector(`.dist-item:nth-child(${6-i}) .dist-count`);
+                if (fillEl) fillEl.style.width = percent + '%';
+                if (countEl) countEl.textContent = counts[i];
             }
         }
         
         function updateFeedbackList(feedbacksArray) {
             const feedbackListDiv = document.getElementById('feedbackList');
-            
             if (!feedbacksArray || feedbacksArray.length === 0) {
                 feedbackListDiv.innerHTML = '<div class="empty-feedback"><i class="fas fa-inbox"></i> Henüz geri bildirim yok. İlk sen paylaş!</div>';
                 return;
             }
             
-            const recent = feedbacksArray.slice(0, 15);
+            const recent = feedbacksArray.slice(0, 12);
             feedbackListDiv.innerHTML = recent.map(fb => `
                 <div class="feedback-item">
                     <div class="feedback-avatar">${fb.avatar || '😎'}</div>
@@ -784,7 +1081,6 @@
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toastMessage');
             const icon = toast.querySelector('i');
-            
             toastMessage.textContent = message;
             icon.className = isError ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
             toast.style.borderLeftColor = isError ? 'var(--kirmizi)' : 'var(--altin)';
@@ -798,20 +1094,14 @@
             const dateStr = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
             const id = Date.now() + '_' + Math.random().toString(36).substr(2, 6);
             
-            const feedbackData = { 
-                rating, 
-                text: feedbackText || '', 
-                date: dateStr, 
-                timestamp: now.getTime(),
-                username: username,
-                avatar: avatar
-            };
-            
+            const feedbackData = { rating, text: feedbackText || '', date: dateStr, timestamp: now.getTime(), username, avatar };
             const ratingData = { rating, timestamp: now.getTime() };
+            const cooldownData = { lastRatingTime: now.getTime(), userId: userId };
             
             try {
                 await database.ref('feedbacks/' + id).set(feedbackData);
                 await database.ref('ratings/' + id).set(ratingData);
+                await database.ref('user_cooldowns/' + userId).set(cooldownData);
                 return true;
             } catch (error) {
                 console.error('Firebase hatası:', error);
@@ -823,7 +1113,7 @@
         submitBtn.addEventListener('click', async () => {
             if (isSubmitting) return;
             
-            username = usernameInput.value.trim();
+            const username = usernameInput.value.trim();
             if (username === "") {
                 showToast('Lütfen kullanıcı adınızı girin!', true);
                 usernameInput.style.animation = 'shake 0.4s ease';
@@ -838,6 +1128,13 @@
                 return;
             }
             
+            // Cooldown kontrolü
+            const onCooldown = await checkCooldown();
+            if (onCooldown) {
+                showToast('6 saatte bir puanlama yapabilirsiniz!', true);
+                return;
+            }
+            
             isSubmitting = true;
             submitBtn.innerHTML = '<span class="loading-spinner"></span> Gönderiliyor...';
             submitBtn.disabled = true;
@@ -848,9 +1145,11 @@
                 showToast('Geri bildiriminiz için teşekkürler! 🎉');
                 currentRating = 0;
                 highlightStars(0);
-                selectedRatingText.textContent = 'Puan seçilmedi';
+                selectedRatingText.textContent = '⭐ Puan seçilmedi';
                 feedbackTextarea.value = '';
-                // username'i temizleme, bir sonraki için kalabilir
+                // Cooldown başlat
+                lastRatingTime = Date.now();
+                startCooldownTimer(6 * 60 * 60 * 1000);
             } else {
                 showToast('Bir hata oluştu. Lütfen tekrar deneyin.', true);
             }
@@ -878,6 +1177,7 @@
         // Başlat
         loadData();
         highlightStars(0);
+        checkCooldown();
     </script>
 </body>
 </html>
