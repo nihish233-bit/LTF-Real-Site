@@ -5,43 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>LTF UZAY LİDERLİK | Tüm Cihazlarda Senkron</title>
     
-    <!-- MODERN FONTLAR - SADE VE ŞIK -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --gold: #FFD700;
-            --gold-glow: rgba(255, 215, 0, 0.7);
             --silver: #C0C0C0;
-            --silver-glow: rgba(192, 192, 192, 0.6);
             --bronze: #CD7F32;
-            --bronze-glow: rgba(205, 127, 50, 0.6);
             --cyan: #00FFFF;
             --dark-bg: #030318;
             --glass-bg: rgba(10, 20, 40, 0.5);
             --glass-border: rgba(255, 215, 0, 0.2);
         }
-
         body {
             font-family: 'Poppins', 'Inter', sans-serif;
             background: var(--dark-bg);
             color: #fff;
             overflow-x: hidden;
-            min-height: 100vh;
         }
-
-        /* UZAY ARKA PLANI */
         #space-bg {
             position: fixed;
             top: 0;
@@ -51,7 +37,6 @@
             z-index: -2;
             background: radial-gradient(ellipse at center, #030318 0%, #010110 100%);
         }
-
         .stars-layer {
             position: fixed;
             top: 0;
@@ -61,19 +46,16 @@
             pointer-events: none;
             z-index: -1;
         }
-
         .star {
             position: absolute;
             background: white;
             border-radius: 50%;
             animation: twinkle 3s infinite alternate;
         }
-
         @keyframes twinkle {
             0% { opacity: 0.2; transform: scale(1); }
             100% { opacity: 1; transform: scale(1.2); }
         }
-
         .galaxy {
             position: fixed;
             top: 20%;
@@ -87,41 +69,25 @@
             pointer-events: none;
             z-index: -1;
         }
-
         @keyframes rotateGalaxy {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
-
-        /* ============ PROFESYONEL PARILTI EFEKTLERİ ============ */
         @keyframes goldGlow {
-            0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3), 0 0 10px rgba(255, 215, 0, 0.2); border-color: rgba(255, 215, 0, 0.5); }
-            50% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.8), 0 0 35px rgba(255, 215, 0, 0.4); border-color: var(--gold); }
-            100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3), 0 0 10px rgba(255, 215, 0, 0.2); border-color: rgba(255, 215, 0, 0.5); }
+            0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3); border-color: rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.8); border-color: var(--gold); }
+            100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3); border-color: rgba(255, 215, 0, 0.5); }
         }
-
         @keyframes silverGlow {
             0% { box-shadow: 0 0 5px rgba(192, 192, 192, 0.3); border-color: rgba(192, 192, 192, 0.5); }
             50% { box-shadow: 0 0 20px rgba(192, 192, 192, 0.7); border-color: var(--silver); }
             100% { box-shadow: 0 0 5px rgba(192, 192, 192, 0.3); border-color: rgba(192, 192, 192, 0.5); }
         }
-
         @keyframes bronzeGlow {
             0% { box-shadow: 0 0 5px rgba(205, 127, 50, 0.3); border-color: rgba(205, 127, 50, 0.5); }
             50% { box-shadow: 0 0 20px rgba(205, 127, 50, 0.7); border-color: var(--bronze); }
             100% { box-shadow: 0 0 5px rgba(205, 127, 50, 0.3); border-color: rgba(205, 127, 50, 0.5); }
         }
-
-        /* ============ GLASSMORPHISM KARTLAR ============ */
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            transition: all 0.3s ease;
-        }
-
-        /* ============ LOGIN MODAL ============ */
         .login-modal {
             position: fixed;
             top: 0;
@@ -134,11 +100,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.5s;
+            transition: all 0.3s;
         }
-
         .login-modal.hidden { display: none; }
-
         .login-card {
             background: linear-gradient(135deg, rgba(10, 20, 50, 0.9), rgba(5, 10, 30, 0.95));
             backdrop-filter: blur(15px);
@@ -148,15 +112,8 @@
             border: 2px solid var(--gold);
             max-width: 420px;
             width: 90%;
-            animation: fadeInUp 0.5s ease;
         }
-
-        .login-card h2 {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-        }
-
+        .login-card h2 { font-family: 'Poppins', sans-serif; font-weight: 600; margin-bottom: 8px; }
         .login-card input {
             width: 100%;
             padding: 14px 18px;
@@ -167,15 +124,12 @@
             color: white;
             font-size: 1rem;
             font-family: 'Inter', sans-serif;
-            transition: all 0.3s;
         }
-
         .login-card input:focus {
             outline: none;
             border-color: var(--gold);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
         }
-
         .login-card button {
             background: linear-gradient(135deg, var(--gold), #FFA500);
             color: #000;
@@ -186,19 +140,15 @@
             cursor: pointer;
             width: 100%;
             font-size: 1rem;
-            margin-top: 15px;
+            margin-top: 10px;
             font-family: 'Poppins', sans-serif;
-            transition: all 0.3s;
         }
-
         .switch-mode {
             margin-top: 18px;
             color: var(--cyan);
             cursor: pointer;
             font-size: 0.85rem;
         }
-
-        /* ============ USER BAR ============ */
         .user-info-bar {
             background: rgba(5, 10, 30, 0.8);
             backdrop-filter: blur(15px);
@@ -209,15 +159,12 @@
             border-bottom: 2px solid var(--gold);
             flex-wrap: wrap;
             gap: 15px;
-            z-index: 100;
         }
-
         .user-profile {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-
         .profile-avatar {
             width: 50px;
             height: 50px;
@@ -229,23 +176,10 @@
             justify-content: center;
             cursor: pointer;
             overflow: hidden;
-            transition: all 0.3s;
         }
-
-        .profile-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .profile-avatar i { font-size: 24px; color: var(--gold); }
-
-        .user-welcome {
-            color: var(--gold);
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
+        .user-welcome { color: var(--gold); font-weight: 500; font-size: 0.9rem; }
         .logout-btn {
             background: transparent;
             border: 1px solid #8B0000;
@@ -253,11 +187,8 @@
             padding: 6px 16px;
             border-radius: 30px;
             cursor: pointer;
-            font-family: 'Inter', sans-serif;
             transition: all 0.3s;
         }
-
-        /* ============ HAMBURGER MENU ============ */
         .hamburger {
             width: 42px;
             height: 32px;
@@ -272,7 +203,6 @@
             background: transparent;
             border: none;
         }
-
         .hamburger span {
             display: block;
             height: 3px;
@@ -281,11 +211,9 @@
             border-radius: 4px;
             transition: all 0.25s;
         }
-
         .hamburger.open .bar1 { transform: translateY(12px) rotate(45deg); background: var(--cyan); }
         .hamburger.open .bar2 { opacity: 0; }
         .hamburger.open .bar3 { transform: translateY(-12px) rotate(-45deg); background: var(--cyan); }
-
         .side-menu {
             width: 280px;
             height: 100vh;
@@ -299,9 +227,7 @@
             padding: 90px 0 30px;
             border-right: 2px solid var(--gold);
         }
-
         .side-menu.open { left: 0; }
-
         .menu-link {
             display: flex;
             align-items: center;
@@ -313,17 +239,13 @@
             border-left: 3px solid transparent;
             font-family: 'Poppins', sans-serif;
         }
-
         .menu-link i { width: 24px; color: var(--gold); }
         .menu-link:hover { background: rgba(255, 215, 0, 0.1); border-left-color: var(--gold); padding-left: 34px; }
         .menu-link.active { background: rgba(255, 215, 0, 0.15); border-left-color: var(--gold); color: var(--gold); }
-
-        /* ============ HEADER ============ */
         .leaderboard-header {
             text-align: center;
             padding: 30px 20px 20px;
         }
-
         .leaderboard-header h1 {
             font-family: 'Poppins', sans-serif;
             font-weight: 700;
@@ -332,16 +254,12 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: -0.5px;
         }
-
-        /* ============ 4D KUTU ============ */
         .chest-container {
             max-width: 1400px;
             margin: 25px auto 0;
             padding: 0 20px;
         }
-
         .chest-4d {
             background: var(--glass-bg);
             backdrop-filter: blur(12px);
@@ -350,37 +268,30 @@
             text-align: center;
             border: 1px solid var(--glass-border);
         }
-
         .chest-4d-wrapper {
             perspective: 1000px;
             display: inline-block;
         }
-
         .chest-4d-box {
             width: 280px;
             height: 220px;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.3s;
             cursor: pointer;
         }
-
         .chest-4d-box.shake { animation: shake4d 0.3s ease-in-out; }
         @keyframes shake4d {
             0%,100% { transform: translateX(0); }
             25% { transform: translateX(-6px) rotateY(-5deg); }
             75% { transform: translateX(6px) rotateY(5deg); }
         }
-
         .chest-4d-body {
             width: 100%;
             height: 100%;
             background: linear-gradient(145deg, #B86F2C, #7A4518);
             border-radius: 20px;
             border: 3px solid var(--gold);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
-
         .chest-4d-lid {
             width: 100%;
             height: 75px;
@@ -394,32 +305,15 @@
             border: 3px solid var(--gold);
             border-bottom: none;
         }
-
         .chest-4d-lid.opening { transform: rotateX(-120deg) translateY(-30px); }
-
-        .click-counter {
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: var(--cyan);
-            font-weight: 500;
-        }
-
-        .reward-display {
-            margin-top: 18px;
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: var(--gold);
-            display: none;
-        }
-
-        /* ============ XP METODLARI ============ */
+        .click-counter { margin-top: 20px; font-size: 0.9rem; color: var(--cyan); font-weight: 500; }
+        .reward-display { margin-top: 18px; font-size: 1.6rem; font-weight: 700; color: var(--gold); display: none; }
         .methods-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 12px;
             margin-top: 18px;
         }
-
         .method-card {
             background: var(--glass-bg);
             backdrop-filter: blur(8px);
@@ -427,26 +321,16 @@
             padding: 14px;
             text-align: center;
             border: 1px solid var(--glass-border);
-            transition: all 0.3s;
         }
-
         .method-card i { font-size: 1.6rem; color: var(--gold); margin-bottom: 6px; }
-        .method-card h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 3px; }
+        .method-card h4 { font-size: 0.85rem; font-weight: 600; }
         .method-card p { font-size: 0.7rem; color: var(--cyan); }
-
-        /* ============ LİDERLİK TABLOSU - PROFESYONEL PARILTI ============ */
         .leaderboard-container {
             max-width: 1400px;
             margin: 35px auto 0;
             padding: 0 20px 60px;
         }
-
-        .leaderboard-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
+        .leaderboard-grid { display: flex; flex-direction: column; gap: 12px; }
         .leader-card {
             background: var(--glass-bg);
             backdrop-filter: blur(12px);
@@ -455,73 +339,44 @@
             display: flex;
             align-items: center;
             gap: 18px;
-            transition: all 0.3s;
             border: 1px solid var(--glass-border);
         }
-
-        .leader-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(255, 215, 0, 0.5);
-        }
-
-        /* 1. LİK - ALTIN PARILTI */
         .leader-card.rank-1-gold {
             border: 2px solid var(--gold);
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(0, 0, 0, 0.3));
             animation: goldGlow 2s ease-in-out infinite;
         }
-
-        /* 2. LİK - GÜMÜŞ PARILTI */
         .leader-card.rank-2-silver {
             border: 2px solid var(--silver);
-            background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), rgba(0, 0, 0, 0.25));
             animation: silverGlow 2.2s ease-in-out infinite;
         }
-
-        /* 3. LİK - BRONZ PARILTI */
         .leader-card.rank-3-bronze {
             border: 2px solid var(--bronze);
-            background: linear-gradient(135deg, rgba(205, 127, 50, 0.1), rgba(0, 0, 0, 0.25));
             animation: bronzeGlow 2.4s ease-in-out infinite;
         }
-
-        .rank {
-            font-size: 1.7rem;
-            font-weight: 700;
-            min-width: 60px;
-            text-align: center;
-            font-family: 'Poppins', sans-serif;
-        }
+        .rank { font-size: 1.7rem; font-weight: 700; min-width: 60px; text-align: center; }
         .rank-1-color { color: var(--gold); text-shadow: 0 0 8px rgba(255,215,0,0.5); }
         .rank-2-color { color: var(--silver); text-shadow: 0 0 6px rgba(192,192,192,0.5); }
         .rank-3-color { color: var(--bronze); text-shadow: 0 0 6px rgba(205,127,50,0.5); }
         .rank-other-color { color: #6c7a8e; }
-
         .avatar-img {
             width: 50px;
             height: 50px;
             border-radius: 50%;
             border: 2px solid var(--gold);
             object-fit: cover;
-            background: linear-gradient(135deg, #9B59B6, var(--cyan));
         }
-
         .user-info { flex: 1; }
         .user-name { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
-        .user-name h3 { font-size: 1rem; font-weight: 600; font-family: 'Poppins', sans-serif; }
-        .badge { background: rgba(255, 215, 0, 0.2); color: var(--gold); padding: 2px 10px; border-radius: 30px; font-size: 0.65rem; font-weight: 500; }
+        .user-name h3 { font-size: 1rem; font-weight: 600; }
+        .badge { background: rgba(255, 215, 0, 0.2); color: var(--gold); padding: 2px 10px; border-radius: 30px; font-size: 0.65rem; }
         .level-badge { background: rgba(0, 255, 255, 0.2); color: var(--cyan); padding: 2px 10px; border-radius: 30px; font-size: 0.65rem; }
-
         .user-stats { display: flex; gap: 18px; font-size: 0.7rem; color: #8a9bb5; }
-
         .xp-section { min-width: 240px; }
         .xp-label { display: flex; justify-content: space-between; font-size: 0.65rem; margin-bottom: 4px; color: #aaa; }
         .xp-bar-bg { background: rgba(30, 30, 60, 0.8); height: 6px; border-radius: 8px; overflow: hidden; }
         .xp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--cyan)); border-radius: 8px; transition: width 0.8s ease; }
-
         .points { text-align: right; min-width: 90px; }
-        .points-value { font-size: 1.2rem; font-weight: 700; color: var(--gold); font-family: 'Poppins', sans-serif; }
-
+        .points-value { font-size: 1.2rem; font-weight: 700; color: var(--gold); }
         .search-input {
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
@@ -534,19 +389,15 @@
             font-size: 0.9rem;
             margin: 0 auto;
             display: block;
-            font-family: 'Inter', sans-serif;
         }
-
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(25px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes floatUp {
             0% { opacity: 1; transform: translateY(0); }
             100% { opacity: 0; transform: translateY(-100px); }
         }
-
         .level-up-notification {
             position: fixed;
             top: 50%;
@@ -561,14 +412,11 @@
             z-index: 2000;
             animation: bounce 0.5s ease;
             white-space: nowrap;
-            font-family: 'Poppins', sans-serif;
         }
-
         @keyframes bounce {
             0%,100% { transform: translate(-50%, -50%) scale(1); }
             50% { transform: translate(-50%, -50%) scale(1.08); }
         }
-
         @media (max-width: 950px) {
             .leader-card { flex-wrap: wrap; }
             .rank { min-width: 45px; font-size: 1.3rem; }
@@ -576,7 +424,6 @@
             .chest-4d-box { width: 220px; height: 175px; }
             .chest-4d-lid { height: 60px; top: -30px; }
         }
-
         footer {
             background: rgba(5, 10, 30, 0.6);
             backdrop-filter: blur(10px);
@@ -590,7 +437,6 @@
 </head>
 <body>
 
-    <!-- UZAY ARKA PLANI -->
     <div id="space-bg"></div>
     <div class="stars-layer" id="starsLayer"></div>
     <div class="galaxy"></div>
@@ -649,7 +495,6 @@
         <p style="color: #8a9bb5; font-size: 0.8rem;">⭐ TÜM CİHAZLARDA SENKRONİZE ⭐ | Kendi profilinle yüksel!</p>
     </div>
 
-    <!-- 4D KUTU -->
     <div class="chest-container">
         <div class="chest-4d">
             <div class="chest-4d-wrapper">
@@ -664,7 +509,6 @@
         </div>
     </div>
 
-    <!-- XP METODLARI -->
     <div style="max-width: 1400px; margin: 35px auto 0; padding: 0 20px;">
         <div style="color: var(--gold); margin-bottom: 15px; font-weight: 600; font-size: 1rem;">
             <i class="fas fa-chart-line"></i> ⚡ GALAKSİ GÖREVLERİ (Otomatik)
@@ -672,12 +516,10 @@
         <div class="methods-grid" id="methodsGrid"></div>
     </div>
 
-    <!-- ARAMA -->
     <div style="max-width: 1400px; margin: 35px auto 0; padding: 0 20px;">
         <input type="text" id="searchInput" class="search-input" placeholder="🔭 Galaksi savaşçısı ara...">
     </div>
 
-    <!-- LİDERLİK TABLOSU -->
     <div class="leaderboard-container">
         <div id="leaderboardGrid" class="leaderboard-grid"></div>
     </div>
@@ -687,37 +529,24 @@
     </footer>
 
     <script>
-        // ============ FIREBASE KONFIGÜRASYONU ============
-        // 🔥 BURAYA KENDİ FIREBASE KONFIGÜRASYONUNU YAPIŞTIR! 🔥
-const firebaseConfig = {
-  apiKey: "AIzaSyDAi_IqftZcuMmgvjIHlZXlC0hV2KmZA78",
-  authDomain: "ltf-puanlama-9a139.firebaseapp.com",
-  databaseURL: "https://ltf-puanlama-9a139-default-rtdb.firebaseio.com",
-  projectId: "ltf-puanlama-9a139",
-  storageBucket: "ltf-puanlama-9a139.firebasestorage.app",
-  messagingSenderId: "158627242883",
-  appId: "1:158627242883:web:0552f57d28e7b770bc0cb6",
-  measurementId: "G-NB9MMQLXMJ"
-};
+        // 🔥 FIREBASE KONFIGÜRASYONU (Kendi bilgilerinle değiştir)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDAi_IqftZcuMmgvjIHlZXlC0hV2KmZA78",
+            authDomain: "ltf-puanlama-9a139.firebaseapp.com",
+            databaseURL: "https://ltf-puanlama-9a139-default-rtdb.firebaseio.com",
+            projectId: "ltf-puanlama-9a139",
+            storageBucket: "ltf-puanlama-9a139.firebasestorage.app",
+            messagingSenderId: "158627242883",
+            appId: "1:158627242883:web:0552f57d28e7b770bc0cb6"
+        };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-        
         // Firebase'i başlat
-        let db = null;
-        let isFirebaseReady = false;
-        
-        try {
-            firebase.initializeApp(firebaseConfig);
-            db = firebase.database();
-            isFirebaseReady = true;
-            console.log("🔥 Firebase bağlantısı başarılı!");
-        } catch(e) {
-            console.warn("Firebase config eksik, lokal modda çalışıyor...");
-            isFirebaseReady = false;
-        }
-        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        let isFirebaseReady = true;
+
+        console.log("✅ Firebase bağlantısı başarılı!");
+
         // ============ SEVİYE SİSTEMİ ============
         function getRequiredXPForLevel(level) {
             if(level <= 10) return 500;
@@ -751,23 +580,12 @@ const analytics = getAnalytics(app);
             return (current / req) * 100;
         }
         
-        // ============ KULLANICI SİSTEMİ (Firebase ile) ============
+        // ============ KULLANICI SİSTEMİ ============
         let allUsers = [];
         let currentUser = null;
         let isRegisterMode = false;
         
-        // Firebase'den verileri çek
         function loadUsersFromFirebase() {
-            if(!isFirebaseReady) {
-                // Firebase yoksa lokal localStorage kullan
-                const saved = localStorage.getItem('ltf_local_users');
-                if(saved) allUsers = JSON.parse(saved);
-                else initDefaultUsers();
-                updateRanks();
-                renderLeaderboard();
-                return;
-            }
-            
             db.ref('users').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if(data) {
@@ -788,9 +606,9 @@ const analytics = getAnalytics(app);
         
         function initDefaultUsers() {
             allUsers = [];
+            const names = ["Zinny", "Chivas", "Efe", "Mert", "Selin", "Can", "Zeynep", "Kaan", "Elif", "Ali", "Ayşe", "Burak", "Cem", "Deniz", "Emre"];
+            const roles = ["Kurucu", "Kurucu Yardımcısı", "Moderatör", "Geliştirici", "Tasarımcı", "Geliştirici", "Sosyal Medya", "İçerik Üretici", "Destek", "Üye", "Üye", "Üye", "Üye", "Üye", "Üye"];
             for(let i = 1; i <= 15; i++) {
-                const names = ["Zinny", "Chivas", "Efe", "Mert", "Selin", "Can", "Zeynep", "Kaan", "Elif", "Ali", "Ayşe", "Burak", "Cem", "Deniz", "Emre"];
-                const roles = ["Kurucu", "Kurucu Yardımcısı", "Moderatör", "Geliştirici", "Tasarımcı", "Geliştirici", "Sosyal Medya", "İçerik Üretici", "Destek", "Üye", "Üye", "Üye", "Üye", "Üye", "Üye"];
                 allUsers.push({
                     id: i,
                     name: names[i-1],
@@ -810,20 +628,12 @@ const analytics = getAnalytics(app);
         }
         
         function saveUsersToFirebase() {
-            if(!isFirebaseReady) {
-                localStorage.setItem('ltf_local_users', JSON.stringify(allUsers));
-                return;
-            }
             const usersObj = {};
             allUsers.forEach(u => { usersObj[u.id] = u; });
             db.ref('users').set(usersObj);
         }
         
         function updateUserInFirebase(user) {
-            if(!isFirebaseReady) {
-                saveUsersToFirebase();
-                return;
-            }
             db.ref(`users/${user.id}`).set(user);
         }
         
@@ -865,7 +675,6 @@ const analytics = getAnalytics(app);
             allUsers[idx].weeklyXP = (allUsers[idx].weeklyXP || 0) + amount;
             let newLevel = calculateLevel(allUsers[idx].xp);
             
-            // Toast bildirimi
             const toast = document.createElement('div');
             toast.style.cssText = `position:fixed; bottom:20px; right:20px; background:linear-gradient(135deg,var(--gold),var(--cyan)); color:#000; padding:12px 22px; border-radius:50px; font-weight:600; z-index:2000; animation:floatUp 2s forwards; pointer-events:none; font-size:0.85rem;`;
             toast.innerHTML = `✨ ${source} ile +${amount} XP! ✨`;
@@ -1160,48 +969,57 @@ const analytics = getAnalytics(app);
             }
         }
         
-        // ============ EVENT LISTENERS ============
-        document.getElementById('loginSubmitBtn')?.addEventListener('click', handleAuth);
-        document.getElementById('switchToRegister')?.addEventListener('click', () => {
-            isRegisterMode = !isRegisterMode;
-            document.getElementById('loginSubmitBtn').innerHTML = isRegisterMode ? 'Kayıt Ol' : 'Giriş Yap';
-            document.getElementById('switchToRegister').innerHTML = isRegisterMode ? '🚀 Zaten hesabın var mı? Giriş Yap' : '🌟 Hesabın yok mu? Kayıt Ol';
+        // ============ EVENT LISTENERS (DOM YÜKLENDİĞİNDE) ============
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMethods();
+            createStars();
+            loadUsersFromFirebase();
+            
+            const loginBtn = document.getElementById('loginSubmitBtn');
+            const switchBtn = document.getElementById('switchToRegister');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const searchInput = document.getElementById('searchInput');
+            const chestBox = document.getElementById('chestBox');
+            const profileAvatar = document.querySelector('.profile-avatar');
+            const menuBtn = document.getElementById('menuBtn');
+            const sideMenu = document.getElementById('sideMenu');
+            
+            if(loginBtn) loginBtn.addEventListener('click', handleAuth);
+            if(switchBtn) switchBtn.addEventListener('click', () => {
+                isRegisterMode = !isRegisterMode;
+                loginBtn.innerHTML = isRegisterMode ? 'Kayıt Ol' : 'Giriş Yap';
+                switchBtn.innerHTML = isRegisterMode ? '🚀 Zaten hesabın var mı? Giriş Yap' : '🌟 Hesabın yok mu? Kayıt Ol';
+            });
+            if(logoutBtn) logoutBtn.addEventListener('click', logout);
+            if(searchInput) searchInput.addEventListener('input', renderLeaderboard);
+            if(chestBox) chestBox.addEventListener('click', handleChestClick);
+            if(profileAvatar) profileAvatar.addEventListener('click', () => { if(currentUser) uploadAvatar(); });
+            
+            if(menuBtn && sideMenu) {
+                menuBtn.addEventListener('click', (e) => { e.stopPropagation(); sideMenu.classList.toggle('open'); menuBtn.classList.toggle('open'); });
+                document.addEventListener('click', (e) => { if(!sideMenu.contains(e.target) && !menuBtn.contains(e.target)) { sideMenu.classList.remove('open'); menuBtn.classList.remove('open'); } });
+            }
+            
+            setInterval(() => { if(currentUser) { runAllTasks(); resetChestDaily(); } }, 30000);
+            
+            let savedUserId = localStorage.getItem('ltf_current_user_id');
+            if(savedUserId) {
+                setTimeout(() => {
+                    let user = allUsers.find(u => u.id == savedUserId);
+                    if(user) {
+                        currentUser = user;
+                        document.getElementById('loginModal').classList.add('hidden');
+                        document.getElementById('userInfoBar').style.display = 'flex';
+                        updateUserInfo();
+                        resetChestDaily();
+                        runAllTasks();
+                        renderLeaderboard();
+                    } else showLogin();
+                }, 1000);
+            } else {
+                showLogin();
+            }
         });
-        document.getElementById('logoutBtn')?.addEventListener('click', logout);
-        document.getElementById('searchInput')?.addEventListener('input', renderLeaderboard);
-        document.getElementById('chestBox')?.addEventListener('click', handleChestClick);
-        document.querySelector('.profile-avatar')?.addEventListener('click', () => { if(currentUser) uploadAvatar(); });
-        
-        let btn = document.getElementById("menuBtn"), menu = document.getElementById("sideMenu");
-        if(btn && menu) {
-            btn.addEventListener("click", (e) => { e.stopPropagation(); menu.classList.toggle("open"); btn.classList.toggle("open"); });
-            document.addEventListener('click', (e) => { if(!menu.contains(e.target) && !btn.contains(e.target)) { menu.classList.remove('open'); btn.classList.remove('open'); } });
-        }
-        
-        setInterval(() => { if(currentUser) { runAllTasks(); resetChestDaily(); } }, 30000);
-        
-        // BAŞLAT
-        renderMethods();
-        createStars();
-        loadUsersFromFirebase();
-        
-        let savedUserId = localStorage.getItem('ltf_current_user_id');
-        if(savedUserId && isFirebaseReady) {
-            setTimeout(() => {
-                let user = allUsers.find(u => u.id == savedUserId);
-                if(user) {
-                    currentUser = user;
-                    document.getElementById('loginModal').classList.add('hidden');
-                    document.getElementById('userInfoBar').style.display = 'flex';
-                    updateUserInfo();
-                    resetChestDaily();
-                    runAllTasks();
-                    renderLeaderboard();
-                } else showLogin();
-            }, 1000);
-        } else if(!savedUserId) {
-            showLogin();
-        }
     </script>
 </body>
 </html>
