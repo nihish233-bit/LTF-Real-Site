@@ -5,800 +5,895 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loyal Team Force - Ekibimiz</title>
     
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        /* RESET VE TEMEL STILLER */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* RENK PALETİ - Sadece 2'şerli kombinasyonlar */
         :root {
-            --siyah: #0A0A0F;
-            --siyah-2: #1A1A20;
+            --siyah: #080810;
+            --siyah-2: #12121C;
+            --siyah-3: #1C1C28;
             --sari: #FFD700;
-            --beyaz: #FFFFFF;
-            --gri: #2A2A30;
+            --sari-dim: rgba(255, 215, 0, 0.12);
+            --sari-glow: rgba(255, 215, 0, 0.35);
+            --beyaz: #F0F0FF;
+            --gri: #2A2A3A;
+            --gri-light: #3A3A50;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             background: var(--siyah);
             color: var(--beyaz);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        /* ===== SADECE GEREKLİ ANİMASYONLAR ===== */
-        @keyframes fadeIn {
+        /* BG TEXTURE */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: 
+                radial-gradient(ellipse 80% 50% at 20% -10%, rgba(255,215,0,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 110%, rgba(255,215,0,0.04) 0%, transparent 55%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.93); } to { opacity: 1; transform: scale(1); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 var(--sari-glow); }
+            50% { box-shadow: 0 0 20px 4px var(--sari-glow); }
+        }
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.88) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes overlayIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* MODAL STILLERI - Yeni Eklendi */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.3s;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--siyah-2);
-            border-radius: 15px;
-            max-width: 500px;
-            width: 90%;
-            position: relative;
-            border: 2px solid var(--sari);
-            animation: scaleIn 0.3s;
-            overflow: hidden;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 28px;
-            cursor: pointer;
-            color: var(--beyaz);
-            transition: color 0.2s;
-            z-index: 10;
-        }
-
-        .modal-close:hover {
-            color: var(--sari);
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, var(--siyah), var(--siyah-2));
-            padding: 30px 20px 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
-        }
-
-        .modal-profile-img {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 15px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid var(--sari);
-            background: var(--gri);
-        }
-
-        .modal-profile-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .modal-profile-img.no-image {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--sari);
-            background: var(--gri);
-        }
-
-        .modal-header h2 {
-            color: var(--sari);
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-        }
-
-        .modal-header .member-role {
-            color: var(--beyaz);
-            opacity: 0.8;
-            font-size: 1rem;
-        }
-
-        .modal-body {
-            padding: 25px;
-        }
-
-        .info-item {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .info-item i {
-            width: 30px;
-            color: var(--sari);
-            font-size: 1.2rem;
-        }
-
-        .info-item .info-label {
-            font-weight: 600;
-            min-width: 90px;
-            color: var(--beyaz);
-            opacity: 0.9;
-        }
-
-        .info-item .info-value {
-            color: var(--beyaz);
-            flex: 1;
-        }
-
-        .social-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            justify-content: center;
-        }
-
-        .social-btn {
-            padding: 10px 20px;
-            background: transparent;
-            border: 2px solid var(--sari);
-            border-radius: 30px;
-            color: var(--beyaz);
-            text-decoration: none;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-        }
-
-        .social-btn:hover {
-            background: var(--sari);
-            color: var(--siyah);
-        }
-
-        .skills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 5px;
-        }
-
-        .skill-tag {
-            background: rgba(255, 215, 0, 0.1);
-            border: 1px solid var(--sari);
-            border-radius: 20px;
-            padding: 4px 12px;
-            font-size: 0.8rem;
-            color: var(--sari);
-        }
-
-        /* LOADING - Index'tekiyle aynı */
+        /* ===== LOADER ===== */
         .loader-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed; inset: 0;
             background: var(--siyah);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center; gap: 16px;
             z-index: 9999;
-            transition: opacity 0.5s;
+            transition: opacity 0.6s, transform 0.6s;
         }
-
-        .loader-wrapper.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
+        .loader-wrapper.hidden { opacity: 0; pointer-events: none; transform: scale(1.05); }
         .loader {
-            width: 50px;
-            height: 50px;
+            width: 48px; height: 48px;
             border: 3px solid var(--gri);
             border-top-color: var(--sari);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.9s linear infinite;
+        }
+        .loader-text {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            color: var(--sari);
+            opacity: 0.7;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* HAMBURGER */
+        /* ===== HAMBURGER ===== */
         .hamburger {
-            width: 40px;
-            height: 30px;
-            position: fixed;
-            top: 25px;
-            left: 25px;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            width: 44px; height: 44px;
+            position: fixed; top: 20px; left: 20px;
+            z-index: 200;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center; gap: 5px;
             cursor: pointer;
-            padding: 5px;
-            animation: fadeIn 0.8s;
-        }
-
-        .hamburger span {
-            display: block;
-            height: 3px;
-            width: 100%;
-            background: var(--sari);
-            border-radius: 3px;
-            transition: 0.3s;
-        }
-
-        .hamburger.open .bar1 {
-            transform: translateY(12px) rotate(45deg);
-        }
-
-        .hamburger.open .bar2 {
-            opacity: 0;
-        }
-
-        .hamburger.open .bar3 {
-            transform: translateY(-12px) rotate(-45deg);
-        }
-
-        /* SIDE MENU */
-        .side-menu {
-            width: 260px;
-            height: 100vh;
+            border-radius: 10px;
             background: var(--siyah-2);
-            position: fixed;
-            top: 0;
-            left: -280px;
-            z-index: 99;
-            transition: left 0.3s;
-            padding: 80px 0 30px;
-            border-right: 2px solid var(--sari);
+            border: 1px solid rgba(255,215,0,0.2);
+            transition: border-color 0.2s, background 0.2s;
         }
+        .hamburger:hover { border-color: var(--sari); background: var(--sari-dim); }
+        .hamburger span {
+            display: block; height: 2px; width: 20px;
+            background: var(--sari); border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-        .side-menu.open {
-            left: 0;
+        /* ===== SIDE MENU ===== */
+        .menu-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 150;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
         }
+        .menu-overlay.visible { opacity: 1; pointer-events: all; }
+
+        .side-menu {
+            width: 270px; height: 100vh;
+            background: var(--siyah-2);
+            position: fixed; top: 0; left: -290px;
+            z-index: 160;
+            transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0;
+            border-right: 1px solid rgba(255,215,0,0.15);
+            display: flex; flex-direction: column;
+        }
+        .side-menu.open { left: 0; }
+
+        .menu-logo {
+            padding: 28px 24px 20px;
+            border-bottom: 1px solid rgba(255,215,0,0.1);
+            display: flex; align-items: center; gap: 12px;
+        }
+        .menu-logo-icon {
+            width: 38px; height: 38px;
+            background: var(--sari);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .menu-logo-icon span {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700; font-size: 1rem;
+            color: var(--siyah);
+        }
+        .menu-logo-text { font-family: 'Rajdhani', sans-serif; }
+        .menu-logo-text strong { display: block; font-size: 1rem; color: var(--sari); letter-spacing: 1px; }
+        .menu-logo-text span { font-size: 0.75rem; opacity: 0.5; letter-spacing: 0.5px; }
+
+        .menu-items { padding: 16px 0; flex: 1; }
 
         .menu-link {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px 25px;
-            color: var(--beyaz);
+            display: flex; align-items: center; gap: 14px;
+            padding: 12px 24px;
+            color: rgba(240,240,255,0.7);
             text-decoration: none;
-            transition: background 0.2s;
+            transition: all 0.2s;
             border-left: 3px solid transparent;
+            font-size: 0.95rem;
+            font-weight: 500;
+            position: relative;
         }
-
-        .menu-link i {
-            width: 20px;
-            color: var(--sari);
+        .menu-link .link-icon {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            flex-shrink: 0;
         }
-
         .menu-link:hover {
-            background: rgba(255, 215, 0, 0.1);
-            border-left-color: var(--sari);
+            color: var(--beyaz);
+            border-left-color: rgba(255,215,0,0.4);
+            background: rgba(255,215,0,0.05);
         }
-
+        .menu-link:hover .link-icon { background: rgba(255,215,0,0.15); color: var(--sari); }
         .menu-link.active {
-            background: rgba(255, 215, 0, 0.15);
-            border-left-color: var(--sari);
             color: var(--sari);
+            border-left-color: var(--sari);
+            background: var(--sari-dim);
         }
+        .menu-link.active .link-icon { background: rgba(255,215,0,0.2); color: var(--sari); }
 
         .menu-footer {
-            position: absolute;
-            bottom: 30px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 0.8rem;
-            opacity: 0.6;
+            padding: 20px 24px;
+            border-top: 1px solid rgba(255,215,0,0.08);
+            font-size: 0.75rem;
+            opacity: 0.4;
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 1px;
         }
 
-        /* HERO SECTION - Siyah + Sarı */
+        /* ===== HERO ===== */
         .team-hero {
-            min-height: 40vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: relative; z-index: 1;
+            min-height: 42vh;
+            display: flex; align-items: center; justify-content: center;
             text-align: center;
-            background: linear-gradient(135deg, var(--siyah), var(--siyah-2));
-            border-bottom: 3px solid var(--sari);
-            padding: 60px 20px;
+            padding: 80px 20px 50px;
+            overflow: hidden;
+        }
+        .team-hero::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--sari), transparent);
         }
 
-        .team-hero-content {
-            max-width: 800px;
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--sari-dim);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 100px;
+            padding: 6px 16px;
+            font-size: 0.8rem;
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 2px;
+            color: var(--sari);
+            margin-bottom: 20px;
+            animation: fadeInUp 0.6s both;
         }
+        .hero-badge i { font-size: 0.7rem; }
 
         .team-hero h1 {
-            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: clamp(3rem, 10vw, 5.5rem);
             font-weight: 700;
-            color: var(--sari);
-            margin-bottom: 15px;
-            animation: fadeInUp 0.8s;
+            letter-spacing: 4px;
+            line-height: 1;
+            margin-bottom: 12px;
+            animation: fadeInUp 0.6s 0.1s both;
+            background: linear-gradient(135deg, var(--sari) 0%, #FFF5AA 50%, var(--sari) 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.6s 0.1s both, shimmer 3s linear infinite;
         }
 
         .team-hero p {
-            font-size: 1.1rem;
-            color: var(--beyaz);
-            opacity: 0.9;
+            font-size: 1.05rem;
+            color: rgba(240,240,255,0.6);
             margin-bottom: 30px;
-            animation: fadeInUp 0.8s 0.1s both;
+            animation: fadeInUp 0.6s 0.2s both;
         }
 
-        /* EK BİLGİ - Sadece Sarı renkli */
-        .team-info {
-            background: rgba(255, 215, 0, 0.05);
-            border: 1px solid var(--sari);
-            border-radius: 10px;
-            padding: 25px;
-            margin-top: 20px;
-            animation: scaleIn 0.8s 0.2s both;
+        .hero-stats {
+            display: flex; gap: 30px; justify-content: center; flex-wrap: wrap;
+            animation: fadeInUp 0.6s 0.3s both;
         }
-
-        .team-info p {
-            margin: 10px 0;
-            font-size: 1rem;
-            color: var(--beyaz);
-            animation: fadeInUp 0.5s;
-            animation-fill-mode: both;
+        .hero-stat {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.85rem;
+            color: rgba(240,240,255,0.55);
         }
+        .hero-stat i { color: var(--sari); font-size: 0.8rem; }
 
-        .team-info p:nth-child(1) { animation-delay: 0.3s; }
-        .team-info p:nth-child(2) { animation-delay: 0.4s; }
-        .team-info p:nth-child(3) { animation-delay: 0.5s; }
-        .team-info p:nth-child(4) { animation-delay: 0.6s; }
-
-        .team-info i {
-            color: var(--sari);
-            width: 25px;
-            margin-right: 10px;
-        }
-
-        /* STATS */
+        /* ===== STATS COUNTER ===== */
         .stats-container {
-            max-width: 1200px;
-            margin: -30px auto 0;
-            padding: 0 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 50px 20px 0;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            position: relative;
-            z-index: 10;
+            gap: 16px;
+            position: relative; z-index: 1;
         }
-
         .stat-card {
             background: var(--siyah-2);
-            padding: 20px;
-            border-radius: 8px;
+            border-radius: 16px;
+            padding: 28px 20px;
             text-align: center;
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            animation: scaleIn 0.6s;
-            animation-fill-mode: both;
+            border: 1px solid rgba(255,215,0,0.12);
+            position: relative; overflow: hidden;
+            transition: border-color 0.3s, transform 0.3s;
         }
-
-        .stat-card:nth-child(1) { animation-delay: 0.1s; }
-        .stat-card:nth-child(2) { animation-delay: 0.2s; }
-        .stat-card:nth-child(3) { animation-delay: 0.3s; }
-
+        .stat-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--sari), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .stat-card:hover { border-color: rgba(255,215,0,0.3); transform: translateY(-2px); }
+        .stat-card:hover::before { opacity: 1; }
+        .stat-card .icon {
+            font-size: 1.3rem; color: var(--sari); margin-bottom: 10px; opacity: 0.8;
+        }
         .stat-card .number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--sari);
-            display: block;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.8rem; font-weight: 700;
+            color: var(--sari); display: block; line-height: 1;
+            margin-bottom: 6px;
         }
-
         .stat-card .label {
-            color: var(--beyaz);
-            opacity: 0.8;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            color: rgba(240,240,255,0.5);
+            letter-spacing: 1px;
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
         }
 
-        /* FILTER BUTTONS */
-        .filter-section {
+        /* ===== CONTROLS (Search + Filter) ===== */
+        .controls {
             max-width: 1200px;
-            margin: 40px auto;
+            margin: 40px auto 0;
             padding: 0 20px;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
+            display: flex; flex-direction: column; gap: 16px;
+            position: relative; z-index: 1;
         }
 
-        .filter-btn {
-            padding: 8px 25px;
-            background: transparent;
-            border: 2px solid var(--sari);
-            border-radius: 30px;
+        /* Search box */
+        .search-wrapper {
+            position: relative;
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .search-icon {
+            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+            color: var(--sari); font-size: 0.9rem; opacity: 0.7;
+            pointer-events: none;
+        }
+        #searchInput {
+            width: 100%;
+            background: var(--siyah-2);
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 50px;
+            padding: 12px 20px 12px 44px;
             color: var(--beyaz);
-            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        #searchInput::placeholder { color: rgba(240,240,255,0.3); }
+        #searchInput:focus {
+            border-color: rgba(255,215,0,0.5);
+            box-shadow: 0 0 0 3px rgba(255,215,0,0.08);
+        }
+        .search-clear {
+            position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+            color: rgba(240,240,255,0.3); cursor: pointer;
+            font-size: 0.85rem; display: none; transition: color 0.2s;
+            background: none; border: none; padding: 4px;
+        }
+        .search-clear:hover { color: var(--sari); }
+        .search-clear.visible { display: block; }
+
+        /* Filter buttons */
+        .filter-section {
+            display: flex; gap: 8px;
+            justify-content: center; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 8px 22px;
+            background: transparent;
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 50px;
+            color: rgba(240,240,255,0.6);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600; font-size: 0.9rem;
+            letter-spacing: 1px;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 0.9rem;
-            animation: scaleIn 0.5s;
-            animation-fill-mode: both;
         }
-
-        .filter-btn:nth-child(1) { animation-delay: 0.1s; }
-        .filter-btn:nth-child(2) { animation-delay: 0.2s; }
-        .filter-btn:nth-child(3) { animation-delay: 0.3s; }
-
-        .filter-btn:hover,
+        .filter-btn:hover {
+            border-color: rgba(255,215,0,0.5);
+            color: var(--beyaz);
+            background: rgba(255,215,0,0.06);
+        }
         .filter-btn.active {
             background: var(--sari);
+            border-color: var(--sari);
             color: var(--siyah);
         }
 
-        /* TEAM GRID */
+        /* No results */
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(240,240,255,0.4);
+            grid-column: 1 / -1;
+        }
+        .no-results i { font-size: 2.5rem; color: var(--sari); opacity: 0.3; margin-bottom: 12px; display: block; }
+        .no-results p { font-size: 0.95rem; }
+
+        /* ===== TEAM GRID ===== */
         .team-section {
             max-width: 1200px;
-            margin: 0 auto 60px;
-            padding: 0 20px;
+            margin: 0 auto 80px;
+            padding: 30px 20px 0;
+            position: relative; z-index: 1;
+        }
+
+        .section-header {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 24px;
+        }
+        .section-header h2 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem; font-weight: 600;
+            letter-spacing: 2px; color: rgba(240,240,255,0.4);
+            text-transform: uppercase;
+        }
+        .section-header .line {
+            flex: 1; height: 1px;
+            background: linear-gradient(90deg, rgba(255,215,0,0.2), transparent);
+        }
+        .result-count {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.85rem; color: var(--sari); opacity: 0.7;
         }
 
         .team-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
         }
 
+        /* ===== MEMBER CARD (Modern) ===== */
         .team-member {
             background: var(--siyah-2);
-            border-radius: 8px;
-            padding: 25px 15px;
+            border-radius: 20px;
+            padding: 28px 20px 20px;
             text-align: center;
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            transition: transform 0.2s;
-            animation: scaleIn 0.6s;
-            animation-fill-mode: both;
+            border: 1px solid rgba(255,215,0,0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+            position: relative; overflow: hidden;
+            animation: scaleIn 0.5s both;
         }
-
-        /* Her üye kartı için gecikmeli animasyon */
-        .team-member:nth-child(1) { animation-delay: 0.05s; }
-        .team-member:nth-child(2) { animation-delay: 0.1s; }
-        .team-member:nth-child(3) { animation-delay: 0.15s; }
-        .team-member:nth-child(4) { animation-delay: 0.2s; }
-        .team-member:nth-child(5) { animation-delay: 0.25s; }
-        .team-member:nth-child(6) { animation-delay: 0.3s; }
-        .team-member:nth-child(7) { animation-delay: 0.35s; }
-        .team-member:nth-child(8) { animation-delay: 0.4s; }
-        .team-member:nth-child(9) { animation-delay: 0.45s; }
-        .team-member:nth-child(10) { animation-delay: 0.5s; }
-        .team-member:nth-child(11) { animation-delay: 0.55s; }
-        .team-member:nth-child(12) { animation-delay: 0.6s; }
-        .team-member:nth-child(13) { animation-delay: 0.65s; }
-        .team-member:nth-child(14) { animation-delay: 0.7s; }
-        .team-member:nth-child(15) { animation-delay: 0.75s; }
-        .team-member:nth-child(16) { animation-delay: 0.8s; }
-        .team-member:nth-child(17) { animation-delay: 0.85s; }
-        .team-member:nth-child(18) { animation-delay: 0.9s; }
-        .team-member:nth-child(19) { animation-delay: 0.95s; }
-        .team-member:nth-child(20) { animation-delay: 1s; }
-        .team-member:nth-child(21) { animation-delay: 1.05s; }
-        .team-member:nth-child(22) { animation-delay: 1.1s; }
-        .team-member:nth-child(23) { animation-delay: 1.15s; }
-        .team-member:nth-child(24) { animation-delay: 1.2s; }
-        .team-member:nth-child(25) { animation-delay: 1.25s; }
-        .team-member:nth-child(26) { animation-delay: 1.3s; }
-        .team-member:nth-child(27) { animation-delay: 1.35s; }
-
+        .team-member::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.4), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .team-member::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,215,0,0.04) 0%, transparent 70%);
+            opacity: 0; transition: opacity 0.3s;
+        }
         .team-member:hover {
-            transform: translateY(-3px);
-            border-color: var(--sari);
+            transform: translateY(-6px);
+            border-color: rgba(255,215,0,0.25);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,215,0,0.1);
+        }
+        .team-member:hover::before { opacity: 1; }
+        .team-member:hover::after { opacity: 1; }
+
+        /* Category badge on card */
+        .card-badge {
+            position: absolute; top: 14px; right: 14px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.65rem; font-weight: 700;
+            letter-spacing: 1.5px;
+            padding: 3px 9px;
+            border-radius: 100px;
+        }
+        .card-badge.founder {
+            background: rgba(255,215,0,0.15);
+            border: 1px solid rgba(255,215,0,0.4);
+            color: var(--sari);
+        }
+        .card-badge.member {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(240,240,255,0.4);
         }
 
         .member-image {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 15px;
+            width: 90px; height: 90px;
+            margin: 0 auto 16px;
             border-radius: 50%;
             overflow: hidden;
-            border: 3px solid var(--sari);
+            border: 2px solid rgba(255,215,0,0.3);
             background: var(--gri);
+            transition: border-color 0.3s, transform 0.3s;
+            position: relative; z-index: 1;
         }
-
-        .member-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
+        .team-member:hover .member-image {
+            border-color: var(--sari);
+            transform: scale(1.05);
         }
-
+        .member-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .member-image.no-image {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2rem; font-weight: 700;
             color: var(--sari);
-            background: var(--gri);
         }
 
         .team-member h3 {
-            font-size: 1.3rem;
-            color: var(--sari);
-            margin-bottom: 5px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem; font-weight: 700;
+            color: var(--beyaz);
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+            position: relative; z-index: 1;
         }
-
         .member-role {
-            color: var(--beyaz);
-            opacity: 0.8;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
+            font-size: 0.78rem;
+            color: rgba(240,240,255,0.45);
+            margin-bottom: 14px;
+            position: relative; z-index: 1;
+        }
+        .member-social {
+            display: flex; justify-content: center; gap: 10px;
+            position: relative; z-index: 1;
+        }
+        .member-social a {
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(240,240,255,0.5);
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .member-social a:hover {
+            background: rgba(255,215,0,0.15);
+            border-color: rgba(255,215,0,0.4);
+            color: var(--sari);
+            transform: scale(1.1);
         }
 
-        /* Sadece Instagram */
-        .member-social a {
-            color: var(--beyaz);
-            font-size: 1.1rem;
+        /* ===== MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed; inset: 0;
+            z-index: 1000;
+            justify-content: center; align-items: center;
+            padding: 20px;
+        }
+        .modal.active { display: flex; }
+
+        .modal-overlay {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            animation: overlayIn 0.3s both;
+        }
+
+        .modal-content {
+            background: var(--siyah-2);
+            border-radius: 24px;
+            max-width: 520px; width: 100%;
+            position: relative; z-index: 1;
+            border: 1px solid rgba(255,215,0,0.15);
+            animation: modalIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            overflow: hidden;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,215,0,0.05);
+        }
+
+        .modal-close {
+            position: absolute; top: 16px; right: 16px;
+            width: 34px; height: 34px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer; color: var(--beyaz);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; transition: all 0.2s; z-index: 10;
+        }
+        .modal-close:hover { background: rgba(255,215,0,0.15); border-color: var(--sari); color: var(--sari); }
+
+        .modal-header {
+            background: linear-gradient(160deg, var(--siyah-3) 0%, var(--siyah-2) 100%);
+            padding: 40px 30px 28px;
+            text-align: center;
+            position: relative;
+            border-bottom: 1px solid rgba(255,215,0,0.08);
+        }
+        .modal-header::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--sari), transparent);
+        }
+
+        .modal-profile-img {
+            width: 110px; height: 110px;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid rgba(255,215,0,0.4);
+            background: var(--gri);
+            box-shadow: 0 0 0 6px rgba(255,215,0,0.06), 0 8px 24px rgba(0,0,0,0.4);
+        }
+        .modal-profile-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .modal-profile-img.no-image {
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.5rem; font-weight: 700; color: var(--sari);
+        }
+
+        .modal-header h2 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2rem; font-weight: 700;
+            color: var(--beyaz); margin-bottom: 4px; letter-spacing: 1px;
+        }
+        .modal-role-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 100px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.8rem; font-weight: 600;
+            letter-spacing: 1px;
+            background: var(--sari-dim);
+            border: 1px solid rgba(255,215,0,0.25);
+            color: var(--sari);
+        }
+
+        .modal-body { padding: 24px 28px 28px; }
+
+        .info-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin-bottom: 16px;
+        }
+        .info-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+        .info-item.full { grid-column: 1 / -1; }
+        .info-label {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 1.5px;
+            color: var(--sari); opacity: 0.6;
+            text-transform: uppercase; margin-bottom: 4px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .info-label i { font-size: 0.7rem; }
+        .info-value {
+            font-size: 0.9rem; color: var(--beyaz);
+            line-height: 1.5;
+        }
+        .info-value a {
+            color: var(--beyaz); text-decoration: none;
             transition: color 0.2s;
         }
+        .info-value a:hover { color: var(--sari); }
 
-        .member-social a:hover {
-            color: var(--sari);
+        .skills {
+            display: flex; flex-wrap: wrap; gap: 6px;
+            margin-top: 2px;
+        }
+        .skill-tag {
+            background: rgba(255,215,0,0.08);
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 100px;
+            padding: 3px 10px;
+            font-size: 0.75rem;
+            color: rgba(255,215,0,0.8);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600; letter-spacing: 0.5px;
         }
 
-        /* FOOTER */
+        .modal-actions {
+            display: flex; gap: 10px; margin-top: 18px;
+        }
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem; font-weight: 600;
+            cursor: pointer; text-decoration: none;
+            transition: all 0.2s;
+        }
+        .modal-btn.primary {
+            background: var(--sari);
+            border: 1px solid var(--sari);
+            color: var(--siyah);
+        }
+        .modal-btn.primary:hover { background: #FFF0A0; transform: translateY(-1px); }
+        .modal-btn.secondary {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(240,240,255,0.6);
+        }
+        .modal-btn.secondary:hover { border-color: rgba(255,255,255,0.2); color: var(--beyaz); }
+
+        /* ===== FOOTER ===== */
         footer {
             background: var(--siyah-2);
-            padding: 40px 20px 20px;
-            border-top: 2px solid var(--sari);
-            margin-top: 40px;
+            padding: 50px 20px 24px;
+            border-top: 1px solid rgba(255,215,0,0.1);
+            position: relative; z-index: 1;
         }
-
         .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
+            max-width: 1100px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 36px; margin-bottom: 36px;
         }
-
         .footer-logo h2 {
-            font-size: 1.8rem;
-            color: var(--sari);
-            margin-bottom: 5px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2rem; color: var(--sari); margin-bottom: 4px;
         }
-
-        .footer-logo p {
-            color: var(--beyaz);
-            opacity: 0.7;
-            font-size: 0.9rem;
+        .footer-logo p { font-size: 0.85rem; opacity: 0.4; }
+        .footer-links h4, .footer-social h4 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.75rem; font-weight: 700;
+            letter-spacing: 2px; text-transform: uppercase;
+            color: var(--sari); opacity: 0.6; margin-bottom: 16px;
         }
-
-        .footer-links h4,
-        .footer-social h4 {
-            color: var(--sari);
-            margin-bottom: 15px;
-            font-size: 1rem;
-        }
-
-        .footer-links ul {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 8px;
-        }
-
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 8px; }
         .footer-links a {
-            color: var(--beyaz);
-            text-decoration: none;
+            color: rgba(240,240,255,0.5);
+            text-decoration: none; font-size: 0.9rem;
             transition: color 0.2s;
-            opacity: 0.8;
-            font-size: 0.9rem;
         }
-
-        .footer-links a:hover {
-            color: var(--sari);
-        }
-
-        .social-icons {
-            display: flex;
-            gap: 15px;
-        }
-
+        .footer-links a:hover { color: var(--sari); }
+        .social-icons { display: flex; gap: 10px; }
         .social-icons a {
-            color: var(--beyaz);
-            font-size: 1.3rem;
-            transition: color 0.2s;
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(240,240,255,0.5); font-size: 1rem;
+            text-decoration: none; transition: all 0.2s;
         }
-
-        .social-icons a:hover {
-            color: var(--sari);
-        }
-
+        .social-icons a:hover { background: var(--sari-dim); border-color: rgba(255,215,0,0.3); color: var(--sari); }
         .footer-bottom {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            color: var(--beyaz);
-            opacity: 0.6;
-            font-size: 0.8rem;
+            max-width: 1100px; margin: 0 auto;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 8px;
+            font-size: 0.8rem; opacity: 0.35;
+            font-family: 'Rajdhani', sans-serif; letter-spacing: 0.5px;
         }
 
-        /* RESPONSIVE */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .stats-container {
-                grid-template-columns: 1fr;
-                margin-top: 20px;
-            }
-            
-            .filter-section {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .filter-btn {
-                width: 100%;
-                max-width: 250px;
-            }
-            
-            .team-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-            
-            .social-icons {
-                justify-content: center;
-            }
+            .stats-container { grid-template-columns: 1fr 1fr 1fr; }
+            .team-container { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+            .info-grid { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr; text-align: center; }
+            .social-icons { justify-content: center; }
+            .footer-bottom { justify-content: center; text-align: center; }
+            .hero-stats { gap: 16px; }
+        }
+        @media (max-width: 480px) {
+            .stats-container { grid-template-columns: 1fr; max-width: 280px; }
+            .team-container { grid-template-columns: 1fr 1fr; }
+            .modal-content { border-radius: 20px; }
+            .modal-header { padding: 36px 20px 24px; }
+            .modal-body { padding: 20px; }
         }
     </style>
 </head>
 <body>
-    <!-- LOADING - Index'tekiyle aynı -->
+
+    <!-- LOADER -->
     <div class="loader-wrapper" id="loader">
         <div class="loader"></div>
+        <div class="loader-text">LTF YÜKLENIYOR</div>
     </div>
 
     <!-- HAMBURGER -->
-    <div id="menuBtn" class="hamburger">
-        <span class="bar1"></span>
-        <span class="bar2"></span>
-        <span class="bar3"></span>
+    <div id="menuBtn" class="hamburger" aria-label="Menü">
+        <span></span>
+        <span></span>
+        <span></span>
     </div>
 
+    <!-- MENU OVERLAY -->
+    <div id="menuOverlay" class="menu-overlay"></div>
+
     <!-- SIDE MENU -->
-    <nav id="sideMenu" class="side-menu">
+    <nav id="sideMenu" class="side-menu" aria-label="Ana Navigasyon">
+        <div class="menu-logo">
+            <div class="menu-logo-icon"><span>LTF</span></div>
+            <div class="menu-logo-text">
+                <strong>LOYAL TEAM</strong>
+                <span>FORCE</span>
+            </div>
+        </div>
         <div class="menu-items">
             <a href="index.html" class="menu-link">
-                <i class="fas fa-home"></i>
+                <div class="link-icon"><i class="fas fa-home"></i></div>
                 Ana Sayfa
             </a>
             <a href="leaderboard.html" class="menu-link">
-                <i class="fas fa-trophy"></i>
+                <div class="link-icon"><i class="fas fa-trophy"></i></div>
                 Liderlik Tablosu
             </a>
             <a href="proje.html" class="menu-link">
-                <i class="fas fa-code-branch"></i>
+                <div class="link-icon"><i class="fas fa-code-branch"></i></div>
                 Projelerimiz
             </a>
             <a href="social.html" class="menu-link">
-                <i class="fas fa-users"></i>
+                <div class="link-icon"><i class="fas fa-users"></i></div>
                 Sosyal Medya
             </a>
             <a href="team.html" class="menu-link active">
-                <i class="fas fa-user-ninja"></i>
+                <div class="link-icon"><i class="fas fa-user-ninja"></i></div>
                 Takımımız
             </a>
-            </a>
             <a href="puanlama.html" class="menu-link">
-                <i class="fas fa-star"></i>
+                <div class="link-icon"><i class="fas fa-star"></i></div>
                 Puanlama
             </a>
+            <a href="sohbet.html" class="menu-link">
+                <div class="link-icon"><i class="fas fa-message"></i></div>
+                Sohbet
+            </a>
         </div>
-        <div class="menu-footer">
-            <p>LTF © 2025</p>
-        </div>
+        <div class="menu-footer">LTF © 2025 — Tüm Haklar Saklı</div>
     </nav>
 
-    <!-- MODAL - Yeni Eklendi -->
-    <div id="memberModal" class="modal">
+    <!-- MODAL -->
+    <div id="memberModal" class="modal" role="dialog" aria-modal="true">
+        <div class="modal-overlay" id="modalOverlay"></div>
         <div class="modal-content">
-            <span class="modal-close">&times;</span>
+            <button class="modal-close" id="modalClose" aria-label="Kapat">
+                <i class="fas fa-times"></i>
+            </button>
             <div class="modal-header">
                 <div class="modal-profile-img" id="modalProfileImg">
                     <img id="modalImg" src="" alt="">
                 </div>
                 <h2 id="modalName"></h2>
-                <p class="member-role" id="modalRole"></p>
+                <span class="modal-role-badge" id="modalRole"></span>
             </div>
             <div class="modal-body">
-                <div class="info-item">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span class="info-label">Yaş:</span>
-                    <span class="info-value" id="modalAge"></span>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-calendar"></i> Yaş</div>
+                        <div class="info-value" id="modalAge"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-user-plus"></i> Katılım</div>
+                        <div class="info-value" id="modalJoined"></div>
+                    </div>
+                    <div class="info-item full">
+                        <div class="info-label"><i class="fab fa-instagram"></i> Instagram</div>
+                        <div class="info-value" id="modalInstagram"></div>
+                    </div>
+                    <div class="info-item full">
+                        <div class="info-label"><i class="fas fa-info-circle"></i> Hakkında</div>
+                        <div class="info-value" id="modalAbout"></div>
+                    </div>
+                    <div class="info-item full">
+                        <div class="info-label"><i class="fas fa-code"></i> Uzmanlık</div>
+                        <div class="info-value" id="modalSkills"></div>
+                    </div>
                 </div>
-                <div class="info-item">
-                    <i class="fab fa-instagram"></i>
-                    <span class="info-label">Instagram:</span>
-                    <span class="info-value" id="modalInstagram"></span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-info-circle"></i>
-                    <span class="info-label">Hakkında:</span>
-                    <span class="info-value" id="modalAbout"></span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-code"></i>
-                    <span class="info-label">Uzmanlık:</span>
-                    <div class="info-value" id="modalSkills"></div>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-user-plus"></i>
-                    <span class="info-label">Katılım:</span>
-                    <span class="info-value" id="modalJoined"></span>
-                </div>
-                <div class="social-buttons">
-                    <a href="#" id="modalInstaLink" class="social-btn" target="_blank">
-                        <i class="fab fa-instagram"></i> Instagram
+                <div class="modal-actions">
+                    <a href="#" id="modalInstaLink" class="modal-btn primary" target="_blank" rel="noopener">
+                        <i class="fab fa-instagram"></i> Instagram'da Takip Et
                     </a>
+                    <button class="modal-btn secondary" id="modalCloseBtn">
+                        <i class="fas fa-times"></i> Kapat
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- HERO SECTION -->
+    <!-- HERO -->
     <section class="team-hero">
         <div class="team-hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-shield-alt"></i> LOYAL TEAM FORCE
+            </div>
             <h1>EKİBİMİZ</h1>
-            <p>Loyal Team Force ailesi</p>
-            
-            <!-- EK BİLGİ - Sadece Sarı renkli -->
-            <div class="team-info">
-                <p><i class="fas fa-users"></i> 27 Aktif Üye ile büyüyoruz</p>
-                <p><i class="fas fa-trophy"></i> 50+ Başarılı Proje</p>
-                <p><i class="fas fa-clock"></i> 7/24 Destek</p>
-                <p><i class="fas fa-star"></i> Profesyonel ekip üyeleri</p>
+            <p>Güçlü, sadık ve yaratıcı — LTF ailesi</p>
+            <div class="hero-stats">
+                <div class="hero-stat"><i class="fas fa-users"></i> 29 Aktif Üye</div>
+                <div class="hero-stat"><i class="fas fa-trophy"></i> 50+ Başarılı Proje</div>
+                <div class="hero-stat"><i class="fas fa-clock"></i> 7/24 Destek</div>
+                <div class="hero-stat"><i class="fas fa-star"></i> Profesyonel Ekip</div>
             </div>
         </div>
     </section>
@@ -806,601 +901,685 @@
     <!-- STATS -->
     <div class="stats-container">
         <div class="stat-card">
-            <span class="number">27</span>
+            <div class="icon"><i class="fas fa-users"></i></div>
+            <span class="number" data-target="29">0</span>
             <span class="label">Aktif Üye</span>
         </div>
         <div class="stat-card">
-            <span class="number">2</span>
+            <div class="icon"><i class="fas fa-crown"></i></div>
+            <span class="number" data-target="2">0</span>
             <span class="label">Lider</span>
         </div>
         <div class="stat-card">
-            <span class="number">25</span>
+            <div class="icon"><i class="fas fa-user-shield"></i></div>
+            <span class="number" data-target="27">0</span>
             <span class="label">Takım Üyesi</span>
         </div>
     </div>
 
-    <!-- FILTER BUTTONS -->
-    <div class="filter-section">
-        <button class="filter-btn active" onclick="filterMembers('all')">TÜMÜ</button>
-        <button class="filter-btn" onclick="filterMembers('founder')">LİDERLER</button>
-        <button class="filter-btn" onclick="filterMembers('member')">ÜYELER</button>
+    <!-- CONTROLS -->
+    <div class="controls">
+        <div class="search-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" placeholder="Üye ara... (isim veya rol)">
+            <button class="search-clear" id="searchClear" aria-label="Aramayı temizle">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="filter-section">
+            <button class="filter-btn active" data-filter="all">TÜMÜ</button>
+            <button class="filter-btn" data-filter="founder">LİDERLER</button>
+            <button class="filter-btn" data-filter="member">ÜYELER</button>
+        </div>
     </div>
 
     <!-- TEAM GRID -->
     <section class="team-section">
+        <div class="section-header">
+            <h2>Üyeler</h2>
+            <div class="line"></div>
+            <div class="result-count" id="resultCount"></div>
+        </div>
         <div class="team-container" id="teamContainer">
-            <!-- ZINNY - Kurucu -->
+
+            <!-- ZINNY -->
             <div class="team-member" data-category="founder" data-name="Zinny" data-role="Kurucu" data-instagram="yalnz_nihish" data-instagram-url="https://instagram.com/yalnz_nihish" data-age="19" data-about="Loyal Team Force'un kurucusu. Ekibi bir araya getiren ve vizyonu belirleyen lider." data-skills="Liderlik, Strateji, Proje Yönetimi" data-joined="2023">
+                <span class="card-badge founder">KURUCU</span>
                 <div class="member-image">
-                    <img src="nihishpfp.jpg" alt="Zinny" onerror="this.src='https://via.placeholder.com/120/FFD700/000000?text=Z'">
+                    <img src="nihishpfp.jpg" alt="Zinny" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='Z'">
                 </div>
                 <h3>Zinny</h3>
                 <p class="member-role">Kurucu</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/yalnz_nihish"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/yalnz_nihish" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
-            <!-- CHIVAS - Kurucu Yardımcısı -->
+            <!-- CHIVAS -->
             <div class="team-member" data-category="founder" data-name="Chivas" data-role="Baş Yardımcı" data-instagram="chwwx7" data-instagram-url="https://instagram.com/chwwx7" data-age="19" data-about="Baş Yardımcı olarak ekibin organizasyonundan sorumlu. Takımın koordinasyonunu sağlar." data-skills="Organizasyon, İletişim, Koordinasyon" data-joined="2023">
+                <span class="card-badge founder">LİDER</span>
                 <div class="member-image">
-                    <img src="ltflogoblack.jpeg" alt="Chivas" onerror="this.src='https://via.placeholder.com/120/FFD700/000000?text=C'">
+                    <img src="ltflogoblack.jpeg" alt="Chivas" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='C'">
                 </div>
                 <h3>Chivas</h3>
                 <p class="member-role">Baş Yardımcı</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/chwwx7"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/chwwx7" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- TAMER -->
             <div class="team-member" data-category="member" data-name="Tamer" data-role="Kurucu Yardımcısı" data-instagram="tamer190727" data-instagram-url="https://instagram.com/tamer190727" data-age="20" data-about="Kurucu Yardımcısı, teknik konularda ekibe destek verir." data-skills="Teknik Destek, Problem Çözme" data-joined="2024">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="tamerikosspfp.jpg" alt="Tamer" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=T'">
+                    <img src="tamerikosspfp.jpg" alt="Tamer" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='T'">
                 </div>
                 <h3>Tamer</h3>
                 <p class="member-role">Kurucu Yardımcısı</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/tamer190727"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/tamer190727" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- NARANCIA -->
             <div class="team-member" data-category="member" data-name="Narancia" data-role="Üye" data-instagram="naran.ciaa" data-instagram-url="https://instagram.com/naran.ciaa" data-age="15" data-about="Yaratıcı fikirleriyle ekibe katkı sağlar." data-skills="Yaratıcılık, Tasarım" data-joined="2024">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Narancia" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=N'">
+                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Narancia" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='N'">
                 </div>
                 <h3>Narancia</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/naran.ciaa"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/naran.ciaa" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- YILDIZ -->
             <div class="team-member" data-category="member" data-name="Yıldız" data-role="Üye" data-instagram="yildiz42k" data-instagram-url="https://instagram.com/yildiz42k" data-age="12" data-about="Sosyal medya yönetiminde aktif rol alır." data-skills="Sosyal Medya, İçerik Üretimi" data-joined="2024">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="yildizpfp.jpg" alt="Yıldız" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=Y'">
+                    <img src="yildizpfp.jpg" alt="Yıldız" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='Y'">
                 </div>
                 <h3>Yıldız</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/yildiz42k"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/yildiz42k" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- QUARTEX -->
             <div class="team-member" data-category="member" data-name="Quartex" data-role="Kurucu Yardımcısı" data-instagram="norwnqua" data-instagram-url="https://instagram.com/norwnqua" data-age="16" data-about="Teknik altyapı ve sistemlerden sorumlu." data-skills="Sistem Yönetimi, Teknik Altyapı" data-joined="2024">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="quapfp.jpg" alt="Quartex" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=Q'">
+                    <img src="quapfp.jpg" alt="Quartex" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='Q'">
                 </div>
                 <h3>Quartex</h3>
                 <p class="member-role">Kurucu Yardımcısı</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/norwnqua"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/norwnqua" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- TAHA -->
             <div class="team-member" data-category="member" data-name="Taha" data-role="Üye" data-instagram="tahabugra01" data-instagram-url="https://instagram.com/tahabugra01" data-age="16" data-about="Yazılım geliştirme konusunda çalışmalar yapar." data-skills="Yazılım Geliştirme, Python" data-joined="2025">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="tahapfp.jpeg" alt="Taha" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=T'">
+                    <img src="tahapfp.jpeg" alt="Taha" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='T'">
                 </div>
                 <h3>Taha</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/tahabugra01"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/tahabugra01" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- YAHYA -->
             <div class="team-member" data-category="member" data-name="Yahya" data-role="Üye" data-instagram="r3al_.y" data-instagram-url="https://instagram.com/r3al_.y" data-age="15" data-about="Grafik tasarım ve görsel içeriklerden sorumlu." data-skills="Grafik Tasarım, Photoshop" data-joined="2024">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="yahyapfp.jpg" alt="Yahya" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=Y'">
+                    <img src="yahyapfp.jpg" alt="Yahya" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='Y'">
                 </div>
                 <h3>Yahya</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/r3al_.y"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/r3al_.y" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- NEGAN -->
             <div class="team-member" data-category="member" data-name="Negan" data-role="Üye" data-instagram="ero1n._18" data-instagram-url="https://instagram.com/ero1n._18" data-age="19" data-about="Proje yönetimi ve takım koordinasyonunda görev alır." data-skills="Proje Yönetimi, Liderlik" data-joined="2023">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="neganpfp.jpg" alt="Negan" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=N'">
+                    <img src="neganpfp.jpg" alt="Negan" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='N'">
                 </div>
                 <h3>Negan</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/ero1n._18"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/ero1n._18" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- RAII -->
             <div class="team-member" data-category="member" data-name="Raii" data-role="Üye" data-instagram="h.oktay.krkmz" data-instagram-url="https://instagram.com/h.oktay.krkmz" data-age="16" data-about="Sosyal medya stratejileri üzerine çalışır." data-skills="Sosyal Medya Stratejisi, İçerik Planlama" data-joined="2025">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="zloipfpp.jpg" alt="Raii" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=R'">
+                    <img src="zloipfpp.jpg" alt="Raii" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='R'">
                 </div>
                 <h3>Raii</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/h.oktay.krkmz"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/h.oktay.krkmz" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- THOUSAND -->
             <div class="team-member" data-category="member" data-name="Thousand" data-role="Üye" data-instagram="aliissthew1" data-instagram-url="https://instagram.com/aliissthew1" data-age="16" data-about="Backend geliştirme konusunda uzman." data-skills="Backend, Node.js, PHP" data-joined="2025">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="thousandpfpp.jpg" alt="Thousand" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=T'">
+                    <img src="thousandpfpp.jpg" alt="Thousand" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='T'">
                 </div>
                 <h3>Thousand</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/aliissthew1"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/aliissthew1" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- JYXZZ -->
             <div class="team-member" data-category="member" data-name="Jyxzz" data-role="Üye" data-instagram="bilgeh4n_tosun" data-instagram-url="https://instagram.com/bilgeh4n_tosun" data-age="17" data-about="Frontend geliştirme ve tasarım konularında çalışır." data-skills="Frontend, HTML/CSS, JavaScript" data-joined="2025">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Jyxzz" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=J'">
+                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Jyxzz" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='J'">
                 </div>
                 <h3>Jyxzz</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/bilgeh4n_tosun"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/bilgeh4n_tosun" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- JUSTBERRU -->
             <div class="team-member" data-category="member" data-name="JustBerru" data-role="Üye" data-instagram="justbestruu" data-instagram-url="https://instagram.com/justbestruu" data-age="15" data-about="Topluluk yönetimi ve moderasyon görevlerinde aktif." data-skills="Topluluk Yönetimi, Moderasyon" data-joined="2025">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="JustBerru" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=J'">
+                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="JustBerru" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='J'">
                 </div>
                 <h3>JustBerru</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/justbestruu"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/justbestruu" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- SKURS -->
             <div class="team-member" data-category="member" data-name="Skurs" data-role="Üye" data-instagram="skursbs" data-instagram-url="https://instagram.com/skursbs" data-age="16" data-about="Veri analizi ve raporlama konularında uzman." data-skills="Veri Analizi, Excel, Raporlama" data-joined="2025">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Skurs" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=S'">
+                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Skurs" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='S'">
                 </div>
                 <h3>Skurs</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/skursbs"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/skursbs" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- AXEM -->
             <div class="team-member" data-category="member" data-name="Axem" data-role="Üye" data-instagram="batuhandoruk_" data-instagram-url="https://instagram.com/batuhandoruk_" data-age="17" data-about="Güvenlik ve sistem optimizasyonu üzerine çalışır." data-skills="Siber Güvenlik, Sistem Optimizasyonu" data-joined="2023">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Axem" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=A'">
+                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Axem" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='A'">
                 </div>
                 <h3>Axem</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/batuhandoruk_"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/batuhandoruk_" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- EKIN -->
             <div class="team-member" data-category="member" data-name="Ekin" data-role="Üye" data-instagram="llekwn_" data-instagram-url="https://instagram.com/llekwn_" data-age="16" data-about="İçerik üretimi ve video düzenleme konularında yetenekli." data-skills="Video Düzenleme, İçerik Üretimi" data-joined="2025">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Ekin" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=E'">
+                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Ekin" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='E'">
                 </div>
                 <h3>Ekin</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/llekwn_"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/llekwn_" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- SPONY -->
             <div class="team-member" data-category="member" data-name="Spony" data-role="Üye" data-instagram="ismail_ylmz1616" data-instagram-url="https://instagram.com/ismail_ylmz1616" data-age="16" data-about="Pazarlama ve marka yönetimi konularında çalışır." data-skills="Pazarlama, Marka Yönetimi" data-joined="2024">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="sponypfp.jpg" alt="Spony" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=S'">
+                    <img src="sponypfp.jpg" alt="Spony" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='S'">
                 </div>
                 <h3>Spony</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/ismail_ylmz1616"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/ismail_ylmz1616" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- DRAKEN -->
             <div class="team-member" data-category="member" data-name="Draken" data-role="Üye" data-instagram="spaceanime912" data-instagram-url="https://instagram.com/spaceanime912" data-age="14" data-about="Anime ve popüler kültür içerikleri üretir." data-skills="İçerik Üretimi, Popüler Kültür" data-joined="2024">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Draken" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=D'">
+                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Draken" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='D'">
                 </div>
                 <h3>Draken</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/spaceanime912"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/spaceanime912" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- RAYS -->
             <div class="team-member" data-category="member" data-name="Rays" data-role="Üye" data-instagram="luigininkucukburnu" data-instagram-url="https://instagram.com/luigininkucukburnu" data-age="14" data-about="Müzik prodüksiyonu ve ses tasarımı ile ilgilenir." data-skills="Müzik Prodüksiyonu, Ses Tasarımı" data-joined="2024">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Rays" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=R'">
+                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Rays" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='R'">
                 </div>
                 <h3>Rays</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/luigininkucukburnu"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/luigininkucukburnu" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- NXISS -->
             <div class="team-member" data-category="member" data-name="Nxiss" data-role="Üye" data-instagram="nxissqq11" data-instagram-url="https://instagram.com/nxissqq11" data-age="16" data-about="Oyun geliştirme ve tasarım konularında çalışır." data-skills="Oyun Geliştirme, Unity" data-joined="2025">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Nxiss" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=N'">
+                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Nxiss" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='N'">
                 </div>
                 <h3>Nxiss</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/nxissqq11"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/nxissqq11" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- ROMS -->
             <div class="team-member" data-category="member" data-name="Roms" data-role="Üye" data-instagram="mrroms224" data-instagram-url="https://instagram.com/mrroms224" data-age="19" data-about="Mobil uygulama geliştirme konusunda yetenekli." data-skills="Mobil Geliştirme, Flutter" data-joined="2023">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Roms" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=R'">
+                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Roms" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='R'">
                 </div>
                 <h3>Roms</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/mrroms224"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/mrroms224" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- RAWEN -->
             <div class="team-member" data-category="member" data-name="Rawen" data-role="Üye" data-instagram="rawenqpw" data-instagram-url="https://instagram.com/rawenqpw" data-age="13" data-about="Yapay zeka ve makine öğrenmesi üzerine çalışmalar yapar." data-skills="Yapay Zeka, Makine Öğrenmesi" data-joined="2023">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Rawen" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=R'">
+                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Rawen" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='R'">
                 </div>
                 <h3>Rawen</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/rawenqpw"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/rawenqpw" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- KADIR -->
             <div class="team-member" data-category="member" data-name="Kadir" data-role="Üye" data-instagram="babanizagain" data-instagram-url="https://instagram.com/babanizagain" data-age="16" data-about="E-ticaret ve dijital pazarlama konularında uzman." data-skills="E-ticaret, Dijital Pazarlama" data-joined="2025">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Kadir" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=K'">
+                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Kadir" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='K'">
                 </div>
                 <h3>Kadir</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/babanizagain"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/babanizagain" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- ZLOI -->
             <div class="team-member" data-category="member" data-name="Zloi" data-role="Üye" data-instagram="tw_ziko" data-instagram-url="https://instagram.com/tw_ziko" data-age="19" data-about="Bot geliştirme ve otomasyon konularında çalışır." data-skills="Bot Geliştirme, Otomasyon" data-joined="2025">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="zloipfp.jpg" alt="Zloi" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=Z'">
+                    <img src="zloipfp.jpg" alt="Zloi" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='Z'">
                 </div>
                 <h3>Zloi</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/tw_ziko"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/tw_ziko" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- VANILYA -->
             <div class="team-member" data-category="member" data-name="Vanilya" data-role="Üye" data-instagram="sh.vnlyaa" data-instagram-url="https://instagram.com/sh.vnlyaa" data-age="15" data-about="UI/UX tasarım ve kullanıcı deneyimi konularında uzman." data-skills="UI/UX Tasarım, Figma" data-joined="2025">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="vanilyapfp.jpg" alt="Vanilya" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=V'">
+                    <img src="vanilyapfp.jpg" alt="Vanilya" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='V'">
                 </div>
                 <h3>Vanilya</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/sh.vnlyaa"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/sh.vnlyaa" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- KAKISH -->
             <div class="team-member" data-category="member" data-name="Kakish" data-role="Üye" data-instagram="kakish3113" data-instagram-url="https://instagram.com/kakish3113" data-age="14" data-about="Test ve kalite kontrol süreçlerinden sorumlu." data-skills="Test Otomasyonu, Kalite Kontrol" data-joined="2025">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Kakish" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=K'">
+                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Kakish" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='K'">
                 </div>
                 <h3>Kakish</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/kakish3113"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/kakish3113" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- ESKIEDIJ -->
             <div class="team-member" data-category="member" data-name="Eskiedij" data-role="Üye" data-instagram="eskiedij" data-instagram-url="https://instagram.com/eskiedij" data-age="15" data-about="Dijital sanat ve illüstrasyon konularında çalışır." data-skills="Dijital Sanat, İllüstrasyon" data-joined="2025">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Eskiedij" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=E'">
+                    <img src="522796671_633320249801242_3069423785049686180_n.jpg" alt="Eskiedij" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='E'">
                 </div>
                 <h3>Eskiedij</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/eskiedij"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/eskiedij" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- PHOENIX -->
             <div class="team-member" data-category="member" data-name="Phoenix" data-role="Üye" data-instagram="mamwxp" data-instagram-url="https://instagram.com/mamwxp" data-age="16" data-about="Sosyal sorumluluk projeleri ve etkinlik organizasyonu." data-skills="Etkinlik Yönetimi, Sosyal Sorumluluk" data-joined="2024">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="phoenixpfp.jpg" alt="Phoenix" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=P'">
+                    <img src="phoenixpfp.jpg" alt="Phoenix" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='P'">
                 </div>
                 <h3>Phoenix</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/mamwxp"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/mamwxp" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- HALIT -->
             <div class="team-member" data-category="member" data-name="Halit" data-role="Üye" data-instagram="halityim" data-instagram-url="https://instagram.com/halityim" data-age="16" data-about="Finans ve bütçe yönetiminden sorumlu." data-skills="Finans Yönetimi, Bütçeleme" data-joined="2026">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="halitpfp.jpeg" alt="Halit" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=H'">
+                    <img src="halitpfp.jpeg" alt="Halit" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='H'">
                 </div>
                 <h3>Halit</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/halityim"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/halityim" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
-            <!-- MUSAP -->
+            <!-- KRXLL1303 -->
             <div class="team-member" data-category="member" data-name="Krxll1303" data-role="Üye" data-instagram="00192300_" data-instagram-url="https://instagram.com/00192300_" data-age="16" data-about="Yazılım geliştirme ve kod optimizasyonu konularında çalışır." data-skills="Yazılım Geliştirme, Kod Optimizasyonu" data-joined="2023">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="musappfp.jpeg" alt="Musap" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=E'">
+                    <img src="musappfp.jpeg" alt="Krxll1303" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='K'">
                 </div>
                 <h3>Krxll1303</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/00192300_"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/00192300_" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- BARIS -->
             <div class="team-member" data-category="member" data-name="Barış" data-role="Üye" data-instagram="bari_ss78" data-instagram-url="https://instagram.com/bari_ss78" data-age="16" data-about="İnsan kaynakları ve ekip yönetiminden sorumlu." data-skills="İnsan Kaynakları, Ekip Yönetimi" data-joined="2026">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="barispfp.jpeg" alt="Barış" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=B'">
+                    <img src="barispfp.jpeg" alt="Barış" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='B'">
                 </div>
                 <h3>Barış</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/bari_ss78"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/bari_ss78" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
             <!-- LINTANG -->
             <div class="team-member" data-category="member" data-name="Lintang" data-role="Üye" data-instagram="wakeuplildude" data-instagram-url="https://instagram.com/wakeuplildude" data-age="16" data-about="Uluslararası ilişkiler ve iş birliklerinden sorumlu." data-skills="Uluslararası İlişkiler, İş Geliştirme" data-joined="2023">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="ltflogo.jpg" alt="Lintang" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=L'">
+                    <img src="ltflogo.jpg" alt="Lintang" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='L'">
                 </div>
                 <h3>Lintang</h3>
                 <p class="member-role">Üye</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/wakeuplildude"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/wakeuplildude" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
+
             <!-- EKEO -->
             <div class="team-member" data-category="member" data-name="Ekeo" data-role="Kurucu Yardımcısı" data-instagram="servet.888" data-instagram-url="https://instagram.com/servet.888" data-age="18" data-about="Yazılım geliştirme ve kod optimizasyonu konularında çalışır." data-skills="Yazılım Geliştirme, Kod Optimizasyonu" data-joined="2023">
+                <span class="card-badge member">ÜYE</span>
                 <div class="member-image">
-                    <img src="ltflogo.jpg" alt="Ekeo" onerror="this.src='https://via.placeholder.com/120/2A2A30/FFFFFF?text=E'">
+                    <img src="ltflogo.jpg" alt="Ekeo" onerror="this.parentElement.classList.add('no-image');this.style.display='none';this.parentElement.innerHTML='E'">
                 </div>
                 <h3>Ekeo</h3>
-                <p class="member-role">Üye</p>
+                <p class="member-role">Kurucu Yardımcısı</p>
                 <div class="member-social">
-                    <a href="https://instagram.com/servet.888"><i class="fab fa-instagram"></i></a>
+                    <a href="https://instagram.com/servet.888" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
+
+            <!-- No results -->
+            <div class="no-results" id="noResults">
+                <i class="fas fa-search"></i>
+                <p>Aradığın üye bulunamadı.</p>
+            </div>
+
         </div>
     </section>
 
     <!-- FOOTER -->
     <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <h2>LTF</h2>
-                    <p>Loyal Team Force</p>
-                </div>
-                <div class="footer-links">
-                    <h4>Hızlı Bağlantılar</h4>
-                    <ul>
-                        <li><a href="index.html">Ana Sayfa</a></li>
-                        <li><a href="team.html">Takımımız</a></li>
-                        <li><a href="proje.html">Projeler</a></li>
-                        <li><a href="social.html">İletişim</a></li>
-                        <li><a href="puanlama.html">Puanlama</a></li>
-                    </ul>
-                </div>
-                <div class="footer-social">
-                    <h4>Sosyal Medya</h4>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-tiktok"></i></a>
-                        <a href="#"><i class="fab fa-discord"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                    </div>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>LTF</h2>
+                <p>Loyal Team Force</p>
+            </div>
+            <div class="footer-links">
+                <h4>Hızlı Bağlantılar</h4>
+                <ul>
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="team.html">Takımımız</a></li>
+                    <li><a href="proje.html">Projeler</a></li>
+                    <li><a href="social.html">İletişim</a></li>
+                    <li><a href="puanlama.html">Puanlama</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <h4>Sosyal Medya</h4>
+                <div class="social-icons">
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>Kurucu: Zinny | Kurucu Yardımcısı: Chivas</p>
-                <p>© 2025 Loyal Team Force. Tüm Hakları Saklıdır.</p>
-            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>Kurucu: Zinny | Baş Yardımcı: Chivas</span>
+            <span>© 2025 Loyal Team Force. Tüm Haklar Saklıdır.</span>
         </div>
     </footer>
 
     <script>
-        // LOADING - Index'tekiyle aynı
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                document.getElementById('loader').classList.add('hidden');
-            }, 1000);
+        // ===== LOADER =====
+        window.addEventListener('load', () => {
+            setTimeout(() => document.getElementById('loader').classList.add('hidden'), 900);
         });
 
-        // HAMBURGER MENU
-        const btn = document.getElementById("menuBtn");
-        const menu = document.getElementById("sideMenu");
+        // ===== HAMBURGER + MENU =====
+        const menuBtn = document.getElementById('menuBtn');
+        const sideMenu = document.getElementById('sideMenu');
+        const menuOverlay = document.getElementById('menuOverlay');
 
-        btn.addEventListener("click", function() {
-            menu.classList.toggle("open");
-            btn.classList.toggle("open");
-        });
-
-        // Menü dışına tıklandığında kapat
-        document.addEventListener('click', function(e) {
-            if (!menu.contains(e.target) && !btn.contains(e.target)) {
-                menu.classList.remove('open');
-                btn.classList.remove('open');
-            }
-        });
-
-        // FİLTRELEME
-        function filterMembers(category) {
-            const members = document.querySelectorAll('.team-member');
-            const buttons = document.querySelectorAll('.filter-btn');
-            
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            members.forEach(member => {
-                if (category === 'all') {
-                    member.style.display = 'block';
-                } else {
-                    if (member.dataset.category === category) {
-                        member.style.display = 'block';
-                    } else {
-                        member.style.display = 'none';
-                    }
-                }
-            });
+        function toggleMenu() {
+            const isOpen = sideMenu.classList.toggle('open');
+            menuBtn.classList.toggle('open', isOpen);
+            menuOverlay.classList.toggle('visible', isOpen);
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+        }
+        function closeMenu() {
+            sideMenu.classList.remove('open');
+            menuBtn.classList.remove('open');
+            menuOverlay.classList.remove('visible');
+            document.body.style.overflow = '';
         }
 
-        // MODAL FONKSİYONLARI
+        menuBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(); });
+        menuOverlay.addEventListener('click', closeMenu);
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+
+        // ===== STAT COUNTER ANIMATION =====
+        function animateCounter(el, target, duration = 1200) {
+            const start = performance.now();
+            const update = (now) => {
+                const elapsed = now - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                el.textContent = Math.round(eased * target);
+                if (progress < 1) requestAnimationFrame(update);
+            };
+            requestAnimationFrame(update);
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    animateCounter(el, parseInt(el.dataset.target));
+                    observer.unobserve(el);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.number[data-target]').forEach(el => observer.observe(el));
+
+        // ===== FILTER + SEARCH =====
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        const members = Array.from(document.querySelectorAll('.team-member'));
+        const resultCount = document.getElementById('resultCount');
+        const noResults = document.getElementById('noResults');
+
+        function applyFilters() {
+            let visible = 0;
+            members.forEach(m => {
+                const matchFilter = currentFilter === 'all' || m.dataset.category === currentFilter;
+                const name = (m.dataset.name || '').toLowerCase();
+                const role = (m.dataset.role || '').toLowerCase();
+                const matchSearch = !currentSearch || name.includes(currentSearch) || role.includes(currentSearch);
+                const show = matchFilter && matchSearch;
+                m.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+            resultCount.textContent = visible + ' üye';
+            noResults.style.display = visible === 0 ? 'block' : 'none';
+        }
+
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                applyFilters();
+            });
+        });
+
+        // Search input
+        const searchInput = document.getElementById('searchInput');
+        const searchClear = document.getElementById('searchClear');
+
+        searchInput.addEventListener('input', () => {
+            currentSearch = searchInput.value.trim().toLowerCase();
+            searchClear.classList.toggle('visible', currentSearch.length > 0);
+            applyFilters();
+        });
+        searchClear.addEventListener('click', () => {
+            searchInput.value = '';
+            currentSearch = '';
+            searchClear.classList.remove('visible');
+            applyFilters();
+            searchInput.focus();
+        });
+
+        // Init count
+        applyFilters();
+
+        // ===== MODAL =====
         const modal = document.getElementById('memberModal');
-        const closeModalBtn = document.querySelector('.modal-close');
-        
-        function openModal(memberElement) {
-            // Verileri al
-            const name = memberElement.dataset.name;
-            const role = memberElement.dataset.role;
-            const instagram = memberElement.dataset.instagram;
-            const instagramUrl = memberElement.dataset.instagramUrl;
-            const age = memberElement.dataset.age;
-            const about = memberElement.dataset.about;
-            const skills = memberElement.dataset.skills;
-            const joined = memberElement.dataset.joined;
-            
-            // Karttaki fotoğrafı al
-            const cardImg = memberElement.querySelector('.member-image img');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalClose = document.getElementById('modalClose');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+        function openModal(m) {
+            const name = m.dataset.name;
+            const imgEl = m.querySelector('.member-image img');
+            const profileDiv = document.getElementById('modalProfileImg');
             const modalImg = document.getElementById('modalImg');
-            const modalProfileDiv = document.getElementById('modalProfileImg');
-            
-            if (cardImg && cardImg.src && !cardImg.parentElement.classList.contains('no-image')) {
-                modalImg.src = cardImg.src;
-                modalImg.style.display = 'block';
-                modalProfileDiv.classList.remove('no-image');
-                modalImg.onerror = function() {
-                    modalProfileDiv.classList.add('no-image');
-                    modalImg.style.display = 'none';
-                    modalProfileDiv.innerHTML = name.charAt(0);
+
+            // Photo
+            profileDiv.classList.remove('no-image');
+            profileDiv.innerHTML = '<img id="modalImg" src="" alt="">';
+            const newImg = profileDiv.querySelector('img');
+            newImg.alt = name;
+            if (imgEl && imgEl.src) {
+                newImg.src = imgEl.src;
+                newImg.onerror = () => {
+                    profileDiv.classList.add('no-image');
+                    profileDiv.innerHTML = name.charAt(0);
                 };
             } else {
-                modalProfileDiv.classList.add('no-image');
-                modalImg.style.display = 'none';
-                modalProfileDiv.innerHTML = name.charAt(0);
+                profileDiv.classList.add('no-image');
+                profileDiv.innerHTML = name.charAt(0);
             }
-            
-            // Modal içeriğini doldur
+
             document.getElementById('modalName').textContent = name;
-            document.getElementById('modalRole').textContent = role;
-            document.getElementById('modalAge').textContent = age;
-            document.getElementById('modalInstagram').innerHTML = `<a href="${instagramUrl}" target="_blank" style="color: var(--sari); text-decoration: none;">@${instagram}</a>`;
-            document.getElementById('modalAbout').textContent = about;
-            
-            // Yetenekleri etiket olarak göster
-            const skillsArray = skills.split(', ');
-            const skillsHtml = skillsArray.map(skill => `<span class="skill-tag">${skill}</span>`).join('');
-            document.getElementById('modalSkills').innerHTML = `<div class="skills">${skillsHtml}</div>`;
-            
-            document.getElementById('modalJoined').textContent = joined;
-            document.getElementById('modalInstaLink').href = instagramUrl;
-            
-            // Modal'ı göster
+            document.getElementById('modalRole').textContent = m.dataset.role;
+            document.getElementById('modalAge').textContent = m.dataset.age + ' yaşında';
+            document.getElementById('modalJoined').textContent = m.dataset.joined + ' yılında katıldı';
+            document.getElementById('modalInstagram').innerHTML =
+                `<a href="${m.dataset.instagramUrl}" target="_blank" rel="noopener">@${m.dataset.instagram}</a>`;
+            document.getElementById('modalAbout').textContent = m.dataset.about;
+            document.getElementById('modalSkills').innerHTML =
+                '<div class="skills">' +
+                m.dataset.skills.split(', ').map(s => `<span class="skill-tag">${s}</span>`).join('') +
+                '</div>';
+            document.getElementById('modalInstaLink').href = m.dataset.instagramUrl;
+
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
-        
+
         function closeModal() {
             modal.classList.remove('active');
             document.body.style.overflow = '';
         }
-        
-        // Kartlara tıklama olayı ekle
-        document.querySelectorAll('.team-member').forEach(member => {
-            member.addEventListener('click', (e) => {
-                // Eğer tıklanan yer Instagram linki ise modal açılmasın
-                if (e.target.closest('.member-social a')) {
-                    return;
-                }
-                openModal(member);
+
+        members.forEach(m => {
+            m.addEventListener('click', (e) => {
+                if (!e.target.closest('.member-social a')) openModal(m);
             });
         });
-        
-        // Modal kapatma
-        closeModalBtn.addEventListener('click', closeModal);
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-        
-        // Escape tuşu ile kapatma
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && modal.classList.contains('active')) {
-                closeModal();
-            }
-        });
 
-        // Fotoğraf yüklenemezse placeholder göster
-        document.querySelectorAll('.member-image img').forEach(img => {
-            img.onerror = function() {
-                this.parentElement.classList.add('no-image');
-                this.style.display = 'none';
-                const firstLetter = this.alt.charAt(0);
-                this.parentElement.innerHTML = firstLetter;
-            };
+        modalClose.addEventListener('click', closeModal);
+        modalCloseBtn.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', closeModal);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
         });
     </script>
 </body>
