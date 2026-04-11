@@ -690,6 +690,9 @@ const TASKS = [
   {id:'ch_loyal',    ico:'🎗️',title:'Sadık Üye',              desc:'10 gün boyunca her gün giriş yap',        xp:700, coins:140,cat:'challenge',oneshot:true},
   {id:'ch_topcoin',  ico:'💸',title:'Para Babası',             desc:'Tek günde 100 coin kazan',                xp:300, coins:0,  cat:'challenge',oneshot:true},
   {id:'ch_coinmaster',ico:'🪙',title:'Coin Ustası',            desc:'Toplam 50 coin harca',                    xp:200, coins:50, cat:'challenge',oneshot:true},
+  {id:'ch_riddle5',  ico:'🔮',title:'Bilmece Hızı',            desc:'5 bilmeceyi tek günde çöz',               xp:350, coins:70, cat:'challenge',daily:true},
+  {id:'ch_allpanel', ico:'🗂️',title:'Panel Turu',              desc:'Tüm sekmeleri aynı günde ziyaret et',     xp:150, coins:30, cat:'challenge',daily:true},
+  {id:'ch_10min',    ico:'⏱️',title:'10 Dakika Ustası',        desc:'Giriş yaptıktan 10 dk içinde 3 görev yap',xp:250, coins:50, cat:'challenge',daily:true},
 ];
 
 const QUIZZES = [
@@ -802,6 +805,8 @@ let fastClickTimes=[], avisChanged=new Set();
 let consecutiveCorrect=0, sessionGrindXP=0, dailyCoinEarned=0;
 let tabsVisited = new Set();
 let shopScrolled = false;
+let loginTime = Date.now(); /* Giriş zamanı — 10 dk görev için */
+let sessionTasksDone = 0;  /* Oturum boyunca tamamlanan görev sayısı */
 
 /* ═══ DOM READY ═══ */
 document.addEventListener('DOMContentLoaded', async () => {
@@ -828,7 +833,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   buildAviPicker('aviPick', v=>{ selAvi=v; });
   buildAviChange('aviChange');
-  buildCatFilters();
 
   /* Session restore */
   const sess = getSession();
@@ -859,7 +863,13 @@ function buildCatFilters(){
     {id:'fun',lbl:'🎮 Eğlenceli'},{id:'challenge',lbl:'🔥 Meydan Okuma'}
   ];
   const bar=document.getElementById('catFilterBar'); if(!bar) return;
-  bar.innerHTML=cats.map(c=>`<button class="srt-btn${c.id==='all'?' active':''}" onclick="filterTasks('${c.id}',this)">${c.lbl}</button>`).join('');
+  /* İlk kez oluştur */
+  if(!bar._built){
+    bar.innerHTML=cats.map(c=>`<button class="srt-btn" data-cat="${c.id}" onclick="filterTasks('${c.id}',this)">${c.lbl}</button>`).join('');
+    bar._built=true;
+  }
+  /* Her seferinde aktif sınıfı güncelle */
+  bar.querySelectorAll('.srt-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat===taskFilter));
 }
 function filterTasks(cat,btn){
   taskFilter=cat;
@@ -919,7 +929,9 @@ function doLogout(){
   document.getElementById('authScreen').style.display='flex';
   /* Reset state */
   sessionClickCount=0; podiumClicks=0; fastClickTimes=[]; avisChanged=new Set();
-  consecutiveCorrect=0; sessionGrindXP=0; dailyCoinEarned=0; tabsVisited=new Set(); sortUsedModes=new Set(['xp']);
+  consecutiveCorrect=0; sessionGrindXP=0; dailyCoinEarned=0;
+  tabsVisited=new Set(); sortUsedModes=new Set(['xp']);
+  loginTime=Date.now(); sessionTasksDone=0;
 }
 
 /* ═══ BOOT — giriş/kayıt sonrası hemen yükle ═══ */
@@ -927,6 +939,9 @@ async function boot(){
   /* 1. Önce Firebase'den veriyi çek */
   const all = await fbGetAll();
   setCache(all);
+  loginTime = Date.now();
+  sessionTasksDone = 0;
+  tabsVisited = new Set(['leaderboard']); /* Uygulama açılınca leaderboard zaten görünür */
 
   /* 2. Auth gizle, app göster */
   document.getElementById('authScreen').style.display='none';
@@ -1029,9 +1044,10 @@ function checkAutoTasks(){
   chk('sp_riddle10',(u.riddleCount||0)>=10,600,120,'Bilmece Ustası!'); chk('sp_riddle25',(u.riddleCount||0)>=25,2000,400,'Bilmece Efsanesi!');
   /* Görev sayısı */
   const td=Object.keys(u.tasks||{}).length; chk('sp_tasks20',td>=20,600,120,'20 görev tamamladın!'); chk('sp_tasks50',td>=50,2000,400,'50 görev Efsanesi!');
-  /* Kaşif */
-  const allTabs=['leaderboard','tasks','shop','profile','stats'];
-  if(allTabs.every(t=>tabsVisited.has(t))&&!u.tasks['fn_explorer']){ u.tasks['fn_explorer']=true; awardXP(u,100,'Kaşif: Tüm sekmeler!'); awardCoins(u,20); toast('🗺️ Kaşif görevi!','success'); changed=true; }
+  /* Kaşif — tabsVisited ile */
+  if(['leaderboard','tasks','shop','profile','stats'].every(t=>tabsVisited.has(t))&&!u.tasks['fn_explorer']){
+    u.tasks['fn_explorer']=true; awardXP(u,100,'Kaşif: Tüm sekmeler!'); awardCoins(u,20); toast('🗺️ Kaşif görevi!','success'); changed=true;
+  }
   if(changed) saveUser(u);
 }
 
@@ -1243,53 +1259,93 @@ const catCls={daily:'tb-daily',weekly:'tb-weekly',oneshot:'tb-oneshot',social:'t
 
 function renderTasks(){
   const u=getUser(); if(!u) return;
+  /* Filtre barını kur / aktif sınıfı güncelle */
+  buildCatFilters();
+
   const today=new Date().toDateString(); const wk=wKey();
+
+  /* Seri barı */
   document.getElementById('streakBar').innerHTML=Array.from({length:7},(_,i)=>`<div class="sd${i<(u.streak||0)?' done':''}"></div>`).join('');
   document.getElementById('streakCnt').textContent=`${u.streak||0} gün`;
-  let tasks=TASKS;
-  if(taskFilter!=='all') tasks=TASKS.filter(t=>t.cat===taskFilter);
+
+  /* Görev listesi filtrele */
+  const tasks = taskFilter==='all' ? TASKS : TASKS.filter(t=>t.cat===taskFilter);
+
+  if(!tasks.length){
+    document.getElementById('tasksGrid').innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);">Bu kategoride görev yok</div>';
+    return;
+  }
+
   document.getElementById('tasksGrid').innerHTML=tasks.map(t=>{
-    const key=t.daily?t.id+'_'+today:t.weekly?t.id+'_'+wk:t.id;
-    const done=!!u.tasks[key];
-    let desc=t.desc;
-    if(t.id==='dl_lb3'&&!done)desc=`3 tıklama yap (${Math.min(sessionClickCount,3)}/3)`;
-    if(t.id==='sp_quiz5')desc=`5 quiz (${Math.min(u.quizCount||0,5)}/5)`;
-    if(t.id==='sp_quiz20')desc=`20 quiz (${Math.min(u.quizCount||0,20)}/20)`;
-    if(t.id==='sp_quiz50')desc=`50 quiz (${Math.min(u.quizCount||0,50)}/50)`;
-    if(t.id==='sp_riddle10')desc=`10 bilmece (${Math.min(u.riddleCount||0,10)}/10)`;
-    if(t.id==='sp_riddle25')desc=`25 bilmece (${Math.min(u.riddleCount||0,25)}/25)`;
-    if(t.id==='wk_quiz3')desc=`Bu hafta 3 quiz (${Math.min(u.weeklyQuiz||0,3)}/3)`;
-    if(t.id==='wk_quiz7')desc=`Bu hafta 7 quiz (${Math.min(u.weeklyQuiz||0,7)}/7)`;
-    if(t.id==='wk_riddle3')desc=`Bu hafta 3 bilmece (${Math.min(u.weeklyRiddle||0,3)}/3)`;
-    if(t.id==='wk_login5')desc=`Bu hafta 5 giriş (${Math.min(u.weeklyLogin||0,5)}/5)`;
-    if(t.id==='wk_shop2')desc=`Bu hafta 2 alışveriş (${Math.min(u.weeklyShop||0,2)}/2)`;
-    if(t.id==='os_buy3')desc=`3 öğe al (${Math.min((u.ownedItems||[]).length,3)}/3)`;
-    if(t.id==='os_buy5')desc=`5 öğe al (${Math.min((u.ownedItems||[]).length,5)}/5)`;
-    if(t.id==='sp_allshop')desc=`Tüm öğeleri al (${(u.ownedItems||[]).length}/${SHOP_ITEMS.length})`;
-    if(t.id==='sp_xpk')desc=`10.000 XP (${Math.min(u.xp,10000).toLocaleString()}/10.000)`;
-    if(t.id==='sp_xp50k')desc=`50.000 XP (${Math.min(u.xp,50000).toLocaleString()}/50.000)`;
-    if(t.id==='sp_coins500')desc=`500 coin (${Math.min(u.coins||0,500)}/500)`;
-    if(t.id==='sp_coins2k')desc=`2000 coin (${Math.min(u.coins||0,2000)}/2000)`;
-    if(t.id==='sp_coins5k')desc=`5000 coin (${Math.min(u.coins||0,5000)}/5000)`;
-    if(t.id==='sp_tasks20'){const td=Object.keys(u.tasks||{}).length;desc=`20 görev tamamla (${Math.min(td,20)}/20)`;}
-    if(t.id==='sp_tasks50'){const td=Object.keys(u.tasks||{}).length;desc=`50 görev tamamla (${Math.min(td,50)}/50)`;}
-    if(t.id.startsWith('sp_str')){const n=parseInt(t.id.replace('sp_str',''));if(!isNaN(n))desc=`${n} gün seri (${Math.min(u.streak||0,n)}/${n})`;}
-    if(t.id.startsWith('os_click')){const n=parseInt(t.id.replace('os_click',''));if(!isNaN(n))desc=`${n} tıklama (${Math.min(u.clickCount||0,n)}/${n})`;}
-    if(t.id==='fn_allavi')desc=`5 farklı avatar dene (${Math.min(avisChanged.size,5)}/5)`;
-    if(t.id==='fn_lucky777')desc=`Şans çarkı 3 kez (${Math.min(u.luckyCount||0,3)}/3)`;
-    if(t.id==='ch_grind')desc=`Bu oturumda 1000 XP (${Math.min(sessionGrindXP,1000)}/1000)`;
-    if(t.id==='ch_speed3')desc=`Art arda 3 doğru quiz (${Math.min(consecutiveCorrect,3)}/3)`;
-    if(t.id==='ch_quizking')desc=`Art arda 5 doğru quiz (${Math.min(consecutiveCorrect,5)}/5)`;
-    if(t.id==='ch_noquit'){const td=countTodayDone(u,today);desc=`Bugün 5 farklı görev (${Math.min(td,5)}/5)`;}
-    if(t.id==='ch_perfect'){const dl=TASKS.filter(x=>x.daily).filter(x=>u.tasks[x.id+'_'+today]).length;const tot=TASKS.filter(x=>x.daily).length;desc=`Tüm günlük görevler (${dl}/${tot})`;}
-    if(t.id==='wk_tasks10'){const wt=TASKS.filter(x=>!x.weekly).filter(x=>{ const k=x.daily?x.id+'_'+today:x.id; return u.tasks[k]; }).length;desc=`Bu hafta 10 görev (${Math.min(wt,10)}/10)`;}
+    const key = t.daily ? t.id+'_'+today : t.weekly ? t.id+'_'+wk : t.id;
+    const done = !!u.tasks[key];
+
+    /* İlerleme göstergeli açıklamalar */
+    let desc = t.desc;
+    const pr=(cur,max,lbl)=>`${lbl} (${Math.min(cur,max)}/${max})`;
+
+    if(t.id==='dl_lb3')        desc=pr(sessionClickCount,3,'Tabloda tıklama yap');
+    if(t.id==='sp_quiz5')       desc=pr(u.quizCount||0,5,'Quiz tamamla');
+    if(t.id==='sp_quiz20')      desc=pr(u.quizCount||0,20,'Quiz tamamla');
+    if(t.id==='sp_quiz50')      desc=pr(u.quizCount||0,50,'Quiz tamamla');
+    if(t.id==='sp_riddle10')    desc=pr(u.riddleCount||0,10,'Bilmece çöz');
+    if(t.id==='sp_riddle25')    desc=pr(u.riddleCount||0,25,'Bilmece çöz');
+    if(t.id==='wk_quiz3')       desc=pr(u.weeklyQuiz||0,3,'Bu hafta quiz');
+    if(t.id==='wk_quiz7')       desc=pr(u.weeklyQuiz||0,7,'Bu hafta quiz');
+    if(t.id==='wk_riddle3')     desc=pr(u.weeklyRiddle||0,3,'Bu hafta bilmece');
+    if(t.id==='wk_login5')      desc=pr(u.weeklyLogin||0,5,'Bu hafta giriş');
+    if(t.id==='wk_shop2')       desc=pr(u.weeklyShop||0,2,'Bu hafta alışveriş');
+    if(t.id==='os_buy3')        desc=pr((u.ownedItems||[]).length,3,'Öğe satın al');
+    if(t.id==='os_buy5')        desc=pr((u.ownedItems||[]).length,5,'Öğe satın al');
+    if(t.id==='sp_allshop')     desc=`Tüm öğeleri al (${(u.ownedItems||[]).length}/${SHOP_ITEMS.length})`;
+    if(t.id==='sp_xpk')         desc=pr(Math.min(u.xp,10000),10000,'XP kazan');
+    if(t.id==='sp_xp50k')       desc=pr(Math.min(u.xp,50000),50000,'XP kazan');
+    if(t.id==='sp_coins500')    desc=pr(Math.min(u.coins||0,500),500,'Coin biriktir');
+    if(t.id==='sp_coins2k')     desc=pr(Math.min(u.coins||0,2000),2000,'Coin biriktir');
+    if(t.id==='sp_coins5k')     desc=pr(Math.min(u.coins||0,5000),5000,'Coin biriktir');
+    if(t.id==='sp_tasks20')     { const td=Object.keys(u.tasks||{}).length; desc=pr(td,20,'Görev tamamla'); }
+    if(t.id==='sp_tasks50')     { const td=Object.keys(u.tasks||{}).length; desc=pr(td,50,'Görev tamamla'); }
+    if(t.id==='wk_tasks10')     { const wt=TASKS.filter(x=>!x.weekly).filter(x=>u.tasks[x.daily?x.id+'_'+today:x.id]).length; desc=pr(wt,10,'Bu hafta görev'); }
+    if(t.id==='fn_allavi')      desc=pr(avisChanged.size,5,'Farklı avatar dene');
+    if(t.id==='fn_lucky777')    desc=pr(u.luckyCount||0,3,'Şans çarkı çevir');
+    if(t.id==='ch_grind')       desc=pr(sessionGrindXP,1000,'Bu oturumda XP kazan');
+    if(t.id==='ch_speed3')      desc=pr(consecutiveCorrect,3,'Art arda doğru quiz');
+    if(t.id==='ch_quizking')    desc=pr(consecutiveCorrect,5,'Art arda doğru quiz');
+    if(t.id==='ch_noquit')      { const td=countTodayDone(u,today); desc=pr(td,5,'Bugün farklı görev yap'); }
+    if(t.id==='ch_perfect')     { const dl=TASKS.filter(x=>x.daily&&u.tasks[x.id+'_'+today]).length; const tot=TASKS.filter(x=>x.daily).length; desc=`Tüm günlük görevler (${dl}/${tot})`; }
+    if(t.id==='ch_loyal')       desc=pr(u.streak||0,10,'Gün boyunca giriş yap');
+    if(t.id.startsWith('sp_str')){ const n=parseInt(t.id.replace('sp_str','')); if(!isNaN(n)) desc=pr(u.streak||0,n,'Gün seri'); }
+    if(t.id.startsWith('os_click')){ const n=parseInt(t.id.replace('os_click','')); if(!isNaN(n)) desc=pr(u.clickCount||0,n,'Tıklama yap'); }
+    if(t.id==='ch_riddle5')     { const done5=TASKS.filter(x=>x.riddle||x.id==='dl_riddle').filter(x=>u.tasks[x.id+'_'+today]).length; desc=pr(done5,5,'Bugün bilmece çöz'); }
+    if(t.id==='ch_allpanel')    { const vCnt=['leaderboard','tasks','shop','profile','stats'].filter(p=>tabsVisited.has(p)).length; desc=pr(vCnt,5,'Sekme ziyaret et'); }
+    if(t.id==='ch_10min')       { const elapsed=Math.floor((Date.now()-loginTime)/60000); desc=`Giriş sonrası 10 dk'da 3 görev tamamla (${Math.min(sessionTasksDone,3)}/3 · ${elapsed} dk geçti)`; }
+
+    /* Ödül XP metni */
+    const xpText = t.req==='lucky' ? '🎲 Rastgele' : `+${t.xp} XP`;
+
+    /* İlerleme yüzdesi — progressbar */
+    let pct=0;
+    if(!done){
+      if(t.id==='ch_grind') pct=Math.min(100,(sessionGrindXP/1000)*100);
+      else if(t.id.startsWith('os_click')){ const n=parseInt(t.id.replace('os_click','')); pct=Math.min(100,((u.clickCount||0)/n)*100); }
+      else if(t.id==='sp_quiz5') pct=Math.min(100,((u.quizCount||0)/5)*100);
+      else if(t.id==='sp_quiz20') pct=Math.min(100,((u.quizCount||0)/20)*100);
+      else if(t.id==='wk_quiz3') pct=Math.min(100,((u.weeklyQuiz||0)/3)*100);
+      else if(t.id==='wk_login5') pct=Math.min(100,((u.weeklyLogin||0)/5)*100);
+      else if(t.id==='fn_lucky777') pct=Math.min(100,((u.luckyCount||0)/3)*100);
+      else if(t.id==='fn_allavi') pct=Math.min(100,(avisChanged.size/5)*100);
+    } else { pct=100; }
+
+    const showBar = pct>0&&pct<100;
+
     return `<div class="tc${done?' done':''}">
       <span class="tc-badge ${catCls[t.cat]||'tb-daily'}">${catLbl[t.cat]||'Günlük'}</span>
       <div class="t-ico">${t.ico}</div>
       <div class="t-title">${t.title}</div>
       <div class="t-desc">${desc}</div>
+      ${showBar?`<div style="height:4px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;margin-bottom:8px;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:999px;transition:width .4s ease;"></div></div>`:''}
       <div class="t-rew">
-        <span class="xp-pill">+${t.xp>0?t.xp:'?'} XP</span>
+        <span class="xp-pill">${xpText}</span>
         ${t.coins>0?`<span class="coin-pill">+${t.coins}🪙</span>`:''}
       </div>
       <button class="t-btn" onclick="doTask('${t.id}')">${done?'✓ Tamamlandı':'Görevi Yap'}</button>
@@ -1336,21 +1392,59 @@ function doTask(id){
   if(id==='fn_nightquiz'){toast('Gece 22:00 sonrası quiz çözerek tamamlanır!','info');return;}
   if(id==='fn_comeback'){toast('3+ günlük aradan sonra giriş yaparak tamamlanır!','info');return;}
   if(id==='fn_fastclick'){toast('Tabloda 10 saniye içinde 5 farklı oyuncuya tıkla!','info');showPanel('leaderboard',null);return;}
+  if(id==='ch_riddle5'){
+    const done5=TASKS.filter(t=>t.riddle||t.id==='dl_riddle').filter(t=>u.tasks[t.id+'_'+today]).length;
+    if(done5<5){toast(`Bugün ${5-done5} bilmece daha çöz!`,'info');return;}
+  }
+  if(id==='ch_allpanel'){
+    const needed=['leaderboard','tasks','shop','profile','stats'];
+    const missing=needed.filter(t=>!tabsVisited.has(t));
+    if(missing.length>0){toast(`${missing.length} sekme daha ziyaret et!`,'info');return;}
+  }
+  if(id==='ch_10min'){
+    const elapsed=Date.now()-loginTime;
+    if(elapsed>10*60*1000){toast('Bu görev giriş yaptıktan ilk 10 dakikada 3 görev gerektirir!','info');return;}
+    if(sessionTasksDone<3){toast(`${3-sessionTasksDone} görev daha yap (${Math.floor(elapsed/60000)} dk geçti)!`,'info');return;}
+  }
   /* Normal görev */
   u.tasks[key]=true; awardXP(u,task.xp,task.title); awardCoins(u,task.coins);
-  saveUser(u); toast(`✅ ${task.title} +${task.xp}XP`,'success');
+  sessionTasksDone++;
+  /* 10 Dakika Ustası kontrolü */
+  if(Date.now()-loginTime<=10*60*1000 && sessionTasksDone>=3){
+    const k10='ch_10min_'+today;
+    if(!u.tasks[k10]){u.tasks[k10]=true;awardXP(u,250,'10 Dakika Ustası!');awardCoins(u,50);toast('⏱️ 10 Dakika Ustası görevi!','success');}
+  }
+  /* Panel Turu kontrolü */
+  const needed=['leaderboard','tasks','shop','profile','stats'];
+  if(needed.every(t=>tabsVisited.has(t))){
+    const kap='ch_allpanel_'+today;
+    if(!u.tasks[kap]){u.tasks[kap]=true;awardXP(u,150,'Panel Turu!');awardCoins(u,30);toast('🗂️ Panel Turu görevi!','success');}
+  }
+  saveUser(u); toast(`✅ ${task.title} +${task.xp>0?task.xp+' XP':'🎲 Ödül'}!`,'success');
   updateSidebar(); renderTasks(); checkAutoTasks(); renderStats();
 }
 
 /* ŞANS ÇARKI */
 function doLucky(u,today){
-  const prizes=[{ico:'🎉',label:'+50 XP',xp:50,coins:0},{ico:'💰',label:'+30 Coin',xp:0,coins:30},{ico:'⚡',label:'+100 XP',xp:100,coins:0},{ico:'🪙',label:'+50 Coin',xp:0,coins:50},{ico:'🎊',label:'+25 XP +25🪙',xp:25,coins:25},{ico:'💎',label:'+200 XP',xp:200,coins:0},{ico:'🎁',label:'+75 Coin',xp:0,coins:75},{ico:'🌟',label:'+150 XP +20🪙',xp:150,coins:20}];
+  const prizes=[
+    {ico:'🎉',label:'+50 XP',xp:50,coins:0},
+    {ico:'💰',label:'+30 Coin',xp:0,coins:30},
+    {ico:'⚡',label:'+100 XP',xp:100,coins:0},
+    {ico:'🪙',label:'+50 Coin',xp:0,coins:50},
+    {ico:'🎊',label:'+25 XP +25🪙',xp:25,coins:25},
+    {ico:'💎',label:'+200 XP',xp:200,coins:0},
+    {ico:'🎁',label:'+75 Coin',xp:0,coins:75},
+    {ico:'🌟',label:'+150 XP +20🪙',xp:150,coins:20},
+    {ico:'🏆',label:'+300 XP (Jackpot!)',xp:300,coins:0},
+    {ico:'💫',label:'+100 Coin (Jackpot!)',xp:0,coins:100},
+  ];
   const prize=prizes[Math.floor(Math.random()*prizes.length)];
   u.luckyCount=(u.luckyCount||0)+1;
   u.tasks['dl_lucky_'+today]=true;
+  sessionTasksDone++;
   if(prize.xp>0) awardXP(u,prize.xp,'Şans Çarkı');
   if(prize.coins>0) awardCoins(u,prize.coins);
-  if(u.luckyCount>=3&&!u.tasks['fn_lucky777']){ u.tasks['fn_lucky777']=true; awardXP(u,100,'Lucky 777!'); awardCoins(u,20); toast('🎰 Lucky 777 görevi!','success'); }
+  if(u.luckyCount>=3&&!u.tasks['fn_lucky777']){ u.tasks['fn_lucky777']=true; awardXP(u,100,'Lucky 777!'); awardCoins(u,20); toast('🎰 Lucky 777 görevi! +100 XP','success'); }
   saveUser(u); toast(`${prize.ico} Şans Çarkı: ${prize.label}!`,'success'); updateSidebar(); renderTasks(); renderStats();
 }
 
@@ -1375,6 +1469,7 @@ function ansQ(btn,chosen,correct,key,xp,coins,isNight){
   if(chosen===correct){
     btn.style.cssText+=';background:rgba(16,185,129,.26);border-color:rgba(16,185,129,.48);color:#10b981;';
     u.tasks[key]=true; u.quizCount=(u.quizCount||0)+1; consecutiveCorrect++;
+    sessionTasksDone++;
     const wk=wKey(); if(u.weekStr!==wk){u.weekStr=wk;u.weeklyQuiz=0;}
     u.weeklyQuiz=(u.weeklyQuiz||0)+1;
     const wqk='wk_quiz3_'+wk; if(u.weeklyQuiz>=3&&!u.tasks[wqk]){u.tasks[wqk]=true;awardXP(u,200,'Haftalık 3 quiz!');awardCoins(u,40);toast('🎓 Haftalık 3 quiz görevi!','success');}
@@ -1421,6 +1516,7 @@ function checkRiddle(answer,key,xp,coins,btn){
   const u=getUser(); if(!u) return;
   if(val===cor||(cor.includes(val)&&val.length>2)){
     u.tasks[key]=true; u.riddleCount=(u.riddleCount||0)+1;
+    sessionTasksDone++;
     const wk=wKey(); if(u.weekStr!==wk){u.weekStr=wk;u.weeklyRiddle=0;}
     u.weeklyRiddle=(u.weeklyRiddle||0)+1;
     const wrk='wk_riddle3_'+wk; if(u.weeklyRiddle>=3&&!u.tasks[wrk]){u.tasks[wrk]=true;awardXP(u,250,'Haftalık 3 bilmece!');awardCoins(u,50);toast('🔮 Haftalık 3 bilmece görevi!','success');}
@@ -1429,7 +1525,7 @@ function checkRiddle(answer,key,xp,coins,btn){
     updateSidebar(); renderTasks(); renderStats(); checkAutoTasks();
     setTimeout(()=>ov&&ov.remove(),880);
   } else {
-    toast(`❌ Yanlış! İpucu: "${answer.charAt(0).toUpperCase()}...",'error`);
+    toast(`❌ Yanlış! İpucu: "${answer.charAt(0).toUpperCase()}..."`, 'error');
   }
 }
 
@@ -1542,7 +1638,15 @@ function showPanel(name,btn){
     if(u){ const k='dl_stats_'+today; if(!u.tasks[k]){u.tasks[k]=true;awardXP(u,15,'İstatistik ziyareti');awardCoins(u,2);saveUser(u);toast('📊 İstatistik görevi!','success');updateSidebar();} }
   }
   if(name==='leaderboard') renderLB();
-  if(u){ checkAutoTasks(); }
+  /* Panel Turu otomatik kontrol */
+  if(u){
+    const needed=['leaderboard','tasks','shop','profile','stats'];
+    if(needed.every(t=>tabsVisited.has(t))){
+      const kap='ch_allpanel_'+today;
+      if(!u.tasks[kap]){u.tasks[kap]=true;awardXP(u,150,'Panel Turu!');awardCoins(u,30);saveUser(u);toast('🗂️ Panel Turu görevi!','success');updateSidebar();}
+    }
+    checkAutoTasks();
+  }
 }
 
 /* TOAST */
